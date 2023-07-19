@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>This is the title of the webpage!</title>
+        <script src="model.js"></script>
+        <script src="presenter.js"></script>
+
+        <style>
+            body {
+                background-color: powderblue;
+            }
+
+            h1 {
+                color: blue;
+            }
+
+            p {
+                color: red;
+            }
+
+            #view {
+                width: 300px;
+                background-color: white;
+                transform: scaleY(1);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="view"></div>
+
+        <script>
+            var ak1 = addTriangleBy2Angle1Side(40, 105, 100);
+            addTriangleBy2Angle1Side(45, 45, graph.triangle[ak1].edges[2], 1);
+            // addTriangleByInnerAngle2Side(90, 50, 60);
+            // addTriangleByOuterAngle2Side(30, 60, 40);
+            // addTriangleBy3Side(50, 50, 50);
+            setDotStyle(graph.triangle[ak1].vertices[0], true, 10, 'red');
+            setDotLabel(graph.triangle[ak1].vertices[0], 'A');
+
+            console.log(graph);
+            var svg = drawGraph(graph);
+            console.log(svg);
+
+            document.getElementById('view').innerHTML = svg;
+        </script>
+    </body>
+</html>
