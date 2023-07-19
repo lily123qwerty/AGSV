@@ -101,7 +101,7 @@
             </q-tabs> -->
         </q-header>
 
-        <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+        <q-drawer v-model="leftDrawerOpen" side="left" bordered>
             <!-- drawer content -->
             <div class="q-pa-md q-gutter-sm">
                 <q-tree
@@ -113,7 +113,7 @@
             </div>
         </q-drawer>
 
-        <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+        <q-drawer v-model="rightDrawerOpen" side="right" bordered>
             <!-- drawer content -->
         </q-drawer>
 
@@ -126,8 +126,8 @@
 <script setup>
 import { ref } from 'vue';
 
-const leftDrawerOpen = ref(false);
-const rightDrawerOpen = ref(true);
+const leftDrawerOpen = ref(true);
+const rightDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
     leftDrawerOpen.value = !leftDrawerOpen.value;
