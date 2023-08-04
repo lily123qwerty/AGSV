@@ -1,6 +1,19 @@
 <template>
     <div class="graph">
-        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            :viewBox="
+                viewBox.x +
+                ' ' +
+                viewBox.y +
+                ' ' +
+                viewBox.width +
+                ' ' +
+                viewBox.height
+            "
+            :width="viewBox.width"
+            :height="viewBox.height"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <a-triangle
                 v-for="t in triangles"
                 :key="t.key"
@@ -19,6 +32,7 @@ import ADot from './ADot.vue';
 
 const props = defineProps({
     graph: Graph,
+    viewBox: Object,
 });
 
 const triangles = computed(() =>
@@ -38,8 +52,8 @@ onMounted(() => {
 
 <style lang="scss">
 .graph {
-    width: 300px;
-    background-color: white;
+    // width: 100%;
+    // background-color: rgb(233, 235, 237);
     transform: scaleY(1);
 }
 </style>

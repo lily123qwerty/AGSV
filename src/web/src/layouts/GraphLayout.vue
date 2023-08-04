@@ -11,63 +11,35 @@
                         />
                     </q-avatar>
                     AGSV
-                    <q-btn-dropdown
-                        class="q-ml-lg"
-                        color="secondary"
-                        label="New shape"
-                    >
-                        <q-list>
-                            <q-item
-                                clickable
-                                v-close-popup
-                                @click="showAddTriangle = true"
-                            >
-                                <q-item-section>
-                                    <q-item-label>Triangle</q-item-label>
-                                </q-item-section>
-                            </q-item>
+                    <!-- new shape button group -->
+                    <q-btn-group class="q-ml-sm">
+                        <q-btn
+                            color="secondary"
+                            icon="mdi-triangle-outline"
+                            @click="popupAddTriangle"
+                        />
+                        <q-btn
+                            color="secondary"
+                            icon="mdi-circle-outline"
+                            @click="showAddCircle = true"
+                        />
+                        <q-btn
+                            color="secondary"
+                            icon="mdi-square-outline"
+                            @click="showAddParallelogram = true"
+                        />
+                        <q-btn
+                            color="secondary"
+                            icon="mdi-car-windshield-outline"
+                            @click="showAddTrapezium = true"
+                        />
+                        <q-btn
+                            color="secondary"
+                            icon="mdi-hexagon-outline"
+                            @click="showAddPolygon = true"
+                        />
+                    </q-btn-group>
 
-                            <q-item
-                                clickable
-                                v-close-popup
-                                @click="showAddCircle = true"
-                            >
-                                <q-item-section>
-                                    <q-item-label>Circle</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item
-                                clickable
-                                v-close-popup
-                                @click="showAddParallelogram = true"
-                            >
-                                <q-item-section>
-                                    <q-item-label>parallelogram</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item
-                                clickable
-                                v-close-popup
-                                @click="showAddTrapezium = true"
-                            >
-                                <q-item-section>
-                                    <q-item-label>Trapezium</q-item-label>
-                                </q-item-section>
-                            </q-item>
-
-                            <q-item
-                                clickable
-                                v-close-popup
-                                @click="showAddPolygon = true"
-                            >
-                                <q-item-section>
-                                    <q-item-label>Regular Polygon</q-item-label>
-                                </q-item-section>
-                            </q-item>
-                        </q-list>
-                    </q-btn-dropdown>
                     <q-btn
                         class="q-ml-sm"
                         color="secondary"
@@ -88,24 +60,6 @@
                     />
 
                     <!-- pop ups for creating new shape -->
-                    <q-dialog v-model="showAddTriangle">
-                        <q-card style="width: 700px; max-width: 80vw">
-                            <q-card-section>
-                                <div class="text-h6">add triangle</div>
-                            </q-card-section>
-
-                            <q-card-section class="q-pt-none">
-                                Click/Tap on the backdrop.
-                            </q-card-section>
-
-                            <q-card-actions
-                                align="right"
-                                class="bg-white text-teal"
-                            >
-                                <q-btn flat label="OK" v-close-popup />
-                            </q-card-actions>
-                        </q-card>
-                    </q-dialog>
 
                     <q-dialog v-model="showAddCircle">
                         <q-card style="width: 700px; max-width: 80vw">
@@ -203,12 +157,7 @@
         <q-drawer v-model="leftDrawerOpen" side="left" bordered>
             <!-- drawer content -->
             <div class="q-pa-md q-gutter-sm">
-                <q-tree
-                    :nodes="allShape"
-                    node-key="label"
-                    no-connectors
-                    v-model:expanded="expanded"
-                />
+                <a-tree-view @select-shape="onSelectShape" />
             </div>
             <div class="q-pa-md">
                 <q-badge color="secondary">
@@ -228,6 +177,12 @@
 
         <q-drawer v-model="rightDrawerOpen" side="right" bordered>
             <!-- drawer content -->
+            <a-dot-edit
+                v-if="selectedShapeClass == 'Dot'"
+                :dot="selectedShape"
+                @closeRightDrawer="toggleRightDrawer"
+            />
+            <a-line-edit v-if="selectedShapeClass == 'Line'" />
         </q-drawer>
 
         <q-page-container>
@@ -238,7 +193,15 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useGraphStore } from 'stores/graph';
 import Graph from '../model/Graph';
+import ATreeView from 'src/components/ATreeView.vue';
+import { useQuasar } from 'quasar';
+import PopupAddTriangle from 'src/components/PopupAddTriangle.vue';
+import ADotEdit from 'src/components/ADotEdit.vue';
+import ALineEdit from 'src/components/ALineEdit.vue';
+
+const store = useGraphStore();
 
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
@@ -250,78 +213,13 @@ function toggleRightDrawer() {
     rightDrawerOpen.value = !rightDrawerOpen.value;
 }
 function test() {
-    console.log('test');
-    let g = new Graph();
-    let t = g.addTriangleBy2Angle1Side(40, 105, 100);
-    g.addTriangleBy2Angle1Side(45, 45, t.edges[2], 1);
-    console.log(g.toJSON());
+    store.test();
 }
 
-const expanded = ref(['all Shapes', 'all Variables']);
-
-const allShape = [
-    {
-        label: 'all Shapes',
-        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-        children: [
-            {
-                label: 'Triangle',
-                icon: 'restaurant_menu',
-                children: [
-                    { label: 'Quality ingredients' },
-                    { label: 'Good recipe' },
-                ],
-            },
-            {
-                label: 'Circle',
-                icon: 'room_service',
-                //disabled: true,
-                children: [
-                    { label: 'Prompt attention' },
-                    { label: 'Professional waiter' },
-                ],
-            },
-            {
-                label: 'parallelogram',
-                icon: 'photo',
-                children: [
-                    {
-                        label: 'Happy atmosphere (with image)',
-                        img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png',
-                    },
-                    { label: 'Good table presentation' },
-                    { label: 'Pleasing decor' },
-                ],
-            },
-            {
-                label: 'trapezium',
-                icon: 'photo',
-                children: [
-                    {
-                        label: 'Happy atmosphere (with image)',
-                        img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png',
-                    },
-                    { label: 'Good table presentation' },
-                    { label: 'Pleasing decor' },
-                ],
-            },
-            {
-                label: 'regular polygon',
-                icon: 'photo',
-                children: [
-                    {
-                        label: 'Happy atmosphere (with image)',
-                        img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png',
-                    },
-                    { label: 'Good table presentation' },
-                    { label: 'Pleasing decor' },
-                ],
-            },
-        ],
-    },
-];
-
 let standard = ref(2);
+
+//add triangle pop up
+const tab = ref('mails');
 
 //pop up control
 const showAddTriangle = ref(false);
@@ -329,4 +227,34 @@ const showAddCircle = ref(false);
 const showAddParallelogram = ref(false);
 const showAddTrapezium = ref(false);
 const showAddPolygon = ref(false);
+
+//popups
+const $q = useQuasar();
+function popupAddTriangle() {
+    $q.dialog({
+        component: PopupAddTriangle,
+
+        // props forwarded to your custom component
+        componentProps: {},
+    })
+        .onOk(() => {
+            console.log('OK');
+        })
+        .onCancel(() => {
+            console.log('Cancel');
+        })
+        .onDismiss(() => {
+            console.log('Called on OK or Cancel');
+        });
+}
+
+const selectedShape = ref(null);
+const selectedShapeClass = ref(null);
+
+function onSelectShape(obj) {
+    console.log(obj.constructor.name);
+    selectedShape.value = obj;
+    selectedShapeClass.value = obj.constructor.name;
+    rightDrawerOpen.value = true;
+}
 </script>

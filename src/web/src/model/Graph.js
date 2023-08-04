@@ -32,6 +32,40 @@ export default class Graph {
         return this._triangles;
     }
 
+    get bounds() {
+        let top = Number.MAX_VALUE,
+            left = Number.MAX_VALUE,
+            bottom = Number.MIN_VALUE,
+            right = Number.MIN_VALUE;
+
+        Object.entries(this.dots).forEach(([key, obj]) => {
+            top = Math.min(top, obj.y);
+            left = Math.min(left, obj.x);
+            bottom = Math.max(bottom, obj.y);
+            right = Math.max(right, obj.x);
+        });
+
+        return { top, left, bottom, right };
+    }
+
+    get center() {
+        let x, y;
+        let b = this.bounds;
+        x = (b.left + b.right) / 2;
+        y = (b.top + b.bottom) / 2;
+
+        return { x, y };
+    }
+
+    translate(x, y) {
+        if (x != 0 || y != 0) {
+            Object.entries(this.dots).forEach(([key, obj]) => {
+                obj.x += x;
+                obj.y += y;
+            });
+        }
+    }
+
     toJSON() {
         return {
             dots: Object.entries(this.dots).map(([key, obj]) => obj.toJSON()),
