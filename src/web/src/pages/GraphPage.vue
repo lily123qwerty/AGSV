@@ -1,7 +1,7 @@
 <template>
-    <q-page class="flex flex-center">
-        <a-graph :graph="store.graph" :view-box="store.viewBox" />
-    </q-page>
+  <q-page class="flex flex-center">
+    <a-graph :graph="store.graph" />
+  </q-page>
 </template>
 
 <script setup>
@@ -12,17 +12,6 @@ import Style from 'src/model/Style';
 import { computed, watch } from 'vue';
 
 const store = useGraphStore();
-
-const bounds = computed(() => store.graph.bounds);
-
-watch(bounds, (b, oldCenter) => {
-    store.setViewBox(
-        b.left - 20,
-        b.top - 20,
-        b.right - b.left + 40,
-        b.bottom - b.top + 40
-    );
-});
 
 // console.log('graph page');
 // const g = new Graph();
