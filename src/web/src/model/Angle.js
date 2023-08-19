@@ -1,4 +1,5 @@
 import Shape from './Shape';
+import { rotate } from './helper';
 
 export default class Angle extends Shape {
   constructor(dot, line1, line2) {
@@ -15,6 +16,10 @@ export default class Angle extends Shape {
 
   get sides() {
     return this._sides;
+  }
+
+  get desc() {
+    return this.vertex.desc;
   }
 
   // this is the angle from x positive anti-clockwise to side
@@ -44,6 +49,34 @@ export default class Angle extends Shape {
     return r;
   }
 
+  //TODO: get the line on the right (the second line clockwise)
+  rightLine() {
+    let r1 = this.sideAngle(0);
+    let r2 = this.sideAngle(1);
+    let r;
+    if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {
+      if (r1 > r2) {
+        r = 1;
+      } else {
+        r = 0;
+      }
+    } else {
+      if (Math.abs(r1) + Math.abs(r2) >= Math.PI) {
+        if (r1 < 0) {
+          r = 1;
+        } else {
+          r = 0;
+        }
+      } else {
+        if (r1 < 0) {
+          r = 0;
+        } else {
+          r = 1;
+        }
+      }
+    }
+  }
+
   get radian() {
     let r = this.sideAngle(0) - this.sideAngle(1);
     r = Math.abs(r);
@@ -51,6 +84,66 @@ export default class Angle extends Shape {
       r = 2 * Math.PI - r;
     }
     return r;
+  }
+
+  set radian(val) {
+    let r1 = this.sideAngle(0);
+    let r2 = this.sideAngle(1);
+    let r = val - this.radian;
+    let rr1;
+
+    if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {
+      if (r1 > r2) {
+        rr1 = true;
+      } else {
+        rr1 = false;
+      }
+    } else {
+      if (Math.abs(r1) + Math.abs(r2) >= Math.PI) {
+        if (r1 < 0) {
+          rr1 = true;
+        } else {
+          rr1 = false;
+        }
+      } else {
+        if (r1 < 0) {
+          rr1 = false;
+        } else {
+          rr1 = true;
+        }
+      }
+    }
+
+    console.log(r1, r2);
+    if (rr1) {
+      if (this.sides[0].ends[0] == this.vertex) {
+        const x = this.sides[0].ends[1].x - this.vertex.x;
+        const y = this.sides[0].ends[1].y - this.vertex.y;
+        let n = rotate(x, y, r, 1);
+        this.sides[0].ends[1].x = n.x + this.vertex.x;
+        this.sides[0].ends[1].y = n.y + this.vertex.y;
+      } else {
+        const x = this.sides[0].ends[0].x - this.vertex.x;
+        const y = this.sides[0].ends[0].y - this.vertex.y;
+        let n = rotate(x, y, r, 1);
+        this.sides[0].ends[0].x = n.x + this.vertex.x;
+        this.sides[0].ends[0].y = n.y + this.vertex.y;
+      }
+    } else {
+      if (this.sides[1].ends[0] == this.vertex) {
+        const x = this.sides[1].ends[1].x - this.vertex.x;
+        const y = this.sides[1].ends[1].y - this.vertex.y;
+        let n = rotate(x, y, r, 1);
+        this.sides[1].ends[1].x = n.x + this.vertex.x;
+        this.sides[1].ends[1].y = n.y + this.vertex.y;
+      } else {
+        const x = this.sides[1].ends[0].x - this.vertex.x;
+        const y = this.sides[1].ends[0].y - this.vertex.y;
+        let n = rotate(x, y, r, 1);
+        this.sides[1].ends[0].x = n.x + this.vertex.x;
+        this.sides[1].ends[0].y = n.y + this.vertex.y;
+      }
+    }
   }
 
   toJSON() {

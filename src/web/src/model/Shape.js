@@ -28,6 +28,10 @@ export default class Shape {
     this._style = val;
   }
 
+  get desc() {
+    return null;
+  }
+
   toJSON() {
     let json = {
       key: this.key,

@@ -83,36 +83,38 @@ const labels = computed(() => {
     .map(([key, obj]) => obj)
     .filter((obj) => obj.style && obj.style.label)
     .forEach((dot) => {
-      let x = dot.x,
-        y = dot.y,
+      let x = 0,
+        y = 0,
         margin = 15;
-      const center = props.graph.center;
-      if (x == center.x) {
-        if (y > center.y) {
-          y = y + margin;
-        } else {
-          y = y - margin;
-        }
-      } else if (y == center.y) {
-        if (x > center.x) {
-          x = x + margin;
-        } else {
-          x = x - margin;
-        }
-      } else {
-        let angle = Math.atan(Math.abs(center.y - y) / Math.abs(center.x - x));
-        console.log(angle);
-        if (x < center.x) {
-          x = x - margin * Math.cos(angle);
-        } else {
-          x = x + margin * Math.cos(angle);
-        }
-        if (y < center.y) {
-          y = y - margin * Math.sin(angle);
-        } else {
-          y = y + margin * Math.sin(angle);
-        }
-      }
+      // get line
+
+      Object.entries(props.graph.lines)
+        .map(([key, line]) => line)
+        .forEach((line) => {
+          let dx = 0,
+            dy = 0;
+          if (line.ends[0] == dot) {
+            dx = line.ends[1].x - dot.x;
+            dy = line.ends[1].y - dot.y;
+            dx = dx / line.length;
+            dy = dy / line.length;
+          } else if (line.ends[1] == dot) {
+            dx = line.ends[0].x - dot.x;
+            dy = line.ends[0].y - dot.y;
+            dx = dx / line.length;
+            dy = dy / line.length;
+          }
+
+          x = x + dx;
+          y = y + dy;
+        });
+
+      // get unit vector
+      x = x / Math.sqrt(x * x + y * y);
+      y = y / Math.sqrt(x * x + y * y);
+
+      x = -x * margin + dot.x;
+      y = -y * margin + dot.y;
 
       l.push({ key: dot.key, x, y, sty: dot.style });
     });

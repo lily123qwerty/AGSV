@@ -1,6 +1,6 @@
 <template>
   <q-toolbar class="bg-cyan text-white">
-    <q-toolbar-title>Edit Dot: {{ dot.key }}</q-toolbar-title>
+    <q-toolbar-title>Edit Dot: {{ desc || dot.key }}</q-toolbar-title>
     <q-btn flat round dense icon="close" @click="emit('closeRightDrawer')" />
   </q-toolbar>
 
@@ -51,6 +51,8 @@ const y = computed({
   get: () => dot.value.y,
   set: (val) => (dot.value.y = Number(val)),
 });
+
+const desc = computed(() => dot.value.desc);
 
 const visible = computed({
   get: () => dot.value.style.visible,

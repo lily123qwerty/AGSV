@@ -6,8 +6,14 @@
 
   <div class="q-pa-md q-gutter-sm">
     <div class="text-h6 text-cyan q-mt-lg">Basic</div>
+    <p class="text-p q-mb-lg q-mt-lg">angle in degree: {{ AngleSize }}</p>
+    <q-slider v-model="AngleSize" :min="1" :max="179" label label-always />
     <p class="text-p q-mb-lg q-mt-lg">
-      angle in degree: {{ radiansToDegrees(angle.radian) }}
+      dot: {{ angle.vertex.style.label || angle.vertex.key }}
+    </p>
+    <p class="text-p q-mb-lg q-mt-lg">
+      sides: {{ angle.sides[0].style.label || angle.sides[0].key }},
+      {{ angle.sides[1].style.label || angle.sides[1].key }}
     </p>
 
     <div class="text-h6 text-cyan q-mt-lg">Style</div>
@@ -33,7 +39,7 @@
 <script setup>
 import Angle from 'src/model/Angle';
 import { ref, computed } from 'vue';
-import { radiansToDegrees } from 'src/model/helper';
+import { degreesToRadians, radiansToDegrees } from 'src/model/helper';
 
 const emit = defineEmits(['closeRightDrawer']);
 
@@ -42,6 +48,11 @@ const props = defineProps({
 });
 
 const angle = computed(() => props.angle);
+
+const AngleSize = computed({
+  get: () => radiansToDegrees(angle.value.radian),
+  set: (val) => (angle.value.radian = degreesToRadians(Number(val))),
+});
 
 const visible = computed({
   get: () => angle.value.style.visible,

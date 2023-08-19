@@ -18,7 +18,6 @@ const path = computed(() => {
   const y1 = props.angle.style.size * Math.sin(r1) + props.angle.vertex.y;
   const x2 = props.angle.style.size * Math.cos(r2) + props.angle.vertex.x;
   const y2 = props.angle.style.size * Math.sin(r2) + props.angle.vertex.y;
-  console.log(x1, y1, x2, y2);
 
   // find which line to start:
   if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {

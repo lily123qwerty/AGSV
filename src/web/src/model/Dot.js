@@ -24,6 +24,10 @@ export default class Dot extends Shape {
     this._y = val;
   }
 
+  get desc() {
+    return this.style.label;
+  }
+
   toJSON() {
     let json = super.toJSON();
     json.x = this.x;

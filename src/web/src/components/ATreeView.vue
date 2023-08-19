@@ -36,7 +36,7 @@ const allShape = computed(() => {
   //   key
   // }));
   let triangles = Object.entries(store.graph.triangles).map(([key, obj]) => ({
-    label: key,
+    label: key + (obj.desc ? ': ' + obj.desc : ''),
     icon: 'mdi-triangle-outline',
     key,
     obj,
@@ -48,12 +48,12 @@ const allShape = computed(() => {
         icon: 'mdi-circle-medium',
         handler: onSelectTree,
         children: obj.vertices.map((obj) => ({
-          label: obj.key,
+          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
           key: 'vertices_' + key + '_' + obj.key,
           icon: 'mdi-circle-medium',
           obj,
-          handler: onSelectShape
-        }))
+          handler: onSelectShape,
+        })),
       },
       {
         label: 'sides',
@@ -61,12 +61,12 @@ const allShape = computed(() => {
         icon: 'horizontal_rule',
         handler: onSelectTree,
         children: obj.edges.map((obj) => ({
-          label: obj.key,
+          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
           key: 'sides_' + key + '_' + obj.key,
           icon: 'horizontal_rule',
           obj,
-          handler: onSelectShape
-        }))
+          handler: onSelectShape,
+        })),
       },
       {
         label: 'angles',
@@ -74,14 +74,14 @@ const allShape = computed(() => {
         icon: 'mdi-angle-acute',
         handler: onSelectTree,
         children: obj.angles.map((obj) => ({
-          label: obj.key,
+          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
           key: 'angles_' + key + '_' + obj.key,
           icon: 'mdi-angle-acute',
           obj,
-          handler: onSelectShape
-        }))
-      }
-    ]
+          handler: onSelectShape,
+        })),
+      },
+    ],
   }));
   // let circleKey = Object.entries(store.graph.circles).map(([key, obj]) => ({
   //     label: key,
@@ -107,33 +107,33 @@ const allShape = computed(() => {
       key: 'Triangle',
       icon: 'mdi-triangle-outline',
       handler: onSelectTree,
-      children: triangles
+      children: triangles,
     },
     {
       label: 'Circle',
       key: 'Circle',
       icon: 'mdi-circle-outline',
       //disabled: true,
-      children: []
+      children: [],
     },
     {
       label: 'parallelogram',
       key: 'parallelogram',
       icon: 'mdi-square-outline',
-      children: []
+      children: [],
     },
     {
       label: 'trapezium',
       key: 'trapezium',
       icon: 'svguse:myicons.svg#trapezium',
-      children: []
+      children: [],
     },
     {
       label: 'regular polygon',
       key: 'regular polygon',
       icon: 'mdi-hexagon-outline',
-      children: []
-    }
+      children: [],
+    },
   ];
 });
 </script>
