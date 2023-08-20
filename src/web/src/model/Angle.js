@@ -22,128 +22,48 @@ export default class Angle extends Shape {
     return this.vertex.desc;
   }
 
-  // this is the angle from x positive anti-clockwise to side
-  sideAngle(side) {
-    let r;
-    let x1 = this.vertex.x;
-    let y1 = this.vertex.y;
-    let x2 = this.sides[side].ends[0].x;
-    let y2 = this.sides[side].ends[0].y;
-    if (x1 == x2 && y1 == y2) {
-      x2 = this.sides[side].ends[1].x;
-      y2 = this.sides[side].ends[1].y;
-    }
-
-    if (x2 == x1) {
-      if (y2 > y1) {
-        r = Math.PI / 2;
-      } else {
-        r = -Math.PI / 2;
-      }
-    } else {
-      r = Math.atan((y2 - y1) / (x2 - x1));
-      if (x2 < x1) {
-        r = r - Math.PI;
-      }
-    }
-    return r;
-  }
-
-  //TODO: get the line on the right (the second line clockwise)
-  rightLine() {
-    let r1 = this.sideAngle(0);
-    let r2 = this.sideAngle(1);
-    let r;
-    if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {
-      if (r1 > r2) {
-        r = 1;
-      } else {
-        r = 0;
-      }
-    } else {
-      if (Math.abs(r1) + Math.abs(r2) >= Math.PI) {
-        if (r1 < 0) {
-          r = 1;
-        } else {
-          r = 0;
-        }
-      } else {
-        if (r1 < 0) {
-          r = 0;
-        } else {
-          r = 1;
-        }
-      }
-    }
-  }
-
   get radian() {
-    let r = this.sideAngle(0) - this.sideAngle(1);
-    r = Math.abs(r);
+    let r = Math.abs(
+      this.sides[0].radian(this.vertex) - this.sides[1].radian(this.vertex)
+    );
     if (r > Math.PI) {
       r = 2 * Math.PI - r;
     }
+
     return r;
   }
 
   set radian(val) {
-    let r1 = this.sideAngle(0);
-    let r2 = this.sideAngle(1);
     let r = val - this.radian;
-    let rr1;
-
-    if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {
-      if (r1 > r2) {
-        rr1 = true;
+    let end =
+      this.vertex == this.sides[0].ends[0]
+        ? this.sides[0].ends[1]
+        : this.sides[0].ends[0];
+    let changeEnd;
+    //check which side is sides[0] on
+    if (
+      this.sides[0].radian(this.vertex) + this.sides[1].radian(this.vertex) >
+      2 * Math.PI
+    ) {
+      if (
+        this.sides[0].radian(this.vertex) > this.sides[1].radian(this.vertex)
+      ) {
+        changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, -1);
       } else {
-        rr1 = false;
+        changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, 1);
       }
     } else {
-      if (Math.abs(r1) + Math.abs(r2) >= Math.PI) {
-        if (r1 < 0) {
-          rr1 = true;
-        } else {
-          rr1 = false;
-        }
+      if (
+        this.sides[0].radian(this.vertex) > this.sides[1].radian(this.vertex)
+      ) {
+        changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, 1);
       } else {
-        if (r1 < 0) {
-          rr1 = false;
-        } else {
-          rr1 = true;
-        }
+        changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, -1);
       }
     }
 
-    console.log(r1, r2);
-    if (rr1) {
-      if (this.sides[0].ends[0] == this.vertex) {
-        const x = this.sides[0].ends[1].x - this.vertex.x;
-        const y = this.sides[0].ends[1].y - this.vertex.y;
-        let n = rotate(x, y, r, 1);
-        this.sides[0].ends[1].x = n.x + this.vertex.x;
-        this.sides[0].ends[1].y = n.y + this.vertex.y;
-      } else {
-        const x = this.sides[0].ends[0].x - this.vertex.x;
-        const y = this.sides[0].ends[0].y - this.vertex.y;
-        let n = rotate(x, y, r, 1);
-        this.sides[0].ends[0].x = n.x + this.vertex.x;
-        this.sides[0].ends[0].y = n.y + this.vertex.y;
-      }
-    } else {
-      if (this.sides[1].ends[0] == this.vertex) {
-        const x = this.sides[1].ends[1].x - this.vertex.x;
-        const y = this.sides[1].ends[1].y - this.vertex.y;
-        let n = rotate(x, y, r, 1);
-        this.sides[1].ends[1].x = n.x + this.vertex.x;
-        this.sides[1].ends[1].y = n.y + this.vertex.y;
-      } else {
-        const x = this.sides[1].ends[0].x - this.vertex.x;
-        const y = this.sides[1].ends[0].y - this.vertex.y;
-        let n = rotate(x, y, r, 1);
-        this.sides[1].ends[0].x = n.x + this.vertex.x;
-        this.sides[1].ends[0].y = n.y + this.vertex.y;
-      }
-    }
+    end.x = changeEnd.x + this.vertex.x;
+    end.y = changeEnd.y + this.vertex.y;
   }
 
   toJSON() {

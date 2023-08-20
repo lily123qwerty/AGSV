@@ -50,7 +50,7 @@ const props = defineProps({
 const angle = computed(() => props.angle);
 
 const AngleSize = computed({
-  get: () => radiansToDegrees(angle.value.radian),
+  get: () => Math.round(radiansToDegrees(angle.value.radian)),
   set: (val) => (angle.value.radian = degreesToRadians(Number(val))),
 });
 

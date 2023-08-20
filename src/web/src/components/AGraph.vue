@@ -121,8 +121,8 @@ const labels = computed(() => {
 
   angles.value.forEach((angle) => {
     angle.style.label = Math.round(radiansToDegrees(angle.radian)) + '°';
-    const r1 = angle.sideAngle(0);
-    const r2 = angle.sideAngle(1);
+    const r1 = angle.sides[0].radian(angle.vertex);
+    const r2 = angle.sides[1].radian(angle.vertex);
     const r = angle.radian / 2;
     let labelAngle;
     let fr1;

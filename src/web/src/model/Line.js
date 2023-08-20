@@ -25,6 +25,45 @@ export default class Line extends Shape {
     }
   }
 
+  radian(dot) {
+    let end;
+    if (dot == this.ends[0]) {
+      end = this.ends[1];
+    } else if (dot == this.ends[1]) {
+      end = this.ends[0];
+    } else {
+      console.log('dot not in the line');
+      return;
+    }
+
+    let x = end.x - dot.x;
+    let y = end.y - dot.y;
+    let r;
+    if (x == 0) {
+      if (y > 0) {
+        r = Math.PI / 2;
+      } else {
+        r = (Math.PI / 2) * 3;
+      }
+    } else if (y == 0) {
+      if (x > 0) {
+        r = 0;
+      } else {
+        r = Math.PI;
+      }
+    } else {
+      r = Math.atan(y / x);
+      if (x < 0 && y < 0) {
+        r = r + Math.PI;
+      } else if (x < 0 && y > 0) {
+        r = r + Math.PI;
+      } else if (y < 0 && x > 0) {
+        r = r + 2 * Math.PI;
+      }
+    }
+    return r;
+  }
+
   toJSON() {
     let json = super.toJSON();
     json.dk1 = this.ends[0].key;
