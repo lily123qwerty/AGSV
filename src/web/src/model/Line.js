@@ -17,6 +17,8 @@ export default class Line extends Shape {
     );
   }
 
+  //TODO: set length?
+
   get desc() {
     if (this.ends[0].desc && this.ends[1].desc) {
       return this.ends[0].desc + this.ends[1].desc;

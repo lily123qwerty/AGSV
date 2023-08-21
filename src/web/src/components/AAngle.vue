@@ -18,40 +18,71 @@ const path = computed(() => {
   const x2 = props.angle.style.size * Math.cos(r2) + props.angle.vertex.x;
   const y2 = props.angle.style.size * Math.sin(r2) + props.angle.vertex.y;
   console.log(r1, r2);
-  if (r1 + r2 > 2 * Math.PI) {
-  }
 
-  // find which line to start:
-  if (r1 < r2) {
-    return (
-      'M ' +
-      x1 +
-      ' ' +
-      y1 +
-      ' A ' +
-      props.angle.style.size +
-      ',' +
-      props.angle.style.size +
-      ' 0,0,1 ' +
-      x2 +
-      ' ' +
-      y2
-    );
+  if (Math.abs(r1 - r2) > Math.PI) {
+    if (r1 > r2) {
+      return (
+        'M ' +
+        x2 +
+        ' ' +
+        y2 +
+        ' A ' +
+        props.angle.style.size +
+        ',' +
+        props.angle.style.size +
+        ' 0,0,0 ' +
+        x1 +
+        ' ' +
+        y1
+      );
+    } else {
+      return (
+        'M ' +
+        x1 +
+        ' ' +
+        y1 +
+        ' A ' +
+        props.angle.style.size +
+        ',' +
+        props.angle.style.size +
+        ' 0,0,0 ' +
+        x2 +
+        ' ' +
+        y2
+      );
+    }
   } else {
-    return (
-      'M ' +
-      x2 +
-      ' ' +
-      y2 +
-      ' A ' +
-      props.angle.style.size +
-      ',' +
-      props.angle.style.size +
-      ' 0,0,1 ' +
-      x1 +
-      ' ' +
-      y1
-    );
+    if (r1 < r2) {
+      return (
+        'M ' +
+        x2 +
+        ' ' +
+        y2 +
+        ' A ' +
+        props.angle.style.size +
+        ',' +
+        props.angle.style.size +
+        ' 0,0,0 ' +
+        x1 +
+        ' ' +
+        y1
+      );
+    } else {
+      return (
+        'M ' +
+        x1 +
+        ' ' +
+        y1 +
+        ' A ' +
+        props.angle.style.size +
+        ',' +
+        props.angle.style.size +
+        ' 0,0,0 ' +
+        x2 +
+        ' ' +
+        y2
+      );
+    }
   }
 });
 

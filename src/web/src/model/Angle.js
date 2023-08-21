@@ -35,27 +35,22 @@ export default class Angle extends Shape {
 
   set radian(val) {
     let r = val - this.radian;
+    let r1 = this.sides[0].radian(this.vertex);
+    let r2 = this.sides[1].radian(this.vertex);
     let end =
       this.vertex == this.sides[0].ends[0]
         ? this.sides[0].ends[1]
         : this.sides[0].ends[0];
     let changeEnd;
     //check which side is sides[0] on
-    if (
-      this.sides[0].radian(this.vertex) + this.sides[1].radian(this.vertex) >
-      2 * Math.PI
-    ) {
-      if (
-        this.sides[0].radian(this.vertex) > this.sides[1].radian(this.vertex)
-      ) {
+    if (Math.abs(r1 - r2) > Math.PI) {
+      if (r1 > r2) {
         changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, -1);
       } else {
         changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, 1);
       }
     } else {
-      if (
-        this.sides[0].radian(this.vertex) > this.sides[1].radian(this.vertex)
-      ) {
+      if (r1 > r2) {
         changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, 1);
       } else {
         changeEnd = rotate(end.x - this.vertex.x, end.y - this.vertex.y, r, -1);

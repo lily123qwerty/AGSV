@@ -125,34 +125,20 @@ const labels = computed(() => {
     const r2 = angle.sides[1].radian(angle.vertex);
     const r = angle.radian / 2;
     let labelAngle;
-    let fr1;
 
     // find which line to start:
-    if ((r1 >= 0 && r2 >= 0) || (r1 <= 0 && r2 <= 0)) {
+    if (Math.abs(r1 - r2) > Math.PI) {
       if (r1 > r2) {
-        fr1 = false;
+        labelAngle = r1 + r;
       } else {
-        fr1 = true;
+        labelAngle = r2 + r;
       }
     } else {
-      if (Math.abs(r1) + Math.abs(r2) > Math.PI) {
-        if (r1 > 0) {
-          fr1 = true;
-        } else {
-          fr1 = false;
-        }
+      if (r1 < r2) {
+        labelAngle = r1 + r;
       } else {
-        if (r1 > 0) {
-          fr1 = false;
-        } else {
-          fr1 = true;
-        }
+        labelAngle = r2 + r;
       }
-    }
-    if (fr1) {
-      labelAngle = r1 + r;
-    } else {
-      labelAngle = r2 + r;
     }
 
     const x = angle.vertex.x + Math.cos(labelAngle) * (angle.style.size + 20);
