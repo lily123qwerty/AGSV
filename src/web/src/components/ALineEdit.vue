@@ -8,8 +8,8 @@
     <div class="text-h6 text-cyan q-mt-lg">Basic</div>
     <p class="text-p q-mb-lg q-mt-lg">Length: {{ length }}</p>
     <p class="text-p q-mb-lg q-mt-lg">
-      ends: {{ line.ends[0].desc || line.ends[0].key }},
-      {{ line.ends[1].desc || line.ends[1].key }}
+      ends: {{ line.ends[0].label || line.ends[0].key }},
+      {{ line.ends[1].label || line.ends[1].key }}
     </p>
 
     <div class="text-h6 text-cyan q-mt-lg">Style</div>

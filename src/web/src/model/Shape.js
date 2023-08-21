@@ -28,7 +28,7 @@ export default class Shape {
     this._style = val;
   }
 
-  get desc() {
+  get label() {
     return null;
   }
 

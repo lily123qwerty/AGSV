@@ -5,6 +5,7 @@ export default class Dot extends Shape {
     super('d');
     this._x = x || 0;
     this._y = y || 0;
+    this._label = null;
     this.style.visible = false;
   }
 
@@ -24,8 +25,12 @@ export default class Dot extends Shape {
     this._y = val;
   }
 
-  get desc() {
-    return this.style.label;
+  get label() {
+    return this._label;
+  }
+
+  set label(val) {
+    this._label = val;
   }
 
   toJSON() {

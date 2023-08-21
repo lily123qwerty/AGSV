@@ -18,8 +18,8 @@ export default class Angle extends Shape {
     return this._sides;
   }
 
-  get desc() {
-    return this.vertex.desc;
+  get label() {
+    return this.vertex.label;
   }
 
   get radian() {

@@ -20,14 +20,14 @@ export default class Triangle extends Shape {
     return this._angles;
   }
 
-  get desc() {
+  get label() {
     if (
-      this.vertices[0].desc &&
-      this.vertices[1].desc &&
-      this.vertices[2].desc
+      this.vertices[0].label &&
+      this.vertices[1].label &&
+      this.vertices[2].label
     ) {
       return (
-        this.vertices[0].desc + this.vertices[1].desc + this.vertices[2].desc
+        this.vertices[0].label + this.vertices[1].label + this.vertices[2].label
       );
     } else {
       return null;

@@ -36,7 +36,7 @@ const allShape = computed(() => {
   //   key
   // }));
   let triangles = Object.entries(store.graph.triangles).map(([key, obj]) => ({
-    label: key + (obj.desc ? ': ' + obj.desc : ''),
+    label: key + (obj.label ? ': ' + obj.label : ''),
     icon: 'mdi-triangle-outline',
     key,
     obj,
@@ -48,7 +48,7 @@ const allShape = computed(() => {
         icon: 'mdi-circle-medium',
         handler: onSelectTree,
         children: obj.vertices.map((obj) => ({
-          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
+          label: obj.key + (obj.label ? ': ' + obj.label : ''),
           key: 'vertices_' + key + '_' + obj.key,
           icon: 'mdi-circle-medium',
           obj,
@@ -61,7 +61,7 @@ const allShape = computed(() => {
         icon: 'horizontal_rule',
         handler: onSelectTree,
         children: obj.edges.map((obj) => ({
-          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
+          label: obj.key + (obj.label ? ': ' + obj.label : ''),
           key: 'sides_' + key + '_' + obj.key,
           icon: 'horizontal_rule',
           obj,
@@ -74,7 +74,7 @@ const allShape = computed(() => {
         icon: 'mdi-angle-acute',
         handler: onSelectTree,
         children: obj.angles.map((obj) => ({
-          label: obj.key + (obj.desc ? ': ' + obj.desc : ''),
+          label: obj.key + (obj.label ? ': ' + obj.label : ''),
           key: 'angles_' + key + '_' + obj.key,
           icon: 'mdi-angle-acute',
           obj,

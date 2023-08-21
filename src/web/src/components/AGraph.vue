@@ -28,6 +28,7 @@
       <a-text
         v-for="l in labels"
         :key="l.key"
+        :label="l.label"
         :sty="l.sty"
         :x="l.x"
         :y="l.y"
@@ -81,7 +82,7 @@ const labels = computed(() => {
   let l = [];
   Object.entries(props.graph.dots)
     .map(([key, obj]) => obj)
-    .filter((obj) => obj.style && obj.style.label)
+    .filter((obj) => obj.label)
     .forEach((dot) => {
       let x = 0,
         y = 0,
@@ -116,11 +117,11 @@ const labels = computed(() => {
       x = -x * margin + dot.x;
       y = -y * margin + dot.y;
 
-      l.push({ key: dot.key, x, y, sty: dot.style });
+      l.push({ key: dot.key, x, y, sty: dot.style, label: dot.label });
     });
 
   angles.value.forEach((angle) => {
-    angle.style.label = Math.round(radiansToDegrees(angle.radian)) + '°';
+    let label = Math.round(radiansToDegrees(angle.radian)) + '°';
     const r1 = angle.sides[0].radian(angle.vertex);
     const r2 = angle.sides[1].radian(angle.vertex);
     const r = angle.radian / 2;
@@ -143,7 +144,7 @@ const labels = computed(() => {
 
     const x = angle.vertex.x + Math.cos(labelAngle) * (angle.style.size + 20);
     const y = angle.vertex.y + Math.sin(labelAngle) * (angle.style.size + 20);
-    l.push({ key: angle.key, x, y, sty: angle.style });
+    l.push({ key: angle.key, x, y, sty: angle.style, label });
   });
   return l;
 });

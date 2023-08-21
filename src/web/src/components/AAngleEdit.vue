@@ -9,11 +9,11 @@
     <p class="text-p q-mb-lg q-mt-lg">angle in degree: {{ AngleSize }}</p>
     <q-slider v-model="AngleSize" :min="1" :max="179" label label-always />
     <p class="text-p q-mb-lg q-mt-lg">
-      dot: {{ angle.vertex.style.label || angle.vertex.key }}
+      dot: {{ angle.vertex.label || angle.vertex.key }}
     </p>
     <p class="text-p q-mb-lg q-mt-lg">
-      sides: {{ angle.sides[0].style.label || angle.sides[0].key }},
-      {{ angle.sides[1].style.label || angle.sides[1].key }}
+      sides: {{ angle.sides[0].label || angle.sides[0].key }},
+      {{ angle.sides[1].label || angle.sides[1].key }}
     </p>
 
     <div class="text-h6 text-cyan q-mt-lg">Style</div>

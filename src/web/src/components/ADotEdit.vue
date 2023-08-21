@@ -52,7 +52,7 @@ const y = computed({
   set: (val) => (dot.value.y = Number(val)),
 });
 
-const desc = computed(() => dot.value.desc);
+const desc = computed(() => dot.value.label);
 
 const visible = computed({
   get: () => dot.value.style.visible,
@@ -70,7 +70,7 @@ const size = computed({
 });
 
 const label = computed({
-  get: () => dot.value.style.label,
-  set: (val) => (dot.value.style.label = val),
+  get: () => dot.value.label,
+  set: (val) => (dot.value.label = val),
 });
 </script>

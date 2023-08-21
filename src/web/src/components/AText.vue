@@ -1,5 +1,5 @@
 <template>
-  <text :x="x" :y="y" :fill="sty.color">{{ sty.label }}</text>
+  <text :x="x" :y="y" :fill="sty.color">{{ label }}</text>
 </template>
 
 <script setup>
@@ -7,6 +7,7 @@ import { ref, computed, onMounted } from 'vue';
 import Style from 'src/model/Style';
 
 const props = defineProps({
+  label: String,
   sty: Style,
   x: Number,
   y: Number,
