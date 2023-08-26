@@ -5,12 +5,12 @@
         <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
 
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+          <q-avatar square>
+            <img src="agsv-icon.svg" />
           </q-avatar>
           AGSV
           <!-- new shape button group -->
-          <q-btn-group class="q-ml-sm">
+          <q-btn-group class="q-ml-lg">
             <q-btn
               color="secondary"
               icon="mdi-triangle-outline"
