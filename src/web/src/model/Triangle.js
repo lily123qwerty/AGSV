@@ -6,6 +6,8 @@ export default class Triangle extends Shape {
     this._vertices = vertices;
     this._edges = edges;
     this._angles = angles;
+    this.style.visible = false;
+    this.style.color = 'red';
   }
 
   get vertices() {
@@ -18,6 +20,14 @@ export default class Triangle extends Shape {
 
   get angles() {
     return this._angles;
+  }
+
+  get area() {
+    let a = this.edges[0].length;
+    let b = this.edges[1].length;
+    let c = this.edges[2].length;
+    let s = (a + b + c) / 2;
+    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
   }
 
   get label() {

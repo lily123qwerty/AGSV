@@ -16,7 +16,6 @@
 
     <q-toggle v-model="visible" color="secondary" label="visible" />
     <!-- choose to display label or length -->
-    <q-toggle v-model="labelType" color="secondary" label="visible" />
 
     <q-input v-model="color" label="color">
       <template v-slot:append>
@@ -53,11 +52,6 @@ const length = computed({
 const visible = computed({
   get: () => line.value.style.visible,
   set: (val) => (line.value.style.visible = val),
-});
-
-const labelType = computed({
-  get: () => line.value.style.visible,
-  set: (val) => (angle.value.style.visible = val),
 });
 
 const color = computed({

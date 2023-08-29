@@ -32,6 +32,7 @@
         :sty="l.sty"
         :x="l.x"
         :y="l.y"
+        :r="l.r"
       ></a-text>
     </svg>
   </div>
@@ -80,6 +81,7 @@ const angles = computed(() =>
 
 const labels = computed(() => {
   let l = [];
+  // dot label
   Object.entries(props.graph.dots)
     .map(([key, obj]) => obj)
     .filter((obj) => obj.label)
@@ -117,9 +119,10 @@ const labels = computed(() => {
       x = -x * margin + dot.x;
       y = -y * margin + dot.y;
 
-      l.push({ key: dot.key, x, y, sty: dot.style, label: dot.label });
+      l.push({ key: dot.key, x, y, sty: dot.style, label: dot.label, r: 0 });
     });
 
+  //angle label
   angles.value.forEach((angle) => {
     let label = Math.round(radiansToDegrees(angle.radian)) + '°';
     const r1 = angle.sides[0].radian(angle.vertex);
@@ -144,8 +147,36 @@ const labels = computed(() => {
 
     const x = angle.vertex.x + Math.cos(labelAngle) * (angle.style.size + 20);
     const y = angle.vertex.y + Math.sin(labelAngle) * (angle.style.size + 20);
-    l.push({ key: angle.key, x, y, sty: angle.style, label });
+    l.push({ key: angle.key, x, y, sty: angle.style, label, r: 0 });
   });
+
+  //line label
+  Object.entries(props.graph.lines)
+    .map(([key, obj]) => obj)
+    .filter((obj) => obj.style.visible)
+    .forEach((line) => {
+      let x = (line.ends[1].x + line.ends[0].x) / 2;
+      let y = (line.ends[1].y + line.ends[0].y) / 2;
+      let r = line.radian(line.ends[0]);
+      let margin = 10;
+
+      if (r > Math.PI) {
+        r = r - Math.PI;
+      }
+
+      x = x + margin * Math.cos(r - Math.PI / 2);
+      y = y + margin * Math.sin(r - Math.PI / 2);
+
+      let lineLabel = Math.round(line.length * 10) / 10;
+      l.push({
+        key: line.key,
+        x,
+        y,
+        sty: line.style,
+        label: lineLabel.toString(),
+        r: r,
+      });
+    });
   return l;
 });
 

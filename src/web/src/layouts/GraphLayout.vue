@@ -133,10 +133,19 @@
         :dot="selectedShape"
         @closeRightDrawer="toggleRightDrawer"
       />
-      <a-line-edit v-if="selectedShapeClass == 'Line'" />
+      <a-line-edit
+        v-if="selectedShapeClass == 'Line'"
+        :line="selectedShape"
+        @closeRightDrawer="toggleRightDrawer"
+      />
       <a-angle-edit
         v-if="selectedShapeClass == 'Angle'"
         :angle="selectedShape"
+        @closeRightDrawer="toggleRightDrawer"
+      />
+      <a-triangle-edit
+        v-if="selectedShapeClass == 'Triangle'"
+        :triangle="selectedShape"
         @closeRightDrawer="toggleRightDrawer"
       />
     </q-drawer>
@@ -157,6 +166,7 @@ import PopupAddTriangle from 'src/components/PopupAddTriangle.vue';
 import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
+import ATriangleEdit from 'src/components/ATriangleEdit.vue';
 
 const store = useGraphStore();
 

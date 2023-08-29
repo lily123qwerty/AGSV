@@ -17,7 +17,6 @@ const path = computed(() => {
   const y1 = props.angle.style.size * Math.sin(r1) + props.angle.vertex.y;
   const x2 = props.angle.style.size * Math.cos(r2) + props.angle.vertex.x;
   const y2 = props.angle.style.size * Math.sin(r2) + props.angle.vertex.y;
-  console.log(r1, r2);
 
   if (Math.abs(r1 - r2) > Math.PI) {
     if (r1 > r2) {

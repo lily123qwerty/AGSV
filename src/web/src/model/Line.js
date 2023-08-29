@@ -4,6 +4,7 @@ export default class Line extends Shape {
   constructor(dot1, dot2) {
     super('l');
     this._ends = [dot1, dot2];
+    this.style.visible = false;
   }
 
   get ends() {
