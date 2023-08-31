@@ -7,6 +7,7 @@ export default class Dot extends Shape {
     this._y = y || 0;
     this._label = null;
     this.style.visible = false;
+    this.style.size = 4;
   }
 
   get x() {

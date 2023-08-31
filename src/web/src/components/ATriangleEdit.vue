@@ -1,34 +1,35 @@
 <template>
-  <q-toolbar class="bg-cyan text-white">
-    <q-toolbar-title>Edit Triangle: {{ desc || triangle.key }}</q-toolbar-title>
-    <q-btn flat round dense icon="close" @click="emit('closeRightDrawer')" />
-  </q-toolbar>
+  <q-list padding>
+    <q-item-label header class="text-h6 text-primary"
+      >Edit Triangle: {{ desc || triangle.key }}</q-item-label
+    >
 
-  <div class="q-pa-md q-gutter-sm">
-    <div class="text-h6 text-cyan">Basic</div>
-    <p class="text-p q-mb-lg q-mt-lg">area: {{ area }}</p>
+    <q-item>
+      <q-item-section>
+        <q-input label="Area" :model-value="area" readonly />
+      </q-item-section>
+    </q-item>
 
-    <div class="text-h6 text-cyan q-mt-lg">Style</div>
+    <q-separator spaced color="white" />
 
-    <q-toggle v-model="visible" color="secondary" label="visible" />
+    <q-item>
+      <q-item-section>
+        <q-item-label>Draw Triangle</q-item-label>
+        <q-item-label caption>Fill triangle with color</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle v-model="visible" left-label color="primary" />
+      </q-item-section>
+    </q-item>
 
-    <q-input v-model="color" label="color">
-      <template v-slot:append>
-        <q-icon name="colorize" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-color v-model="color" />
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
-  </div>
+    <a-color-picker v-if="visible" v-model="color" />
+  </q-list>
 </template>
 
 <script setup>
 import Triangle from 'src/model/Triangle';
 import { ref, computed } from 'vue';
-
-const emit = defineEmits(['closeRightDrawer']);
+import AColorPicker from 'src/components/AColorPicker.vue';
 
 const props = defineProps({
   triangle: Triangle,

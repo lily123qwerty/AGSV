@@ -1,115 +1,73 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header class="bg-primary text-white" height-hint="98">
+    <q-header class="bg-primary text-white q-gutter-x-sm" height-hint="98">
       <q-toolbar>
         <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
 
         <q-toolbar-title>
+          &nbsp;
           <q-avatar square>
             <img src="agsv-icon.svg" />
           </q-avatar>
           AGSV
           <!-- new shape button group -->
-          <q-btn-group class="q-ml-lg">
+
+          <q-btn-group outline rounded class="first-btns">
             <q-btn
-              color="secondary"
+              outline
+              :size="btnSize"
               icon="mdi-triangle-outline"
               @click="popupAddTriangle"
-            />
+            >
+              <q-tooltip class="tooltip">Add a triangle</q-tooltip></q-btn
+            >
+            <q-btn outline :size="btnSize" icon="mdi-circle-outline"
+              ><q-tooltip class="tooltip">Add a cycle</q-tooltip></q-btn
+            >
+            <q-btn outline :size="btnSize" icon="mdi-square-outline"
+              ><q-tooltip class="tooltip">Add a parallelogram</q-tooltip></q-btn
+            >
+            <q-btn outline :size="btnSize" icon="svguse:myicons.svg#trapezium"
+              ><q-tooltip class="tooltip">Add a trapezium</q-tooltip></q-btn
+            >
             <q-btn
-              color="secondary"
-              icon="mdi-circle-outline"
-              @click="showAddCircle = true"
-            />
-            <q-btn
-              color="secondary"
-              icon="mdi-square-outline"
-              @click="showAddParallelogram = true"
-            />
-            <q-btn
-              color="secondary"
-              icon="svguse:myicons.svg#trapezium"
-              @click="showAddTrapezium = true"
-            />
-            <q-btn
-              color="secondary"
+              outline
+              :size="btnSize"
               icon="mdi-hexagon-outline"
-              @click="showAddPolygon = true"
-            />
+              @click="test"
+              ><q-tooltip class="tooltip"
+                >Add a regular polygon</q-tooltip
+              ></q-btn
+            >
           </q-btn-group>
 
-          <q-btn class="q-ml-sm" color="secondary" label="test" @click="test" />
+          <q-btn-group outline rounded class="q-ml-md">
+            <q-btn outline :size="btnSize" icon="undo"
+              ><q-tooltip class="tooltip">Undo</q-tooltip></q-btn
+            >
+            <q-btn outline :size="btnSize" icon="redo"
+              ><q-tooltip class="tooltip">Redo</q-tooltip></q-btn
+            >
+            <q-btn outline :size="btnSize" icon="save"
+              ><q-tooltip class="tooltip">Save and quit</q-tooltip></q-btn
+            >
+          </q-btn-group>
+
+          <!-- <q-btn class="q-ml-sm" color="secondary" label="test" @click="test" />
           <q-btn class="q-ml-sm" square color="secondary" icon="home" />
-          <q-btn class="q-ml-sm" square color="secondary" icon="save" />
+          <q-btn class="q-ml-sm" square color="secondary" icon="save" /> -->
 
           <!-- pop ups for creating new shape -->
-
-          <q-dialog v-model="showAddCircle">
-            <q-card style="width: 700px; max-width: 80vw">
-              <q-card-section>
-                <div class="text-h6">add circle</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Click/Tap on the backdrop.
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="OK" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-          <q-dialog v-model="showAddParallelogram">
-            <q-card style="width: 700px; max-width: 80vw">
-              <q-card-section>
-                <div class="text-h6">add parallelogram</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Click/Tap on the backdrop.
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="OK" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-          <q-dialog v-model="showAddTrapezium">
-            <q-card style="width: 700px; max-width: 80vw">
-              <q-card-section>
-                <div class="text-h6">add trapezium</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Click/Tap on the backdrop.
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="OK" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-          <q-dialog v-model="showAddPolygon">
-            <q-card style="width: 700px; max-width: 80vw">
-              <q-card-section>
-                <div class="text-h6">add regular polygon</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none">
-                Click/Tap on the backdrop.
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="OK" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
         </q-toolbar-title>
 
-        <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+        <q-btn
+          v-if="rightDrawerOpen"
+          dense
+          flat
+          round
+          icon="close"
+          @click="toggleRightDrawer"
+        />
       </q-toolbar>
 
       <!-- <q-tabs align="left">
@@ -128,25 +86,15 @@
 
     <q-drawer v-model="rightDrawerOpen" side="right" bordered>
       <!-- drawer content -->
-      <a-dot-edit
-        v-if="selectedShapeClass == 'Dot'"
-        :dot="selectedShape"
-        @closeRightDrawer="toggleRightDrawer"
-      />
-      <a-line-edit
-        v-if="selectedShapeClass == 'Line'"
-        :line="selectedShape"
-        @closeRightDrawer="toggleRightDrawer"
-      />
+      <a-dot-edit v-if="selectedShapeClass == 'Dot'" :dot="selectedShape" />
+      <a-line-edit v-if="selectedShapeClass == 'Line'" :line="selectedShape" />
       <a-angle-edit
         v-if="selectedShapeClass == 'Angle'"
         :angle="selectedShape"
-        @closeRightDrawer="toggleRightDrawer"
       />
       <a-triangle-edit
         v-if="selectedShapeClass == 'Triangle'"
         :triangle="selectedShape"
-        @closeRightDrawer="toggleRightDrawer"
       />
     </q-drawer>
 
@@ -170,6 +118,8 @@ import ATriangleEdit from 'src/components/ATriangleEdit.vue';
 
 const store = useGraphStore();
 
+const btnSize = ref('13px');
+
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
 
@@ -182,13 +132,6 @@ function toggleRightDrawer() {
 function test() {
   store.test();
 }
-
-//pop up control
-const showAddTriangle = ref(false);
-const showAddCircle = ref(false);
-const showAddParallelogram = ref(false);
-const showAddTrapezium = ref(false);
-const showAddPolygon = ref(false);
 
 //popups
 const $q = useQuasar();
@@ -219,3 +162,14 @@ function onSelectShape(obj) {
   rightDrawerOpen.value = true;
 }
 </script>
+
+<style lang="scss">
+.first-btns {
+  margin-left: 180px;
+}
+
+.tooltip {
+  font-size: 14px;
+  background-color: $accent;
+}
+</style>

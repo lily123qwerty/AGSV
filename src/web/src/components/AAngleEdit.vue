@@ -1,47 +1,78 @@
 <template>
-  <q-toolbar class="bg-cyan text-white">
-    <q-toolbar-title>Edit Angle: {{ angle.key }}</q-toolbar-title>
-    <q-btn flat round dense icon="close" @click="emit('closeRightDrawer')" />
-  </q-toolbar>
+  <q-list padding>
+    <q-item-label header class="text-h6 text-primary"
+      >Edit Angle: {{ angle.key }}</q-item-label
+    >
 
-  <div class="q-pa-md q-gutter-sm">
-    <div class="text-h6 text-cyan q-mt-lg">Basic</div>
-    <p class="text-p q-mb-lg q-mt-lg">angle in degree: {{ AngleSize }}</p>
-    <q-slider v-model="AngleSize" :min="1" :max="179" label label-always />
-    <p class="text-p q-mb-lg q-mt-lg">
-      dot: {{ angle.vertex.label || angle.vertex.key }}
-    </p>
-    <p class="text-p q-mb-lg q-mt-lg">
-      sides: {{ angle.sides[0].label || angle.sides[0].key }},
-      {{ angle.sides[1].label || angle.sides[1].key }}
-    </p>
+    <q-item>
+      <q-item-section>
+        <q-input label="Vertex" :model-value="vertex" readonly />
+      </q-item-section>
+    </q-item>
 
-    <div class="text-h6 text-cyan q-mt-lg">Style</div>
+    <q-item>
+      <q-item-section>
+        <q-input label="Sides" :model-value="sides" readonly />
+      </q-item-section>
+    </q-item>
 
-    <q-toggle v-model="visible" color="secondary" label="visible" />
+    <q-item
+      ><q-item-section
+        ><q-item-label>Degrees: {{ degrees }}°</q-item-label>
+      </q-item-section>
+    </q-item>
 
-    <q-input v-model="color" label="color">
-      <template v-slot:append>
-        <q-icon name="colorize" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-color v-model="color" />
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
+    <q-item>
+      <q-item-section>
+        <q-slider
+          v-model="degrees"
+          :min="1"
+          :max="179"
+          :label-value="degrees + '°'"
+          label
+          label-always
+        />
+      </q-item-section>
+    </q-item>
 
-    <p class="text-p q-mb-lg q-mt-lg">size</p>
+    <q-separator spaced color="white" />
 
-    <q-slider v-model="size" :min="10" :max="30" label label-always />
-  </div>
+    <q-item>
+      <q-item-section>
+        <q-item-label>Draw Angle</q-item-label>
+        <q-item-label caption>Show angle symbol and degrees</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle v-model="visible" left-label color="primary" />
+      </q-item-section>
+    </q-item>
+
+    <q-item v-if="visible"
+      ><q-item-section><q-item-label>Size</q-item-label> </q-item-section>
+    </q-item>
+
+    <q-item v-if="visible">
+      <q-item-section>
+        <q-slider
+          v-model="size"
+          :min="10"
+          :max="30"
+          label
+          label-always
+          markers
+        />
+      </q-item-section>
+    </q-item>
+
+    <a-color-picker v-if="visible" v-model="color" />
+  </q-list>
 </template>
 
 <script setup>
 import Angle from 'src/model/Angle';
 import { ref, computed } from 'vue';
 import { degreesToRadians, radiansToDegrees } from 'src/model/helper';
-
-const emit = defineEmits(['closeRightDrawer']);
+import AColorPicker from 'src/components/AColorPicker.vue';
 
 const props = defineProps({
   angle: Angle,
@@ -49,7 +80,18 @@ const props = defineProps({
 
 const angle = computed(() => props.angle);
 
-const AngleSize = computed({
+const vertex = computed(
+  () => angle.value.vertex.label || angle.value.vertex.key
+);
+
+const sides = computed(
+  () =>
+    (angle.value.sides[0].label || angle.value.sides[0].key) +
+    ', ' +
+    (angle.value.sides[1].label || angle.value.sides[1].key)
+);
+
+const degrees = computed({
   get: () => Math.round(radiansToDegrees(angle.value.radian)),
   set: (val) => (angle.value.radian = degreesToRadians(Number(val))),
 });

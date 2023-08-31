@@ -4,7 +4,7 @@
     :nodes="allShape"
     node-key="key"
     v-model:selected="selected"
-    selected-color="cyan"
+    selected-color="primary"
   />
 </template>
 

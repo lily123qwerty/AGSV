@@ -1,41 +1,65 @@
 <template>
-  <q-toolbar class="bg-cyan text-white">
-    <q-toolbar-title>Edit Dot: {{ desc || dot.key }}</q-toolbar-title>
-    <q-btn flat round dense icon="close" @click="emit('closeRightDrawer')" />
-  </q-toolbar>
+  <q-list padding>
+    <q-item-label header class="text-h6 text-primary"
+      >Edit Dot: {{ desc || dot.key }}</q-item-label
+    >
 
-  <div class="q-pa-md q-gutter-sm">
-    <div class="text-h6 text-cyan">Basic</div>
-    <q-input v-model="x" label="x" />
-    <q-input v-model="y" label="y" />
+    <q-item>
+      <q-item-section>
+        <q-input v-model="label" label="Name" />
+      </q-item-section>
+    </q-item>
 
-    <div class="text-h6 text-cyan q-mt-lg">Style</div>
+    <q-item>
+      <q-item-section>
+        <q-input v-model="x" label="X" type="number" />
+      </q-item-section>
+    </q-item>
 
-    <q-toggle v-model="visible" color="secondary" label="visible" />
+    <q-item>
+      <q-item-section>
+        <q-input v-model="y" label="Y" type="number" />
+      </q-item-section>
+    </q-item>
 
-    <q-input v-model="color" label="color">
-      <template v-slot:append>
-        <q-icon name="colorize" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-color v-model="color" />
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
+    <q-separator spaced color="white" />
 
-    <q-input v-model="label" label="label" />
+    <q-item>
+      <q-item-section>
+        <q-item-label>Draw Dot</q-item-label>
+        <q-item-label caption>Draw a filled cycle</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-toggle v-model="visible" left-label color="primary" />
+      </q-item-section>
+    </q-item>
 
-    <p class="text-p q-mb-lg q-mt-lg">size</p>
+    <q-item v-if="visible"
+      ><q-item-section><q-item-label>Radius</q-item-label> </q-item-section>
+    </q-item>
 
-    <q-slider v-model="size" :min="1" :max="10" label label-always />
-  </div>
+    <q-item v-if="visible">
+      <q-item-section>
+        <q-slider
+          v-model="size"
+          :min="2"
+          :max="6"
+          label
+          label-always
+          markers
+          marker-labels
+        />
+      </q-item-section>
+    </q-item>
+
+    <a-color-picker v-if="visible" v-model="color" />
+  </q-list>
 </template>
 
 <script setup>
 import Dot from 'src/model/Dot';
 import { ref, computed } from 'vue';
-
-const emit = defineEmits(['closeRightDrawer']);
+import AColorPicker from 'src/components/AColorPicker.vue';
 
 const props = defineProps({
   dot: Dot,

@@ -1,7 +1,5 @@
 <template>
-  <text :x="x" :y="y" :fill="sty.color" :transform="transform">{{
-    label
-  }}</text>
+  <text :x="x" :y="y" :class="cls" :transform="transform">{{ label }}</text>
 </template>
 
 <script setup>
@@ -11,7 +9,7 @@ import { radiansToDegrees } from 'src/model/helper';
 
 const props = defineProps({
   label: String,
-  sty: Style,
+  cls: String,
   x: Number,
   y: Number,
   r: Number,
@@ -29,7 +27,17 @@ onMounted(() => {});
 svg text {
   text-anchor: middle;
   dominant-baseline: middle;
-  font-size: 15px;
-  font-weight: 500;
+}
+
+.dot-label {
+  font: bold 18px sans-serif;
+}
+
+.angle-label {
+  font: normal 17px sans-serif;
+}
+
+.line-label {
+  font: italic 14px sans-serif;
 }
 </style>

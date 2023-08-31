@@ -19,17 +19,20 @@
         :key="t.key"
         :triangle="t"
       ></a-triangle>
+
       <a-dot v-for="dot in dots" :key="dot.key" :dot="dot"></a-dot>
+
       <a-angle
         v-for="angle in angles"
         :key="angle.key"
         :angle="angle"
       ></a-angle>
+
       <a-text
         v-for="l in labels"
         :key="l.key"
         :label="l.label"
-        :sty="l.sty"
+        :cls="l.cls"
         :x="l.x"
         :y="l.y"
         :r="l.r"
@@ -119,7 +122,7 @@ const labels = computed(() => {
       x = -x * margin + dot.x;
       y = -y * margin + dot.y;
 
-      l.push({ key: dot.key, x, y, sty: dot.style, label: dot.label, r: 0 });
+      l.push({ key: dot.key, x, y, cls: 'dot-label', label: dot.label, r: 0 });
     });
 
   //angle label
@@ -147,7 +150,7 @@ const labels = computed(() => {
 
     const x = angle.vertex.x + Math.cos(labelAngle) * (angle.style.size + 20);
     const y = angle.vertex.y + Math.sin(labelAngle) * (angle.style.size + 20);
-    l.push({ key: angle.key, x, y, sty: angle.style, label, r: 0 });
+    l.push({ key: angle.key, x, y, cls: 'angle-label', label, r: 0 });
   });
 
   //line label
@@ -172,7 +175,7 @@ const labels = computed(() => {
         key: line.key,
         x,
         y,
-        sty: line.style,
+        cls: 'line-label',
         label: lineLabel.toString(),
         r: r,
       });
