@@ -172,4 +172,12 @@ function onSelectShape(obj) {
   font-size: 14px;
   background-color: $accent;
 }
+
+.q-knob--editable:focus:before {
+  box-shadow: none !important;
+}
+
+body.body--dark .q-knob--editable:focus:before {
+  box-shadow: $dark-shadow-2;
+}
 </style>

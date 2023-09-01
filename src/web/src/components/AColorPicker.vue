@@ -12,7 +12,7 @@
         no-header
         no-footer
         default-view="palette"
-        class="my-picker"
+        class="my-picker no-shadow"
       />
     </q-item-section>
   </q-item>

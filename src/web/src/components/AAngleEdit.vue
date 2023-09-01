@@ -16,22 +16,39 @@
       </q-item-section>
     </q-item>
 
-    <q-item
+    <!-- <q-item
       ><q-item-section
         ><q-item-label>Degrees: {{ degrees }}°</q-item-label>
       </q-item-section>
-    </q-item>
+    </q-item> -->
 
     <q-item>
-      <q-item-section>
-        <q-slider
+      <q-item-section
+        ><q-item-label>{{ degrees }}°</q-item-label>
+        <q-item-label caption>degrees</q-item-label>
+      </q-item-section>
+      <q-item-section avatar>
+        <!-- <q-slider
           v-model="degrees"
           :min="1"
           :max="179"
           :label-value="degrees + '°'"
           label
           label-always
-        />
+        /> -->
+        <q-knob
+          :min="0"
+          :inner-min="1"
+          :max="360"
+          :inner-max="179"
+          v-model="degrees"
+          size="56px"
+          :thickness="1"
+          color="primary"
+          track-color="grey-3"
+          font-size="18px"
+          >{{ degrees }}°
+        </q-knob>
       </q-item-section>
     </q-item>
 
