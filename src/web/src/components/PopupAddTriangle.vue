@@ -1,71 +1,68 @@
 <template>
-    <q-dialog ref="dialogRef" @hide="onDialogHide">
-        <q-card class="q-dialog-plugin">
-            <!--
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-card class="q-dialog-plugin">
+      <!--
         ...content
         ... use q-card-section for it?
       -->
-            <q-card-section>
-                <div class="text-h6">add triangle</div>
-            </q-card-section>
+      <q-card-section>
+        <div class="text-h6">add triangle</div>
+      </q-card-section>
 
-            <q-card-section class="q-pt-none">
-                <div class="q-pa-md">
-                    <q-card>
-                        <q-tabs
-                            v-model="tab"
-                            dense
-                            class="text-grey"
-                            active-color="primary"
-                            indicator-color="primary"
-                            align="justify"
-                            narrow-indicator
-                        >
-                            <q-tab name="2Angle1Side" label="2 angle 1 side" />
-                            <q-tab name="alarms" label="Alarms" />
-                            <q-tab name="movies" label="Movies" />
-                        </q-tabs>
+      <q-card-section class="q-pt-none">
+        <div class="q-pa-md">
+          <q-card>
+            <q-tabs
+              v-model="tab"
+              dense
+              class="text-grey"
+              active-color="primary"
+              indicator-color="primary"
+              align="justify"
+              narrow-indicator
+            >
+              <q-tab name="2Angle1Side" label="2 angle 1 side" />
+              <q-tab name="alarms" label="Alarms" />
+              <q-tab name="movies" label="Movies" />
+            </q-tabs>
 
-                        <q-separator />
+            <q-separator />
 
-                        <q-tab-panels
-                            v-model="tab"
-                            animated
-                            transition-prev="jump-up"
-                            transition-next="jump-up"
-                        >
-                            <q-tab-panel name="2Angle1Side">
-                                <div
-                                    class="q-gutter-md"
-                                    style="max-width: 300px"
-                                >
-                                    <q-input
-                                        v-model="angle1"
-                                        label="angle 1"
-                                        :rules="[
-                                            (val) =>
-                                                (val > 0 && val < 180) ||
-                                                'angle must between 0 and 180 degree',
-                                        ]"
-                                    />
-                                    <q-input
-                                        v-model="angle2"
-                                        label="angle 2"
-                                        :rules="[
-                                            (val) =>
-                                                (val > 0 && val < 180) ||
-                                                'angle must between 0 and 180 degree',
-                                        ]"
-                                    />
-                                    <q-input
-                                        v-model="side1"
-                                        label="side 1"
-                                        :rules="[checkSide]"
-                                    />
-                                </div>
-                            </q-tab-panel>
+            <q-tab-panels
+              v-model="tab"
+              animated
+              transition-prev="jump-up"
+              transition-next="jump-up"
+            >
+              <q-tab-panel name="2Angle1Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[
+                      (val) =>
+                        (val > 0 && val < 180) ||
+                        'angle must between 0 and 180 degree',
+                    ]"
+                  />
+                  <q-input
+                    v-model="angle2"
+                    label="angle 2"
+                    :rules="[
+                      (val) =>
+                        (val > 0 && val < 180) ||
+                        'angle must between 0 and 180 degree',
+                    ]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
 
-                            <q-tab-panel name="alarms">
+              <!-- <q-tab-panel name="alarms">
                                 <div class="text-h6">Alarms</div>
                                 Lorem ipsum dolor sit amet consectetur
                                 adipisicing elit.
@@ -75,19 +72,19 @@
                                 <div class="text-h6">Movies</div>
                                 Lorem ipsum dolor sit amet consectetur
                                 adipisicing elit.
-                            </q-tab-panel>
-                        </q-tab-panels>
-                    </q-card>
-                </div>
-            </q-card-section>
+                            </q-tab-panel> -->
+            </q-tab-panels>
+          </q-card>
+        </div>
+      </q-card-section>
 
-            <!-- buttons example -->
-            <q-card-actions align="right">
-                <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-                <q-btn color="primary" label="OK" @click="onOKClick" />
-            </q-card-actions>
-        </q-card>
-    </q-dialog>
+      <!-- buttons example -->
+      <q-card-actions align="right">
+        <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
+        <q-btn color="primary" label="OK" @click="onOKClick" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -98,17 +95,17 @@ import { useGraphStore } from 'stores/graph';
 const store = useGraphStore();
 
 const props = defineProps({
-    // ...your custom props
+  // ...your custom props
 });
 
 defineEmits([
-    // REQUIRED; need to specify some events that your
-    // component will emit through useDialogPluginComponent()
-    ...useDialogPluginComponent.emits,
+  // REQUIRED; need to specify some events that your
+  // component will emit through useDialogPluginComponent()
+  ...useDialogPluginComponent.emits,
 ]);
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-    useDialogPluginComponent();
+  useDialogPluginComponent();
 // dialogRef      - Vue ref to be applied to QDialog
 // onDialogHide   - Function to be used as handler for @hide on QDialog
 // onDialogOK     - Function to call to settle dialog with "ok" outcome
@@ -118,36 +115,36 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 
 // this is part of our example (so not required)
 function onOKClick() {
-    let s1 = side1.value;
-    if (isNaN(s1)) {
-        s1 = store.graph.lines[s1];
-    } else {
-        s1 = parseInt(s1);
-    }
-    if (s1) {
-        store.addTriangleBy2Angle1Side(angle1.value, angle2.value, s1);
-        // let c = store.graph.center;
-        // store.graph.translate(
-        //     store.viewBox.width / 2 - c.x,
-        //     store.viewBox.height / 2 - c.y
-        // );
-    }
+  let s1 = side1.value;
+  if (isNaN(s1)) {
+    s1 = store.graph.lines[s1];
+  } else {
+    s1 = parseInt(s1);
+  }
+  if (s1) {
+    store.addTriangleBy2Angle1Side(angle1.value, angle2.value, s1);
+    // let c = store.graph.center;
+    // store.graph.translate(
+    //     store.viewBox.width / 2 - c.x,
+    //     store.viewBox.height / 2 - c.y
+    // );
+  }
 
-    onDialogOK();
+  onDialogOK();
 }
 
 function checkSide(val) {
-    if (isNaN(val)) {
-        if (store.graph.lines[val]) {
-            return true;
-        } else {
-            return 'invalid line key';
-        }
-    } else if (val <= 0) {
-        return 'invalid number';
+  if (isNaN(val)) {
+    if (store.graph.lines[val]) {
+      return true;
     } else {
-        return true;
+      return 'invalid line key';
     }
+  } else if (val <= 0) {
+    return 'invalid number';
+  } else {
+    return true;
+  }
 }
 
 const tab = ref('2Angle1Side');
