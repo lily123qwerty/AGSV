@@ -123,6 +123,7 @@ function onOKClick() {
   }
   if (s1) {
     store.addTriangleBy2Angle1Side(angle1.value, angle2.value, s1);
+    store.historyPush();
     // let c = store.graph.center;
     // store.graph.translate(
     //     store.viewBox.width / 2 - c.x,

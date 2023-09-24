@@ -38,10 +38,9 @@ export default class Style {
   }
 
   static fromJSON(json) {
-    let obj = new Style();
-    obj.visible = json.visible;
-    obj.size = json.size;
-    obj.color = json.color;
-    return obj;
+    if (json) {
+      let obj = new Style(json);
+      return obj;
+    }
   }
 }

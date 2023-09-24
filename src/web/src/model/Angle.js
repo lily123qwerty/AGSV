@@ -1,13 +1,16 @@
 import Shape from './Shape';
 import { rotate } from './helper';
+import Style from './Style';
 
 export default class Angle extends Shape {
-  constructor(dot, line1, line2) {
-    super('a');
+  constructor(dot, line1, line2, key, style) {
+    super('a', key, style);
     this._vertex = dot;
     this._sides = [line1, line2];
-    this.style.visible = false;
-    this.style.size = 15;
+    if (!style) {
+      this.style.visible = false;
+      this.style.size = 15;
+    }
   }
 
   get vertex() {
@@ -68,5 +71,16 @@ export default class Angle extends Shape {
     json.lk2 = this.sides[1].key;
 
     return json;
+  }
+
+  static fromJSON(json, dots, lines) {
+    let obj = new Angle(
+      dots[json.dk],
+      lines[json.lk1],
+      lines[json.lk2],
+      json.key,
+      Style.fromJSON(json.style)
+    );
+    return obj;
   }
 }

@@ -1,13 +1,16 @@
 import Shape from './Shape';
+import Style from './Style';
 
 export default class Triangle extends Shape {
-  constructor(vertices, edges, angles) {
-    super('t');
+  constructor(vertices, edges, angles, key, style) {
+    super('t', key, style);
     this._vertices = vertices;
     this._edges = edges;
     this._angles = angles;
-    this.style.visible = false;
-    this.style.color = 'red';
+    if (!style) {
+      this.style.visible = false;
+      this.style.color = 'red';
+    }
   }
 
   get vertices() {
@@ -50,5 +53,16 @@ export default class Triangle extends Shape {
     json.edges = this.edges.map((obj) => obj.key);
     json.angles = this.angles.map((obj) => obj.key);
     return json;
+  }
+
+  static fromJSON(json, dots, lines, angles) {
+    let obj = new Triangle(
+      json.vertices.map((key) => dots[key]),
+      json.edges.map((key) => lines[key]),
+      json.angles.map((key) => angles[key]),
+      json.key,
+      Style.fromJSON(json.style)
+    );
+    return obj;
   }
 }

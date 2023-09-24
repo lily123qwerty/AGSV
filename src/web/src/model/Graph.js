@@ -3,6 +3,7 @@ import Dot from './Dot';
 import Line from './Line';
 import Angle from './Angle';
 import Triangle from './Triangle';
+import Shape from './Shape';
 
 const x_min = 50;
 const y_min = 50;
@@ -74,10 +75,37 @@ export default class Graph {
       triangles: Object.entries(this.triangles).map(([key, obj]) =>
         obj.toJSON()
       ),
+      key_seq: Shape.key_seq,
     };
   }
 
-  static fromJSON(json) {}
+  static fromJSON(json) {
+    let g = new Graph();
+
+    json.dots.forEach((j) => {
+      let obj = Dot.fromJSON(j);
+      g.dots[obj.key] = obj;
+    });
+
+    json.lines.forEach((j) => {
+      let obj = Line.fromJSON(j, g.dots);
+      g.lines[obj.key] = obj;
+    });
+
+    json.angles.forEach((j) => {
+      let obj = Angle.fromJSON(j, g.dots, g.lines);
+      g.angles[obj.key] = obj;
+    });
+
+    json.triangles.forEach((j) => {
+      let obj = Triangle.fromJSON(j, g.dots, g.lines, g.angles);
+      g.triangles[obj.key] = obj;
+    });
+
+    Shape.key_seq = json.key_seq;
+
+    return g;
+  }
 
   addDot(x, y) {
     let dot = new Dot(x, y);

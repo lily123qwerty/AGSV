@@ -1,12 +1,20 @@
 import Style from './Style';
 export default class Shape {
-  constructor(prefix) {
-    this._key = Shape._makeKey(prefix);
-    this._style = new Style({});
+  constructor(prefix, key, style) {
+    this._key = key || Shape._makeKey(prefix);
+    this._style = style || new Style({});
   }
 
   static {
     this._key_seq = 0;
+  }
+
+  static get key_seq() {
+    return this._key_seq;
+  }
+
+  static set key_seq(val) {
+    this._key_seq = val;
   }
 
   static _makeKey(prefix) {
@@ -42,12 +50,5 @@ export default class Shape {
     return json;
   }
 
-  static fromJSON(json) {
-    // let obj = new Shape();
-    // obj.visible = json.visible;
-    // obj.size = json.size;
-    // obj.color = json.color;
-    // obj.label = json.label;
-    // return obj;
-  }
+  static fromJSON(json) {}
 }

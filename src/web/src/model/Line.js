@@ -1,10 +1,13 @@
 import Shape from './Shape';
+import Style from './Style';
 
 export default class Line extends Shape {
-  constructor(dot1, dot2) {
-    super('l');
+  constructor(dot1, dot2, key, style) {
+    super('l', key, style);
     this._ends = [dot1, dot2];
-    this.style.visible = false;
+    if (!style) {
+      this.style.visible = false;
+    }
   }
 
   get ends() {
@@ -72,5 +75,15 @@ export default class Line extends Shape {
     json.dk1 = this.ends[0].key;
     json.dk2 = this.ends[1].key;
     return json;
+  }
+
+  static fromJSON(json, dots) {
+    let obj = new Line(
+      dots[json.dk1],
+      dots[json.dk2],
+      json.key,
+      Style.fromJSON(json.style)
+    );
+    return obj;
   }
 }

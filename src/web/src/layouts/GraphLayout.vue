@@ -42,10 +42,10 @@
           </q-btn-group>
 
           <q-btn-group outline rounded class="q-ml-md">
-            <q-btn outline :size="btnSize" icon="undo"
+            <q-btn outline :size="btnSize" icon="undo" @click="undo"
               ><q-tooltip class="tooltip">Undo</q-tooltip></q-btn
             >
-            <q-btn outline :size="btnSize" icon="redo"
+            <q-btn outline :size="btnSize" icon="redo" @click="redo"
               ><q-tooltip class="tooltip">Redo</q-tooltip></q-btn
             >
             <q-btn outline :size="btnSize" icon="save"
@@ -129,8 +129,13 @@ function toggleLeftDrawer() {
 function toggleRightDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
 }
-function test() {
-  store.test();
+
+function undo() {
+  store.historyUndo();
+}
+
+function redo() {
+  store.historyRedo();
 }
 
 //popups
