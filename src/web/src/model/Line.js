@@ -3,7 +3,7 @@ import Style from './Style';
 
 export default class Line extends Shape {
   constructor(dot1, dot2, key, style) {
-    super('l', key, style);
+    super(key, style);
     this._ends = [dot1, dot2];
     if (!style) {
       this.style.visible = false;

@@ -3,7 +3,7 @@ import Style from './Style';
 
 export default class Triangle extends Shape {
   constructor(vertices, edges, angles, key, style) {
-    super('t', key, style);
+    super(key, style);
     this._vertices = vertices;
     this._edges = edges;
     this._angles = angles;

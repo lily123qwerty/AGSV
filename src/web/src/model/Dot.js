@@ -3,7 +3,7 @@ import Style from './Style';
 
 export default class Dot extends Shape {
   constructor(x, y, key, style) {
-    super('d', key, style);
+    super(key, style);
     this._x = x || 0;
     this._y = y || 0;
     this._label = null;

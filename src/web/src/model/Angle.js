@@ -4,7 +4,7 @@ import Style from './Style';
 
 export default class Angle extends Shape {
   constructor(dot, line1, line2, key, style) {
-    super('a', key, style);
+    super(key, style);
     this._vertex = dot;
     this._sides = [line1, line2];
     if (!style) {

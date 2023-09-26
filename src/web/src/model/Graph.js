@@ -11,10 +11,16 @@ const default_side = 100;
 
 export default class Graph {
   constructor() {
+    this._key_seq = 0;
     this._dots = {};
     this._lines = {};
     this._angles = {};
     this._triangles = {};
+  }
+
+  _makeKey(prefix) {
+    prefix = prefix || 'k';
+    return prefix + this._key_seq++;
   }
 
   get dots() {
@@ -75,7 +81,7 @@ export default class Graph {
       triangles: Object.entries(this.triangles).map(([key, obj]) =>
         obj.toJSON()
       ),
-      key_seq: Shape.key_seq,
+      key_seq: this._key_seq,
     };
   }
 
@@ -102,13 +108,13 @@ export default class Graph {
       g.triangles[obj.key] = obj;
     });
 
-    Shape.key_seq = json.key_seq;
+    g._key_seq = json.key_seq;
 
     return g;
   }
 
   addDot(x, y) {
-    let dot = new Dot(x, y);
+    let dot = new Dot(x, y, this._makeKey('d'));
     this.dots[dot.key] = dot;
     return dot;
   }
@@ -124,7 +130,7 @@ export default class Graph {
       }
     }
 
-    let line = new Line(dot1, dot2);
+    let line = new Line(dot1, dot2, this._makeKey('l'));
     this.lines[line.key] = line;
     return line;
   }
@@ -139,7 +145,7 @@ export default class Graph {
     //     return 'error';
     // }
 
-    let angle = new Angle(dot, line1, line2);
+    let angle = new Angle(dot, line1, line2, this._makeKey('a'));
     this.angles[angle.key] = angle;
     return angle;
   }
@@ -155,7 +161,8 @@ export default class Graph {
     let triangle = new Triangle(
       [dot1, dot2, dot3],
       [line1, line2, line3],
-      [angle1, angle2, angle3]
+      [angle1, angle2, angle3],
+      this._makeKey('t')
     );
     this.triangles[triangle.key] = triangle;
     return triangle;
