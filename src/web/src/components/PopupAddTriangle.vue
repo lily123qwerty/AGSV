@@ -39,11 +39,7 @@
                   <q-input
                     v-model="angle1"
                     label="angle 1"
-                    :rules="[
-                      (val) =>
-                        (val > 0 && val < 180) ||
-                        'angle must between 0 and 180 degree',
-                    ]"
+                    :rules="[checkAngle]"
                   />
                   <q-input
                     v-model="angle2"
@@ -116,13 +112,21 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 // this is part of our example (so not required)
 function onOKClick() {
   let s1 = side1.value;
+  let a1 = angle1.value;
+  //TODO: check a1, make sure only a1 can input key
   if (isNaN(s1)) {
     s1 = store.graph.lines[s1];
   } else {
     s1 = parseInt(s1);
   }
+
+  if (isNaN(a1)) {
+    a1 = store.graph.angles[a1];
+  } else {
+    a1 = parseInt(a1);
+  }
   if (s1) {
-    store.addTriangleBy2Angle1Side(angle1.value, angle2.value, s1);
+    store.addTriangleBy2Angle1Side(a1, angle2.value, s1);
     store.historyPush();
     // let c = store.graph.center;
     // store.graph.translate(
@@ -142,6 +146,20 @@ function checkSide(val) {
       return 'invalid line key';
     }
   } else if (val <= 0) {
+    return 'invalid number';
+  } else {
+    return true;
+  }
+}
+
+function checkAngle(val) {
+  if (isNaN(val)) {
+    if (store.graph.angles[val]) {
+      return true;
+    } else {
+      return 'invalid line key';
+    }
+  } else if (val < 0 || val > 180) {
     return 'invalid number';
   } else {
     return true;

@@ -144,7 +144,7 @@ export default class Graph {
     // ) {
     //     return 'error';
     // }
-
+    //TODO: share angle
     let angle = new Angle(dot, line1, line2, this._makeKey('a'));
     this.angles[angle.key] = angle;
     return angle;
@@ -182,11 +182,27 @@ export default class Graph {
 
     if (typeof angle1 == 'object') {
       let angle = angle1;
-      let dot1 = angle.vertex;
+      dot1 = angle.vertex;
       x1 = dot1.x;
-      x2 = dot1.y;
-
-      angle1 = angle.radian;
+      y1 = dot1.y;
+      let as1 = angle.sides[0].radian(dot1);
+      let as2 = angle.sides[1].radian(dot1);
+      let line;
+      if (as1 > as2 && as1 - as2 > Math.PI) {
+        line = angle.sides[0];
+      } else if (as1 > as2 && as1 - as2 < Math.PI) {
+        line = angle.sides[1];
+        direction = direction * -1;
+      } else if (as1 < as2 && as2 - as1 > Math.PI) {
+        line = angle.sides[1];
+      } else {
+        line = angle.sides[0];
+        direction = direction * -1;
+      }
+      x2 = line.length * Math.cos(line.radian(dot1)) + x1;
+      y2 = line.length * Math.sin(line.radian(dot1)) + y1;
+      dot2 = this.addDot(x2, y2);
+      angle1 = radiansToDegrees(angle.radian);
     }
 
     angle1 = degreesToRadians(angle1);

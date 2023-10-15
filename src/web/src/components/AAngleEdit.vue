@@ -90,6 +90,7 @@ import Angle from 'src/model/Angle';
 import { ref, computed } from 'vue';
 import { degreesToRadians, radiansToDegrees } from 'src/model/helper';
 import AColorPicker from 'src/components/AColorPicker.vue';
+import stores from 'src/stores';
 
 const props = defineProps({
   angle: Angle,

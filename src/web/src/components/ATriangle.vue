@@ -3,6 +3,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Triangle from 'src/model/Triangle';
+import { store } from 'quasar/wrappers';
 
 const props = defineProps({
   triangle: Triangle,

@@ -59,7 +59,7 @@
 
           <!-- pop ups for creating new shape -->
         </q-toolbar-title>
-
+        <q-btn dense flat round icon="home" to="/user/login" />
         <q-btn
           v-if="rightDrawerOpen"
           dense
@@ -132,10 +132,12 @@ function toggleRightDrawer() {
 
 function undo() {
   store.historyUndo();
+  rightDrawerOpen.value = false;
 }
 
 function redo() {
   store.historyRedo();
+  rightDrawerOpen.value = false;
 }
 
 //popups
