@@ -1,14 +1,16 @@
 const routes = [
   {
     path: '/user',
-    component: () => import('layouts/BlankLayout.vue'),
+    component: () => import('layouts/AuthLayout.vue'),
     children: [
       {
         path: 'register',
+        meta: { authRequired: false },
         component: () => import('pages/RegisterPage.vue'),
       },
       {
         path: 'login',
+        meta: { authRequired: false },
         component: () => import('pages/LoginPage.vue'),
       },
     ],

@@ -1,11 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// https://github.com/steveclarke/quasar-firebase-example/
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+// import 'firebase/firestore'; // eslint-disable-line
+
 const firebaseConfig = {
   apiKey: 'AIzaSyBPZmWzY5be8-XUiZlJwcZLFXnJXYV0Mqo',
   authDomain: 'agsv-f154d.firebaseapp.com',
@@ -16,6 +14,41 @@ const firebaseConfig = {
   measurementId: 'G-X91LWFRSXK',
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export default ({ app, router, store }) => {
+  // Initialize Firebase from settings
+  initializeApp(firebaseConfig);
+
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    console.log('onAuthStateChanged : user is ', user);
+    if (user) {
+      // // Signed in. Let Vuex know.
+      // store.commit('auth/SET_USER', user);
+      // // The .catch ignore error if .replace is redirecting to dashboard and we
+      // // are already at that route.
+      // // https://github.com/vuejs/vue-router/issues/2881#issuecomment-520554378
+      // router.replace({ name: 'dashboard' }).catch(() => {});
+      // new Vue(app); /* eslint-disable-line no-new */
+    } else {
+      // // Signed out. Let Vuex know.
+      // store.commit('auth/RESET_USER');
+      // router.replace({ name: 'signIn' }).catch(() => {});
+      // new Vue(app); /* eslint-disable-line no-new */
+    }
+  });
+
+  router.beforeEach((to, from, next) => {
+    // Check to see if the route has the meta field "authRequired" set to true
+    const authRequired = to.matched.some((route) => route.meta.authRequired);
+
+    if (authRequired && !auth.currentUser) {
+      next({
+        path: '/user/login',
+      });
+    } else {
+      // Doesn't require authentication or has user. Just continue on.
+      next();
+    }
+  });
+};

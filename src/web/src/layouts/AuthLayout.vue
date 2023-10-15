@@ -27,7 +27,7 @@
 
 .bg-auth {
   background-color: #f0f4f3;
-  background-image: url('src/assets/bg-auth.png');
+  /* background-image: url('src/assets/bg-auth.png'); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
