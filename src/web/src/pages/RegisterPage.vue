@@ -63,14 +63,21 @@
                   ]"
                 />
                 <q-input
+                  ref="emailInput"
                   v-model="email"
                   label="Email"
                   name="Email"
                   :readonly="waiting"
                   lazy-rules
                   :rules="[
-                    (val) =>
-                      validateEmail(val) || 'Please use valid email address',
+                    (val) => {
+                      if (!validateEmail(val))
+                        return 'Please use valid email address';
+
+                      if (emailHasError && emailErrorMessage) {
+                        return emailErrorMessage;
+                      }
+                    },
                   ]"
                 />
                 <q-input
@@ -133,6 +140,10 @@ const waiting = ref(false);
 
 const form = ref(null);
 
+const emailInput = ref(null);
+const emailHasError = ref(false);
+const emailErrorMessage = ref('');
+
 const submit = async () => {
   if (form.value.validate()) {
     waiting.value = true;
@@ -142,9 +153,16 @@ const submit = async () => {
       password.value,
       (errorCode, errorMessage) => {
         waiting.value = false;
-        console.log(errorCode);
-        if ((errorCode = 'auth/email-already-in-use')) {
-          console.log('!!!');
+        // console.log(errorCode);
+        if (errorCode == 'auth/email-already-in-use') {
+          emailHasError.value = true;
+          emailErrorMessage.value = 'Email already in use';
+
+          emailInput.value.validate();
+          emailInput.value.focus();
+
+          emailHasError.value = false;
+          emailErrorMessage.value = '';
         }
       }
     );
