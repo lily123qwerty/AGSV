@@ -51,21 +51,40 @@
 
               <q-form ref="form" class="q-gutter-md" @submit="submit">
                 <q-input
-                  v-model="user.first_name"
-                  label="First Name"
-                  name="First Name"
+                  v-model="name"
+                  label="Name"
+                  name="Name"
+                  :readonly="waiting"
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      (val && val.length >= 3) ||
+                      'Please use minimum 3 characters',
+                  ]"
                 />
                 <q-input
-                  v-model="user.last_name"
-                  label="Last Name"
-                  name="Last Name"
+                  v-model="email"
+                  label="Email"
+                  name="Email"
+                  :readonly="waiting"
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      validateEmail(val) || 'Please use valid email address',
+                  ]"
                 />
-                <q-input v-model="user.email" label="Email" name="Email" />
                 <q-input
-                  v-model="user.password"
+                  v-model="password"
                   label="Password"
                   name="password"
                   type="password"
+                  :readonly="waiting"
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      (val && val.length >= 6) ||
+                      'Please use minimum 6 characters',
+                  ]"
                 />
 
                 <div>
@@ -75,12 +94,17 @@
                     label="Register"
                     rounded
                     type="submit"
-                  ></q-btn>
+                    :loading="waiting"
+                  >
+                  </q-btn>
 
                   <div class="q-mt-lg">
                     <div class="q-mt-sm">
                       Already have an account?
-                      <router-link class="text-primary" to="/user/login"
+                      <router-link
+                        v-if="!waiting"
+                        class="text-primary"
+                        to="/user/login"
                         >Login</router-link
                       >
                     </div>
@@ -96,19 +120,34 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { validateEmail } from '../model/helper';
+import { useUserStore } from 'stores/user';
 
-const user = reactive({
-  last_name: null,
-  first_name: null,
-  email: null,
-  password: null,
-});
+const store = useUserStore();
+
+const name = ref(null);
+const email = ref(null);
+const password = ref(null);
+const waiting = ref(false);
 
 const form = ref(null);
 
 const submit = async () => {
   if (form.value.validate()) {
+    waiting.value = true;
+    store.register(
+      name.value,
+      email.value,
+      password.value,
+      (errorCode, errorMessage) => {
+        waiting.value = false;
+        console.log(errorCode);
+        if ((errorCode = 'auth/email-already-in-use')) {
+          console.log('!!!');
+        }
+      }
+    );
   }
 };
 </script>
