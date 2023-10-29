@@ -2,6 +2,8 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useUserStore } from '../stores/user';
+
 // import 'firebase/firestore'; // eslint-disable-line
 
 const firebaseConfig = {
@@ -14,27 +16,21 @@ const firebaseConfig = {
   measurementId: 'G-X91LWFRSXK',
 };
 
+const userStore = useUserStore();
+
 export default ({ app, router, store }) => {
   // Initialize Firebase from settings
   initializeApp(firebaseConfig);
 
   const auth = getAuth();
-
   onAuthStateChanged(auth, (user) => {
     console.log('onAuthStateChanged : user is ', user);
+    userStore.user = user;
+
     if (user) {
-      // // Signed in. Let Vuex know.
-      // store.commit('auth/SET_USER', user);
-      // // The .catch ignore error if .replace is redirecting to dashboard and we
-      // // are already at that route.
-      // // https://github.com/vuejs/vue-router/issues/2881#issuecomment-520554378
-      // router.replace({ name: 'dashboard' }).catch(() => {});
-      // new Vue(app); /* eslint-disable-line no-new */
+      userStore.getMyGraphs();
     } else {
-      // // Signed out. Let Vuex know.
-      // store.commit('auth/RESET_USER');
-      // router.replace({ name: 'signIn' }).catch(() => {});
-      // new Vue(app); /* eslint-disable-line no-new */
+      userStore.graphs = [];
     }
   });
 

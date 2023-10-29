@@ -48,7 +48,12 @@
             <q-btn outline :size="btnSize" icon="redo" @click="redo"
               ><q-tooltip class="tooltip">Redo</q-tooltip></q-btn
             >
-            <q-btn outline :size="btnSize" icon="save"
+            <q-btn
+              v-if="userStore.user"
+              outline
+              :size="btnSize"
+              icon="save"
+              @click="save"
               ><q-tooltip class="tooltip">Save and quit</q-tooltip></q-btn
             >
           </q-btn-group>
@@ -59,7 +64,20 @@
 
           <!-- pop ups for creating new shape -->
         </q-toolbar-title>
-        <q-btn dense flat round icon="home" to="/user/login" />
+        <q-btn
+          v-if="!userStore.user"
+          outline
+          style="color: white"
+          label="Login"
+          to="/user/login"
+        />
+        <q-btn
+          v-if="userStore.user"
+          outline
+          style="color: white"
+          label="Logout"
+          @click="userStore.logout"
+        />
         <q-btn
           v-if="rightDrawerOpen"
           dense
@@ -115,8 +133,10 @@ import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
 import ATriangleEdit from 'src/components/ATriangleEdit.vue';
+import { useUserStore } from '../stores/user';
 
 const store = useGraphStore();
+const userStore = useUserStore();
 
 const btnSize = ref('13px');
 
@@ -138,6 +158,10 @@ function undo() {
 function redo() {
   store.historyRedo();
   rightDrawerOpen.value = false;
+}
+
+function save() {
+  userStore.save(store.graph);
 }
 
 //popups

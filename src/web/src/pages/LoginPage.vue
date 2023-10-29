@@ -50,13 +50,39 @@
               </div>
 
               <q-form ref="form" class="q-gutter-md" @submit="submit">
-                <q-input v-model="user.email" label="Email" name="Email" />
+                <q-input
+                  ref="emailInput"
+                  v-model="email"
+                  label="Email"
+                  name="Email"
+                  :readonly="waiting"
+                  lazy-rules
+                  :rules="[
+                    (val) => {
+                      if (!validateEmail(val))
+                        return 'Please use valid email address';
+
+                      return emailError;
+                    },
+                  ]"
+                />
 
                 <q-input
-                  v-model="user.password"
+                  ref="passwordInput"
+                  v-model="password"
                   label="Password"
                   name="password"
                   type="password"
+                  :readonly="waiting"
+                  lazy-rules
+                  :rules="[
+                    (val) => {
+                      if (!val || val.length < 6)
+                        return 'Please use minimum 6 characters';
+
+                      return passwordError;
+                    },
+                  ]"
                 />
 
                 <div>
@@ -66,12 +92,16 @@
                     label="Login"
                     rounded
                     type="submit"
+                    :loading="waiting"
                   ></q-btn>
 
                   <div class="q-mt-lg">
                     <div class="q-mt-sm">
                       Don't have an account yet?
-                      <router-link class="text-primary" to="/user/register"
+                      <router-link
+                        v-if="!waiting"
+                        class="text-primary"
+                        to="/user/register"
                         >Register</router-link
                       >
                     </div>
@@ -87,17 +117,47 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { validateEmail } from '../model/helper';
+import { useUserStore } from 'stores/user';
+import { useRouter } from 'vue-router';
 
-const user = reactive({
-  email: null,
-  password: null,
-});
+const router = useRouter();
+
+const store = useUserStore();
+
+const email = ref(null);
+const password = ref(null);
+const waiting = ref(false);
 
 const form = ref(null);
 
+const emailInput = ref(null);
+const emailError = ref(null);
+const passwordInput = ref(null);
+const passwordError = ref(null);
+
 const submit = async () => {
   if (form.value.validate()) {
+    waiting.value = true;
+    store.login(email.value, password.value, (errorCode, errorMessage) => {
+      waiting.value = false;
+      console.log(errorCode);
+      if (!errorCode) {
+        router.push('/');
+      } else if (errorCode == 'auth/invalid-login-credentials') {
+        emailError.value = 'Email may be wrong';
+        passwordError.value = 'Password may be wrong';
+
+        emailInput.value.validate();
+        passwordInput.value.validate();
+
+        emailInput.value.focus();
+
+        emailError.value = null;
+        passwordError.value = null;
+      }
+    });
   }
 };
 </script>

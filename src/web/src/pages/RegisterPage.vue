@@ -74,9 +74,7 @@
                       if (!validateEmail(val))
                         return 'Please use valid email address';
 
-                      if (emailHasError && emailErrorMessage) {
-                        return emailErrorMessage;
-                      }
+                      return emailError;
                     },
                   ]"
                 />
@@ -130,6 +128,9 @@
 import { ref } from 'vue';
 import { validateEmail } from '../model/helper';
 import { useUserStore } from 'stores/user';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const store = useUserStore();
 
@@ -141,8 +142,7 @@ const waiting = ref(false);
 const form = ref(null);
 
 const emailInput = ref(null);
-const emailHasError = ref(false);
-const emailErrorMessage = ref('');
+const emailError = ref(null);
 
 const submit = async () => {
   if (form.value.validate()) {
@@ -154,15 +154,15 @@ const submit = async () => {
       (errorCode, errorMessage) => {
         waiting.value = false;
         // console.log(errorCode);
-        if (errorCode == 'auth/email-already-in-use') {
-          emailHasError.value = true;
-          emailErrorMessage.value = 'Email already in use';
+        if (!errorCode) {
+          router.push('/');
+        } else if (errorCode == 'auth/email-already-in-use') {
+          emailError.value = 'Email already in use';
 
           emailInput.value.validate();
           emailInput.value.focus();
 
-          emailHasError.value = false;
-          emailErrorMessage.value = '';
+          emailError.value = null;
         }
       }
     );

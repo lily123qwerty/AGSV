@@ -16,11 +16,29 @@ export default class Graph {
     this._lines = {};
     this._angles = {};
     this._triangles = {};
+    this._id = null;
+    this._uid = null;
   }
 
   _makeKey(prefix) {
     prefix = prefix || 'k';
     return prefix + this._key_seq++;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(val) {
+    this._id = val;
+  }
+
+  get uid() {
+    return this._uid;
+  }
+
+  set uid(val) {
+    this._uid = val;
   }
 
   get dots() {
@@ -82,6 +100,7 @@ export default class Graph {
         obj.toJSON()
       ),
       key_seq: this._key_seq,
+      uid: this._uid,
     };
   }
 
