@@ -10,8 +10,8 @@
         ' ' +
         (bounds.bottom - bounds.top)
       "
-      :width="bounds.right - bounds.left"
-      :height="bounds.bottom - bounds.top"
+      :width="width"
+      :height="height"
       xmlns="http://www.w3.org/2000/svg"
     >
       <a-triangle
@@ -52,6 +52,7 @@ import { radiansToDegrees } from 'src/model/helper';
 
 const props = defineProps({
   graph: Graph,
+  trumbnail: Boolean,
 });
 
 const bounds = computed(() => {
@@ -64,6 +65,20 @@ const bounds = computed(() => {
   b.right = b.right == Number.MIN_VALUE ? 0 : b.right + margin;
 
   return b;
+});
+
+const width = computed(() => {
+  if (props.trumbnail) {
+    return '200px';
+  }
+  return bounds.value.right - bounds.value.left;
+});
+
+const height = computed(() => {
+  if (props.trumbnail) {
+    return '200px';
+  }
+  return bounds.value.bottom - bounds.value.top;
 });
 
 const triangles = computed(() =>

@@ -22,6 +22,12 @@ const routes = [
     children: [{ path: '', component: () => import('pages/GraphPage.vue') }],
   },
 
+  {
+    path: '/home',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [{ path: '', component: () => import('pages/HomePage.vue') }],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

@@ -6,10 +6,17 @@ import {
   signOut,
 } from 'firebase/auth';
 import Graph from 'src/model/Graph';
-import { doc, setDoc } from 'firebase/firestore';
-import { collection, addDoc } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
-import { query, where, getDocs } from 'firebase/firestore';
+import {
+  doc,
+  setDoc,
+  deleteDoc,
+  collection,
+  addDoc,
+  getFirestore,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -79,6 +86,19 @@ export const useUserStore = defineStore('user', {
         graph.id = docRef.id;
       }
     },
+
+    async delete(graph) {
+      console.log(this.user, graph.id, graph.uid);
+      if (this.user == null || graph.id == null || graph.uid != this.user.uid)
+        throw new Error('cannot delete');
+
+      const db = getFirestore();
+
+      await deleteDoc(doc(db, 'graphs', graph.id));
+
+      this.graphs = this.graphs.filter((g) => g.id != graph.id);
+    },
+
     async getMyGraphs() {
       if (this.user == null) return;
       const db = getFirestore();

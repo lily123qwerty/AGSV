@@ -127,6 +127,8 @@ export default class Graph {
       g.triangles[obj.key] = obj;
     });
 
+    g._uid = json.uid;
+
     g._key_seq = json.key_seq;
 
     return g;

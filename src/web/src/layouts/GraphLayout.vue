@@ -49,7 +49,7 @@
               ><q-tooltip class="tooltip">Redo</q-tooltip></q-btn
             >
             <q-btn
-              v-if="userStore.user"
+              v-if="userStore.user && !isSaving"
               outline
               :size="btnSize"
               icon="save"
@@ -143,6 +143,8 @@ const btnSize = ref('13px');
 const leftDrawerOpen = ref(true);
 const rightDrawerOpen = ref(false);
 
+const isSaving = ref(false);
+
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
@@ -160,8 +162,14 @@ function redo() {
   rightDrawerOpen.value = false;
 }
 
-function save() {
-  userStore.save(store.graph);
+async function save() {
+  try {
+    isSaving.value = true;
+    await userStore.save(store.graph);
+    isSaving.value = false;
+  } catch (e) {
+    isSaving.value = false;
+  }
 }
 
 //popups

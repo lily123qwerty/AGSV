@@ -1,8 +1,9 @@
 import Graph from './Graph';
 
 export default class History {
-  constructor() {
-    this._history = [new Graph().toJSON()];
+  constructor(graph) {
+    graph = graph || new Graph();
+    this._history = [graph.toJSON()];
     this._index = 0;
   }
 
