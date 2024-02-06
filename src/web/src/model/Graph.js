@@ -18,6 +18,7 @@ export default class Graph {
     this._triangles = {};
     this._id = null;
     this._uid = null;
+    this._question = '';
   }
 
   _makeKey(prefix) {
@@ -55,6 +56,14 @@ export default class Graph {
 
   get triangles() {
     return this._triangles;
+  }
+
+  get question() {
+    return this._question;
+  }
+
+  set question(val) {
+    this._question = val;
   }
 
   get bounds() {
@@ -101,6 +110,7 @@ export default class Graph {
       ),
       key_seq: this._key_seq,
       uid: this._uid,
+      question: this._question,
     };
   }
 
@@ -131,6 +141,8 @@ export default class Graph {
 
     g._key_seq = json.key_seq;
 
+    g._question = json.question;
+
     return g;
   }
 
@@ -140,15 +152,9 @@ export default class Graph {
     return dot;
   }
 
-  addLine(dot1, dot2) {
-    for (let key in this.lines) {
-      let line = this.lines[key];
-      if (
-        (line.ends[0] == dot1 && line.ends[1] == dot2) ||
-        (line.ends[0] == dot2 && line.ends[1] == dot1)
-      ) {
-        return line;
-      }
+  addLine(shareLine, dot1, dot2) {
+    if (shareLine && typeof shareLine == 'object') {
+      return shareLine;
     }
 
     let line = new Line(dot1, dot2, this._makeKey('l'));
@@ -156,7 +162,7 @@ export default class Graph {
     return line;
   }
 
-  addAngle(dot, line1, line2) {
+  addAngle(shareAngle, dot, line1, line2) {
     //TODO: check dk in lk1, lk2.
 
     // if (
@@ -166,18 +172,27 @@ export default class Graph {
     //     return 'error';
     // }
     //TODO: share angle
-    let angle = new Angle(dot, line1, line2, this._makeKey('a'));
-    this.angles[angle.key] = angle;
-    return angle;
+    if (shareAngle && typeof shareAngle == 'object') {
+      shareAngle.addAngle(line1, line2);
+      return shareAngle;
+    }
+    let angle2 = new Angle(dot, line1, line2, this._makeKey('a'));
+    this.angles[angle2.key] = angle2;
+    return angle2;
   }
 
-  addTriangleBy3Dot(dot1, dot2, dot3) {
-    let line1 = this.addLine(dot1, dot2);
-    let line2 = this.addLine(dot1, dot3);
-    let line3 = this.addLine(dot2, dot3);
-    let angle1 = this.addAngle(dot1, line1, line2);
-    let angle2 = this.addAngle(dot2, line1, line3);
-    let angle3 = this.addAngle(dot3, line3, line2);
+  addTriangleBy3Dot(dot1, dot2, dot3, sa1, sa2, ss1, ss2, ss3) {
+    //                dot3
+    //               /     \
+    //            side2      side3
+    //            /              \
+    //          dot1------side1----dot2
+    let line1 = this.addLine(ss1, dot1, dot2);
+    let line2 = this.addLine(ss2, dot1, dot3);
+    let line3 = this.addLine(ss3, dot2, dot3);
+    let angle1 = this.addAngle(sa1, dot1, line1, line2);
+    let angle2 = this.addAngle(sa2, dot2, line1, line3);
+    let angle3 = this.addAngle(null, dot3, line3, line2);
 
     let triangle = new Triangle(
       [dot1, dot2, dot3],
@@ -192,7 +207,11 @@ export default class Graph {
   addTriangleBy2Angle1Side(angle1, angle2, side1, direction) {
     direction = direction || 1;
     side1 = side1 || default_side;
-
+    //                dot3
+    //               /     \
+    //            side2       \
+    //            /              \
+    //          dot1------side1----dot2
     let x1 = x_min,
       y1 = y_min,
       x2,
@@ -200,30 +219,30 @@ export default class Graph {
       x3,
       y3;
     let dot1, dot2, dot3;
+    let shareAngle1 = null;
+    let shareLine = null;
+    let r = 0;
 
     if (typeof angle1 == 'object') {
-      let angle = angle1;
-      dot1 = angle.vertex;
+      shareAngle1 = angle1;
+      dot1 = angle1.vertex;
       x1 = dot1.x;
       y1 = dot1.y;
-      let as1 = angle.sides[0].radian(dot1);
-      let as2 = angle.sides[1].radian(dot1);
-      let line;
+      let as1 = angle1.sides1[0].radian(dot1);
+      let as2 = angle1.sides2[0].radian(dot1);
+
+      // check which rotation is side1
       if (as1 > as2 && as1 - as2 > Math.PI) {
-        line = angle.sides[0];
+        r = as1;
       } else if (as1 > as2 && as1 - as2 < Math.PI) {
-        line = angle.sides[1];
-        direction = direction * -1;
+        r = as2;
       } else if (as1 < as2 && as2 - as1 > Math.PI) {
-        line = angle.sides[1];
+        r = as2;
       } else {
-        line = angle.sides[0];
-        direction = direction * -1;
+        r = as1;
       }
-      x2 = line.length * Math.cos(line.radian(dot1)) + x1;
-      y2 = line.length * Math.sin(line.radian(dot1)) + y1;
-      dot2 = this.addDot(x2, y2);
-      angle1 = radiansToDegrees(angle.radian);
+
+      angle1 = radiansToDegrees(angle1.radian);
     }
 
     angle1 = degreesToRadians(angle1);
@@ -231,61 +250,136 @@ export default class Graph {
 
     if (typeof side1 == 'object') {
       //side is a line key
+      shareLine = side1;
       let line = side1;
       dot1 = line.ends[0];
       dot2 = line.ends[1];
       x1 = dot1.x;
       y1 = dot1.y;
-      x2 = dot2.x;
-      y2 = dot2.y;
 
+      r = line.radian(dot1);
       side1 = line.length;
-    } else {
-      x2 = side1 + x1;
+    }
+    x2 = side1 * Math.cos(r) + x1;
+    y2 = side1 * Math.sin(r) + y1;
+
+    if (!dot1) {
       dot1 = this.addDot(x1, y1);
+    }
+
+    if (!dot2) {
       dot2 = this.addDot(x2, y2);
     }
 
+    // calculate dot3 - relative to dot1 and side1
     let angle3 = Math.PI - angle1 - angle2;
     let side2 = (side1 / Math.sin(angle3)) * Math.sin(angle2);
     x3 = side2 * Math.cos(angle1);
     y3 = side2 * Math.sin(angle1);
 
-    let beta;
-    if (x2 - x1 == 0) {
-      if (y2 - y1 > 0) {
-        beta = Math.PI / 2;
-      } else {
-        beta = -Math.PI / 2;
-      }
-    } else {
-      beta = Math.atan((y2 - y1) / (x2 - x1));
-      if (x2 < x1) beta = beta - Math.PI;
-    }
-
-    let r = rotate(x3, y3, beta, direction);
-    x3 = r.x + x1;
-    y3 = r.y + y1;
+    // get final dot1
+    let rotatedDot = rotate(x3, y3, r, direction);
+    x3 = rotatedDot.x + x1;
+    y3 = rotatedDot.y + y1;
 
     dot3 = this.addDot(x3, y3);
-    return this.addTriangleBy3Dot(dot1, dot2, dot3);
+    return this.addTriangleBy3Dot(
+      dot1,
+      dot2,
+      dot3,
+      shareAngle1,
+      null,
+      shareLine,
+      null,
+      null
+    );
   }
 
   addTriangleByInnerAngle2Side(angle1, side1, side2) {
-    let x1 = 0,
-      y1 = 0,
-      x2 = side1,
-      y2 = 0,
+    //                dot3
+    //               /     \
+    //            side2      side3
+    //            /              \
+    //          dot1------side1----dot2
+    let x1 = x_min,
+      y1 = y_min,
+      x2,
+      y2 = y_min,
       x3,
       y3;
-    angle1 = degreesToRadians(angle1);
-    x3 = side2 * Math.cos(angle1);
-    y3 = side2 * Math.sin(angle1);
 
-    let dot1 = this.addDot(x1, y1);
-    let dot2 = this.addDot(x2, y2);
-    let dot3 = this.addDot(x3, y3);
-    return this.addTriangleBy3Dot(dot1, dot2, dot3);
+    let dot1, dot2, dot3;
+    let shareAngle = null;
+    let shareLine1 = null;
+    let shareLine2 = null;
+    let r = 0;
+
+    if (typeof angle1 == 'object') {
+      shareAngle = angle1;
+      dot1 = angle1.vertex;
+      x1 = dot1.x;
+      y1 = dot1.y;
+      let as1 = angle1.sides1[0].radian(dot1);
+      let as2 = angle1.sides2[0].radian(dot1);
+
+      // check which rotation is side1
+      if (as1 > as2 && as1 - as2 > Math.PI) {
+        r = as1;
+      } else if (as1 > as2 && as1 - as2 < Math.PI) {
+        r = as2;
+      } else if (as1 < as2 && as2 - as1 > Math.PI) {
+        r = as2;
+      } else {
+        r = as1;
+      }
+
+      angle1 = radiansToDegrees(angle1.radian);
+    }
+
+    // TODO: need checking
+    if (typeof side1 == 'object') {
+      //side is a line key
+      shareLine1 = side1;
+      let line = side1;
+      dot1 = line.ends[0];
+      dot2 = line.ends[1];
+      x1 = dot1.x;
+      y1 = dot1.y;
+
+      r = line.radian(dot1);
+      side1 = line.length;
+    }
+
+    angle1 = degreesToRadians(angle1);
+    x2 = side1 * Math.cos(r) + x1;
+    y2 = side1 * Math.sin(r) + y1;
+
+    x3 = side2 * Math.cos(angle1 + r) + x1;
+    y3 = side2 * Math.sin(angle1 + r) + y1;
+
+    if (!dot1) {
+      dot1 = this.addDot(x1, y1);
+    }
+
+    if (!dot2) {
+      dot2 = this.addDot(x2, y2);
+    }
+
+    if (!dot3) {
+      dot3 = this.addDot(x3, y3);
+    }
+
+    console.log(angle1);
+    return this.addTriangleBy3Dot(
+      dot1,
+      dot2,
+      dot3,
+      shareAngle,
+      null,
+      shareLine1,
+      shareLine2,
+      null
+    );
   }
 
   addTriangleByOuterAngle2Side(angle1, side1, side2) {

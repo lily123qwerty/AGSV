@@ -11,8 +11,8 @@ const props = defineProps({
 });
 
 const path = computed(() => {
-  const r1 = props.angle.sides[0].radian(props.angle.vertex);
-  const r2 = props.angle.sides[1].radian(props.angle.vertex);
+  const r1 = props.angle.sides1[0].radian(props.angle.vertex);
+  const r2 = props.angle.sides2[0].radian(props.angle.vertex);
   const x1 = props.angle.style.size * Math.cos(r1) + props.angle.vertex.x;
   const y1 = props.angle.style.size * Math.sin(r1) + props.angle.vertex.y;
   const x2 = props.angle.style.size * Math.cos(r2) + props.angle.vertex.x;

@@ -104,13 +104,15 @@ const vertex = computed(
 
 const sides = computed(
   () =>
-    (angle.value.sides[0].label || angle.value.sides[0].key) +
-    ', ' +
-    (angle.value.sides[1].label || angle.value.sides[1].key)
+    '[' +
+    angle.value.sides1.map((obj) => obj.label || obj.key).join(', ') +
+    '], [' +
+    angle.value.sides2.map((obj) => obj.label || obj.key).join(', ') +
+    ']'
 );
 
 const degrees = computed({
-  get: () => Math.round(radiansToDegrees(angle.value.radian)),
+  get: () => Math.round(radiansToDegrees(angle.value.radian) * 100) / 100,
   set: (val) => (angle.value.radian = degreesToRadians(Number(val))),
 });
 

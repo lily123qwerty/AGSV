@@ -143,8 +143,8 @@ const labels = computed(() => {
   //angle label
   angles.value.forEach((angle) => {
     let label = Math.round(radiansToDegrees(angle.radian)) + '°';
-    const r1 = angle.sides[0].radian(angle.vertex);
-    const r2 = angle.sides[1].radian(angle.vertex);
+    const r1 = angle.sides1[0].radian(angle.vertex);
+    const r2 = angle.sides2[0].radian(angle.vertex);
     const r = angle.radian / 2;
     let labelAngle;
 
@@ -176,11 +176,13 @@ const labels = computed(() => {
       let x = (line.ends[1].x + line.ends[0].x) / 2;
       let y = (line.ends[1].y + line.ends[0].y) / 2;
       let r = line.radian(line.ends[0]);
-      let margin = 10;
-
-      if (r > Math.PI) {
-        r = r - Math.PI;
+      if (line.radian(line.ends[1]) < r) {
+        r = line.radian(line.ends[1]);
       }
+      if (r > Math.PI / 2 && r < (3 * Math.PI) / 2) {
+        r = r + Math.PI;
+      }
+      let margin = 10;
 
       x = x + margin * Math.cos(r - Math.PI / 2);
       y = y + margin * Math.sin(r - Math.PI / 2);
@@ -195,6 +197,35 @@ const labels = computed(() => {
         r: r,
       });
     });
+
+  // triangle area label
+  Object.entries(props.graph.triangles)
+    .map(([key, obj]) => obj)
+    .filter((obj) => obj.style.visible)
+    .forEach((triangle) => {
+      let x =
+        (triangle.vertices[0].x +
+          triangle.vertices[1].x +
+          triangle.vertices[2].x) /
+        3;
+      let y =
+        (triangle.vertices[0].y +
+          triangle.vertices[1].y +
+          triangle.vertices[2].y) /
+        3;
+
+      let area = Math.round(triangle.area * 100) / 100;
+
+      l.push({
+        key: triangle.key,
+        x,
+        y,
+        cls: 'triangle-label',
+        label: area.toString(),
+        r: 0,
+      });
+    });
+
   return l;
 });
 

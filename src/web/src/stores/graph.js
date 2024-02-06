@@ -49,5 +49,14 @@ export const useGraphStore = defineStore('graph', {
         direction
       );
     },
+
+    addTriangleByInnerAngle2Side(angle1, side1, side2, direction) {
+      return this.graph.addTriangleByInnerAngle2Side(
+        angle1,
+        side1,
+        side2,
+        direction
+      );
+    },
   },
 });

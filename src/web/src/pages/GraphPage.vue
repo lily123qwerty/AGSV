@@ -2,6 +2,9 @@
   <q-page class="flex flex-center">
     <a-graph :graph="store.graph" />
   </q-page>
+  <div id="question">
+    {{ store.graph.question }}
+  </div>
 </template>
 
 <script setup>
@@ -20,3 +23,15 @@ const store = useGraphStore();
 // t.vertices[0].style = new Style({ color: 'red' });
 // console.log(g.toJSON());
 </script>
+
+<style lang="scss">
+#question {
+  background-color: aqua;
+  position: absolute;
+  bottom: 20px;
+  left: auto;
+  // right: auto;
+  width: 700px;
+  text-align: center;
+}
+</style>

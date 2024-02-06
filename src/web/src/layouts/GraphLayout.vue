@@ -42,6 +42,12 @@
           </q-btn-group>
 
           <q-btn-group outline rounded class="q-ml-md">
+            <q-btn outline :size="btnSize" icon="edit" @click="editQuestion"
+              ><q-tooltip class="tooltip">question</q-tooltip></q-btn
+            >
+          </q-btn-group>
+
+          <q-btn-group outline rounded class="q-ml-md">
             <q-btn outline :size="btnSize" icon="undo" @click="undo"
               ><q-tooltip class="tooltip">Undo</q-tooltip></q-btn
             >
@@ -134,6 +140,9 @@ import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
 import ATriangleEdit from 'src/components/ATriangleEdit.vue';
 import { useUserStore } from '../stores/user';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const store = useGraphStore();
 const userStore = useUserStore();
@@ -167,6 +176,7 @@ async function save() {
     isSaving.value = true;
     await userStore.save(store.graph);
     isSaving.value = false;
+    router.push('/home');
   } catch (e) {
     isSaving.value = false;
   }
@@ -199,6 +209,29 @@ function onSelectShape(obj) {
   selectedShape.value = obj;
   selectedShapeClass.value = obj.constructor.name;
   rightDrawerOpen.value = true;
+}
+
+function editQuestion() {
+  $q.dialog({
+    title: 'Question',
+    message: 'Enter question:',
+    prompt: {
+      model: store.graph.question,
+      type: 'text', // optional
+    },
+    cancel: true,
+    persistent: true,
+  })
+    .onOk((data) => {
+      store.graph.question = data;
+      // console.log('>>>> OK, received', data);
+    })
+    .onCancel(() => {
+      // console.log('>>>> Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
 }
 </script>
 

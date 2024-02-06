@@ -22,7 +22,7 @@
               narrow-indicator
             >
               <q-tab name="2Angle1Side" label="2 angle 1 side" />
-              <q-tab name="alarms" label="Alarms" />
+              <q-tab name="innerAngle2Side" label="inner angle 2 side" />
               <q-tab name="movies" label="Movies" />
             </q-tabs>
 
@@ -58,6 +58,25 @@
                 </div>
               </q-tab-panel>
 
+              <q-tab-panel name="innerAngle2Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[checkAngle]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                  <q-input
+                    v-model="side2"
+                    label="side 2"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
               <!-- <q-tab-panel name="alarms">
                                 <div class="text-h6">Alarms</div>
                                 Lorem ipsum dolor sit amet consectetur
@@ -111,28 +130,55 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 
 // this is part of our example (so not required)
 function onOKClick() {
-  let s1 = side1.value;
-  let a1 = angle1.value;
-  //TODO: check a1, make sure only a1 can input key
-  if (isNaN(s1)) {
-    s1 = store.graph.lines[s1];
-  } else {
-    s1 = parseInt(s1);
-  }
+  if (tab.value == '2Angle1Side') {
+    let s1 = side1.value;
+    let a1 = angle1.value;
+    //TODO: check a1, make sure only a1 can input key
+    if (isNaN(s1)) {
+      s1 = store.graph.lines[s1];
+    } else {
+      s1 = parseInt(s1);
+    }
 
-  if (isNaN(a1)) {
-    a1 = store.graph.angles[a1];
-  } else {
-    a1 = parseInt(a1);
-  }
-  if (s1) {
-    store.addTriangleBy2Angle1Side(a1, angle2.value, s1);
-    store.historyPush();
-    // let c = store.graph.center;
-    // store.graph.translate(
-    //     store.viewBox.width / 2 - c.x,
-    //     store.viewBox.height / 2 - c.y
-    // );
+    if (isNaN(a1)) {
+      a1 = store.graph.angles[a1];
+    } else {
+      a1 = parseInt(a1);
+    }
+    if (s1) {
+      store.addTriangleBy2Angle1Side(a1, angle2.value, s1);
+      store.historyPush();
+      // let c = store.graph.center;
+      // store.graph.translate(
+      //     store.viewBox.width / 2 - c.x,
+      //     store.viewBox.height / 2 - c.y
+      // );
+    }
+  } else if (tab.value == 'innerAngle2Side') {
+    let s1 = side1.value;
+    let s2 = side2.value;
+    let a1 = angle1.value;
+    //TODO: check a1, make sure only a1 can input key
+    if (isNaN(s1)) {
+      s1 = store.graph.lines[s1];
+    } else {
+      s1 = parseInt(s1);
+    }
+    if (isNaN(s2)) {
+      s2 = store.graph.lines[s2];
+    } else {
+      s2 = parseInt(s2);
+    }
+    if (isNaN(a1)) {
+      a1 = store.graph.angles[a1];
+    } else {
+      a1 = parseInt(a1);
+    }
+
+    if (s1) {
+      store.addTriangleByInnerAngle2Side(a1, s1, s2);
+      store.historyPush();
+    }
   }
 
   onDialogOK();
@@ -168,7 +214,9 @@ function checkAngle(val) {
 
 const tab = ref('2Angle1Side');
 const splitterModel = ref(20);
+const direction = ref(1);
 const angle1 = ref(60);
 const angle2 = ref(60);
 const side1 = ref(100);
+const side2 = ref(100);
 </script>

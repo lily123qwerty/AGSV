@@ -7,7 +7,7 @@
         </div>
 
         <q-card-section>
-          {{ lorem }}
+          {{ g.question }}
         </q-card-section>
       </q-card-section>
 
@@ -77,11 +77,6 @@ const graphStore = useGraphStore();
 
 const confirmDelete = ref(false);
 const toDelete = ref(null);
-
-const array = ref([1, 2, 3, 4, 5]);
-const lorem = ref(
-  'Lorem ipsum dolor adn ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-);
 
 function clickEdit(graph) {
   graphStore.graph = graph;

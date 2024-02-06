@@ -67,6 +67,7 @@ export default class Line extends Shape {
         r = r + 2 * Math.PI;
       }
     }
+
     return r;
   }
 
