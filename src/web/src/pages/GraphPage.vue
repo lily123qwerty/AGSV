@@ -1,10 +1,10 @@
 <template>
   <q-page class="flex flex-center">
     <a-graph :graph="store.graph" />
+    <div id="question">
+      {{ store.graph.question }}
+    </div>
   </q-page>
-  <div id="question">
-    {{ store.graph.question }}
-  </div>
 </template>
 
 <script setup>
@@ -26,12 +26,15 @@ const store = useGraphStore();
 
 <style lang="scss">
 #question {
-  background-color: aqua;
+  // background-color: aqua;
   position: absolute;
-  bottom: 20px;
-  left: auto;
+  margin-left: 100px;
+  margin-right: 100px;
+  bottom: 50px;
+  // left: auto;
   // right: auto;
-  width: 700px;
-  text-align: center;
+  // width: 700px;
+  // text-align: center;
+  font: bold 1.4em serif;
 }
 </style>
