@@ -34,7 +34,7 @@
               outline
               :size="btnSize"
               icon="mdi-hexagon-outline"
-              @click="test"
+              @click="store.graph.rotate(1)"
               ><q-tooltip class="tooltip"
                 >Add a regular polygon</q-tooltip
               ></q-btn
@@ -111,7 +111,11 @@
     <q-drawer v-model="rightDrawerOpen" side="right" bordered>
       <!-- drawer content -->
       <a-dot-edit v-if="selectedShapeClass == 'Dot'" :dot="selectedShape" />
-      <a-line-edit v-if="selectedShapeClass == 'Line'" :line="selectedShape" />
+      <a-line-edit
+        v-if="selectedShapeClass == 'Line'"
+        :line="selectedShape"
+        @rotate-graph="onRotateGraph"
+      />
       <a-angle-edit
         v-if="selectedShapeClass == 'Angle'"
         :angle="selectedShape"
@@ -232,6 +236,10 @@ function editQuestion() {
     .onDismiss(() => {
       // console.log('I am triggered on both OK and Cancel')
     });
+}
+
+function onRotateGraph(r, c) {
+  store.graph.rotate(r, c);
 }
 </script>
 

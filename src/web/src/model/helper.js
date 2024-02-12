@@ -10,34 +10,39 @@ export function radiansToDegrees(r) {
 
 //anti-clockwise rotate (x,y) by angle with origion (0,0)
 export function rotate(x, y, beta, direction) {
-  let r;
-  if (x == 0) {
-    if (y > 0) {
-      r = Math.PI / 2;
-    } else {
-      r = (Math.PI / 2) * 3;
-    }
-  } else if (y == 0) {
-    if (x > 0) {
-      r = 0;
-    } else {
-      r = Math.PI;
-    }
-  } else {
-    r = Math.atan(y / x);
-    if (x < 0 && y <= 0) {
-      r = r + Math.PI;
-    } else if (x < 0) {
-      r = r + Math.PI;
-    } else if (y < 0) {
-      r = r + 2 * Math.PI;
-    }
-  }
-  r += beta * direction;
-  var length = Math.sqrt(x ** 2 + y ** 2);
-  x = length * Math.cos(r);
-  y = length * Math.sin(r);
-  return { x: x, y: y };
+  direction = direction || 1;
+  beta = beta * direction;
+  let xf = x * Math.cos(beta) - y * Math.sin(beta);
+  let yf = x * Math.sin(beta) + y * Math.cos(beta);
+  return { x: xf, y: yf };
+  // let r;
+  // if (x == 0) {
+  //   if (y > 0) {
+  //     r = Math.PI / 2;
+  //   } else {
+  //     r = (Math.PI / 2) * 3;
+  //   }
+  // } else if (y == 0) {
+  //   if (x > 0) {
+  //     r = 0;
+  //   } else {
+  //     r = Math.PI;
+  //   }
+  // } else {
+  //   r = Math.atan(y / x);
+  //   if (x < 0 && y <= 0) {
+  //     r = r + Math.PI;
+  //   } else if (x < 0) {
+  //     r = r + Math.PI;
+  //   } else if (y < 0) {
+  //     r = r + 2 * Math.PI;
+  //   }
+  // }
+  // r += beta * direction;
+  // var length = Math.sqrt(x ** 2 + y ** 2);
+  // x = length * Math.cos(r);
+  // y = length * Math.sin(r);
+  // return { x: x, y: y };
 }
 
 export function validateEmail(email) {

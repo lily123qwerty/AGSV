@@ -7,10 +7,13 @@ import { store } from 'quasar/wrappers';
 
 const props = defineProps({
   triangle: Triangle,
+  scale: Number,
 });
 
 const points = computed(() =>
-  props.triangle.vertices.map((dot) => '' + dot.x + ',' + dot.y).join(' ')
+  props.triangle.vertices
+    .map((dot) => '' + dot.x * props.scale + ',' + dot.y * props.scale)
+    .join(' ')
 );
 
 const fill = computed(() => {

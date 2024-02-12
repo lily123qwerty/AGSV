@@ -18,14 +18,21 @@
         v-for="t in triangles"
         :key="t.key"
         :triangle="t"
+        :scale="scale"
       ></a-triangle>
 
-      <a-dot v-for="dot in dots" :key="dot.key" :dot="dot"></a-dot>
+      <a-dot
+        v-for="dot in dots"
+        :key="dot.key"
+        :dot="dot"
+        :scale="scale"
+      ></a-dot>
 
       <a-angle
         v-for="angle in angles"
         :key="angle.key"
         :angle="angle"
+        :scale="scale"
       ></a-angle>
 
       <a-text
@@ -55,14 +62,21 @@ const props = defineProps({
   trumbnail: Boolean,
 });
 
+const scale = computed(() => {
+  const size = props.trumbnail ? 200 : 300;
+  const b = props.graph.bounds;
+
+  return Math.min(size / (b.bottom - b.top), size / (b.right - b.left));
+});
+
 const bounds = computed(() => {
   const b = props.graph.bounds;
   const margin = 30;
 
-  b.top = b.top == Number.MAX_VALUE ? 0 : b.top - margin;
-  b.left = b.left == Number.MAX_VALUE ? 0 : b.left - margin;
-  b.bottom = b.bottom == Number.MIN_VALUE ? 0 : b.bottom + margin;
-  b.right = b.right == Number.MIN_VALUE ? 0 : b.right + margin;
+  b.top = b.top == Number.MAX_VALUE ? 0 : b.top * scale.value - margin;
+  b.left = b.left == Number.MAX_VALUE ? 0 : b.left * scale.value - margin;
+  b.bottom = b.bottom == Number.MIN_VALUE ? 0 : b.bottom * scale.value + margin;
+  b.right = b.right == Number.MIN_VALUE ? 0 : b.right * scale.value + margin;
 
   return b;
 });
@@ -134,8 +148,8 @@ const labels = computed(() => {
       x = x / Math.sqrt(x * x + y * y);
       y = y / Math.sqrt(x * x + y * y);
 
-      x = -x * margin + dot.x;
-      y = -y * margin + dot.y;
+      x = -x * margin + dot.x * scale.value;
+      y = -y * margin + dot.y * scale.value;
 
       l.push({ key: dot.key, x, y, cls: 'dot-label', label: dot.label, r: 0 });
     });
@@ -163,8 +177,12 @@ const labels = computed(() => {
       }
     }
 
-    const x = angle.vertex.x + Math.cos(labelAngle) * (angle.style.size + 20);
-    const y = angle.vertex.y + Math.sin(labelAngle) * (angle.style.size + 20);
+    const x =
+      angle.vertex.x * scale.value +
+      Math.cos(labelAngle) * (angle.style.size + 20);
+    const y =
+      angle.vertex.y * scale.value +
+      Math.sin(labelAngle) * (angle.style.size + 20);
     l.push({ key: angle.key, x, y, cls: 'angle-label', label, r: 0 });
   });
 
@@ -184,8 +202,8 @@ const labels = computed(() => {
       }
       let margin = 10;
 
-      x = x + margin * Math.cos(r - Math.PI / 2);
-      y = y + margin * Math.sin(r - Math.PI / 2);
+      x = x * scale.value + margin * Math.cos(r - Math.PI / 2);
+      y = y * scale.value + margin * Math.sin(r - Math.PI / 2);
 
       let lineLabel = Math.round(line.length * 10) / 10;
       l.push({
@@ -204,15 +222,17 @@ const labels = computed(() => {
     .filter((obj) => obj.style.visible)
     .forEach((triangle) => {
       let x =
-        (triangle.vertices[0].x +
+        ((triangle.vertices[0].x +
           triangle.vertices[1].x +
           triangle.vertices[2].x) /
-        3;
+          3) *
+        scale.value;
       let y =
-        (triangle.vertices[0].y +
+        ((triangle.vertices[0].y +
           triangle.vertices[1].y +
           triangle.vertices[2].y) /
-        3;
+          3) *
+        scale.value;
 
       let area = Math.round(triangle.area * 100) / 100;
 

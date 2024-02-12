@@ -16,6 +16,16 @@
       </q-item-section>
     </q-item>
 
+    <q-item>
+      <q-btn
+        square
+        color="primary"
+        icon="mdi mdi-tally-mark-1"
+        @click="makeVertical"
+      />
+      <q-btn square color="primary" icon="mdi-minus" @click="makeHorizontal" />
+    </q-item>
+
     <q-separator spaced color="white" />
 
     <q-item>
@@ -37,12 +47,33 @@ import Line from 'src/model/Line';
 import { ref, computed } from 'vue';
 import AColorPicker from 'src/components/AColorPicker.vue';
 import { degreesToRadians, radiansToDegrees } from 'src/model/helper';
+import { matchedRouteKey } from 'vue-router';
 
 const props = defineProps({
   line: Line,
 });
 
 const line = computed(() => props.line);
+
+const emit = defineEmits(['rotateGraph']);
+
+function makeVertical() {
+  const r = Math.PI / 2 - props.line.radian(props.line.ends[0]);
+  if (Math.abs(r) < 0.001) {
+    emit('rotateGraph', Math.PI, props.line.ends[0]);
+  } else {
+    emit('rotateGraph', r, props.line.ends[0]);
+  }
+}
+
+function makeHorizontal() {
+  const r = Math.PI - props.line.radian(props.line.ends[0]);
+  if (Math.abs(r) < 0.001) {
+    emit('rotateGraph', Math.PI, props.line.ends[0]);
+  } else {
+    emit('rotateGraph', r, props.line.ends[0]);
+  }
+}
 
 const length = computed({
   get: () => line.value.length,

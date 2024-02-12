@@ -8,15 +8,20 @@ import Angle from 'src/model/Angle';
 
 const props = defineProps({
   angle: Angle,
+  scale: Number,
 });
 
 const path = computed(() => {
   const r1 = props.angle.sides1[0].radian(props.angle.vertex);
   const r2 = props.angle.sides2[0].radian(props.angle.vertex);
-  const x1 = props.angle.style.size * Math.cos(r1) + props.angle.vertex.x;
-  const y1 = props.angle.style.size * Math.sin(r1) + props.angle.vertex.y;
-  const x2 = props.angle.style.size * Math.cos(r2) + props.angle.vertex.x;
-  const y2 = props.angle.style.size * Math.sin(r2) + props.angle.vertex.y;
+  const x1 =
+    props.angle.style.size * Math.cos(r1) + props.angle.vertex.x * props.scale;
+  const y1 =
+    props.angle.style.size * Math.sin(r1) + props.angle.vertex.y * props.scale;
+  const x2 =
+    props.angle.style.size * Math.cos(r2) + props.angle.vertex.x * props.scale;
+  const y2 =
+    props.angle.style.size * Math.sin(r2) + props.angle.vertex.y * props.scale;
 
   if (Math.abs(r1 - r2) > Math.PI) {
     if (r1 > r2) {

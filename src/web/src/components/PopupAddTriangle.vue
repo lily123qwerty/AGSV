@@ -46,7 +46,7 @@
                     label="angle 2"
                     :rules="[
                       (val) =>
-                        (val > 0 && val < 180) ||
+                        (val > -180 && val < 180) ||
                         'angle must between 0 and 180 degree',
                     ]"
                   />
@@ -205,7 +205,7 @@ function checkAngle(val) {
     } else {
       return 'invalid line key';
     }
-  } else if (val < 0 || val > 180) {
+  } else if (val < -180 || val > 180) {
     return 'invalid number';
   } else {
     return true;

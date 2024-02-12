@@ -100,6 +100,17 @@ export default class Graph {
     }
   }
 
+  rotate(r, c) {
+    if (r != 0) {
+      c = c || this.center;
+      Object.entries(this.dots).forEach(([key, obj]) => {
+        const d = rotate(obj.x - c.x, obj.y - c.y, r);
+        obj.x = d.x + c.x;
+        obj.y = d.y + c.y;
+      });
+    }
+  }
+
   toJSON() {
     return {
       dots: Object.entries(this.dots).map(([key, obj]) => obj.toJSON()),
@@ -243,8 +254,15 @@ export default class Graph {
       }
 
       angle1 = radiansToDegrees(angle1.radian);
+    } else if (angle1 < 0) {
+      angle1 = angle1 * -1;
+      direction = -1;
     }
 
+    if (angle2 < 0) {
+      angle2 = angle2 * -1;
+      direction = -1;
+    }
     angle1 = degreesToRadians(angle1);
     angle2 = degreesToRadians(angle2);
 
@@ -278,9 +296,15 @@ export default class Graph {
     y3 = side2 * Math.sin(angle1);
 
     // get final dot1
-    let rotatedDot = rotate(x3, y3, r, direction);
+    let rotatedDot = rotate(x3, y3, r);
     x3 = rotatedDot.x + x1;
     y3 = rotatedDot.y + y1;
+
+    if (direction == -1) {
+      let mid = { x: (x2 + x1) / 2, y: (y2 + y1) / 2 };
+      x3 = mid.x + (mid.x - x3);
+      y3 = mid.y + (mid.y - y3);
+    }
 
     dot3 = this.addDot(x3, y3);
     return this.addTriangleBy3Dot(
@@ -295,12 +319,13 @@ export default class Graph {
     );
   }
 
-  addTriangleByInnerAngle2Side(angle1, side1, side2) {
+  addTriangleByInnerAngle2Side(angle1, side1, side2, direction) {
     //                dot3
     //               /     \
     //            side2      side3
     //            /              \
     //          dot1------side1----dot2
+    direction = direction || 1;
     let x1 = x_min,
       y1 = y_min,
       x2,
@@ -369,7 +394,6 @@ export default class Graph {
       dot3 = this.addDot(x3, y3);
     }
 
-    console.log(angle1);
     return this.addTriangleBy3Dot(
       dot1,
       dot2,

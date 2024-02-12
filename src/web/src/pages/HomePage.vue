@@ -43,7 +43,8 @@
       <q-card-section class="row items-center">
         <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
         <span class="q-ml-sm"
-          >You are currently not connected to any network.</span
+          >Thi will be perminently removed, are you sure you want to remove
+          this?</span
         >
       </q-card-section>
 
