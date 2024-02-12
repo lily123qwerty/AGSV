@@ -71,12 +71,13 @@ const scale = computed(() => {
 
 const bounds = computed(() => {
   const b = props.graph.bounds;
+  const s = scale.value;
   const margin = 30;
 
-  b.top = b.top == Number.MAX_VALUE ? 0 : b.top * scale.value - margin;
-  b.left = b.left == Number.MAX_VALUE ? 0 : b.left * scale.value - margin;
-  b.bottom = b.bottom == Number.MIN_VALUE ? 0 : b.bottom * scale.value + margin;
-  b.right = b.right == Number.MIN_VALUE ? 0 : b.right * scale.value + margin;
+  b.top = b.top == Number.MAX_VALUE ? 0 : b.top * s - margin;
+  b.left = b.left == Number.MAX_VALUE ? 0 : b.left * s - margin;
+  b.bottom = b.bottom == Number.MIN_VALUE ? 0 : b.bottom * s + margin;
+  b.right = b.right == Number.MIN_VALUE ? 0 : b.right * s + margin;
 
   return b;
 });

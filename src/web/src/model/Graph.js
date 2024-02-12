@@ -69,8 +69,8 @@ export default class Graph {
   get bounds() {
     let top = Number.MAX_VALUE,
       left = Number.MAX_VALUE,
-      bottom = Number.MIN_VALUE,
-      right = Number.MIN_VALUE;
+      bottom = -Number.MAX_VALUE,
+      right = -Number.MAX_VALUE;
 
     Object.entries(this.dots).forEach(([key, obj]) => {
       top = Math.min(top, obj.y);

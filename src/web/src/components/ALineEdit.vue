@@ -16,15 +16,22 @@
       </q-item-section>
     </q-item>
 
-    <q-item>
+    <div class="q-pa-md q-gutter-sm text-left">
       <q-btn
-        square
+        round
+        unelevated
         color="primary"
-        icon="mdi mdi-tally-mark-1"
+        icon="mdi-flip-horizontal"
         @click="makeVertical"
       />
-      <q-btn square color="primary" icon="mdi-minus" @click="makeHorizontal" />
-    </q-item>
+      <q-btn
+        round
+        unelevated
+        color="primary"
+        icon="mdi-flip-vertical"
+        @click="makeHorizontal"
+      />
+    </div>
 
     <q-separator spaced color="white" />
 
