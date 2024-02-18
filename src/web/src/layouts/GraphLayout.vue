@@ -222,6 +222,7 @@ function editQuestion() {
     prompt: {
       model: store.graph.question,
       type: 'text', // optional
+      autogrow: true,
     },
     cancel: true,
     persistent: true,

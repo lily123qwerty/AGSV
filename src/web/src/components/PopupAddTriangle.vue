@@ -23,6 +23,8 @@
             >
               <q-tab name="2Angle1Side" label="2 angle 1 side" />
               <q-tab name="innerAngle2Side" label="inner angle 2 side" />
+              <q-tab name="outerAngle2Side" label="outer angle 2 side" />
+              <q-tab name="3dots" label="3 dots" />
               <q-tab name="movies" label="Movies" />
             </q-tabs>
 
@@ -77,6 +79,35 @@
                   />
                 </div>
               </q-tab-panel>
+
+              <q-tab-panel name="outerAngle2Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[checkAngle]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                  <q-input
+                    v-model="side2"
+                    label="side 2"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="3dots">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input v-model="dot1" label="dot 1" :rules="[checkDot]" />
+                  <q-input v-model="dot2" label="dot 2" :rules="[checkDot]" />
+                  <q-input v-model="dot3" label="dot 3" :rules="[checkDot]" />
+                </div>
+              </q-tab-panel>
+
               <!-- <q-tab-panel name="alarms">
                                 <div class="text-h6">Alarms</div>
                                 Lorem ipsum dolor sit amet consectetur
@@ -179,6 +210,38 @@ function onOKClick() {
       store.addTriangleByInnerAngle2Side(a1, s1, s2);
       store.historyPush();
     }
+  } else if (tab.value == 'outerAngle2Side') {
+    let s1 = side1.value;
+    let s2 = side2.value;
+    let a1 = angle1.value;
+    //TODO: check a1, make sure only a1 can input key
+    if (isNaN(s1)) {
+      s1 = store.graph.lines[s1];
+    } else {
+      s1 = parseInt(s1);
+    }
+    if (isNaN(s2)) {
+      s2 = store.graph.lines[s2];
+    } else {
+      s2 = parseInt(s2);
+    }
+    if (isNaN(a1)) {
+      a1 = store.graph.angles[a1];
+    } else {
+      a1 = parseInt(a1);
+    }
+
+    if (s1) {
+      store.addTriangleByOuterAngle2Side(a1, s1, s2);
+      store.historyPush();
+    }
+  } else if (tab.value == '3dots') {
+    store.addTriangleBy3Dot(
+      store.graph.dots[dot1.value],
+      store.graph.dots[dot2.value],
+      store.graph.dots[dot3.value]
+    );
+    store.historyPush();
   }
 
   onDialogOK();
@@ -212,6 +275,18 @@ function checkAngle(val) {
   }
 }
 
+function checkDot(val) {
+  if (isNaN(val)) {
+    if (store.graph.dots[val]) {
+      return true;
+    } else {
+      return 'invalid dot key';
+    }
+  } else {
+    return 'please put in a dot key';
+  }
+}
+
 const tab = ref('2Angle1Side');
 const splitterModel = ref(20);
 const direction = ref(1);
@@ -219,4 +294,7 @@ const angle1 = ref(60);
 const angle2 = ref(60);
 const side1 = ref(100);
 const side2 = ref(100);
+const dot1 = ref();
+const dot2 = ref();
+const dot3 = ref();
 </script>

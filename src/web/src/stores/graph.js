@@ -58,5 +58,25 @@ export const useGraphStore = defineStore('graph', {
         direction
       );
     },
+    addTriangleByOuterAngle2Side(angle1, side1, side2, direction) {
+      return this.graph.addTriangleByOuterAngle2Side(
+        angle1,
+        side1,
+        side2,
+        direction
+      );
+    },
+    addTriangleBy3Dot(dot1, dot2, dot3) {
+      return this.graph.addTriangleBy3Dot(
+        dot1,
+        dot2,
+        dot3,
+        null,
+        null,
+        null,
+        null,
+        null
+      );
+    },
   },
 });
