@@ -2,7 +2,7 @@
   <q-page class="flex flex-center">
     <a-graph :graph="store.graph" />
     <div id="question">
-      {{ store.graph.question }}
+      <pre>{{ store.graph.question }}</pre>
     </div>
   </q-page>
 </template>
@@ -35,6 +35,9 @@ const store = useGraphStore();
   // right: auto;
   // width: 700px;
   // text-align: center;
+}
+
+#question pre {
   font: bold 1.4em serif;
 }
 </style>

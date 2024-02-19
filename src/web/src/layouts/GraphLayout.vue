@@ -139,6 +139,7 @@ import Graph from '../model/Graph';
 import ATreeView from 'src/components/ATreeView.vue';
 import { useQuasar } from 'quasar';
 import PopupAddTriangle from 'src/components/PopupAddTriangle.vue';
+import PopupEditQuestion from 'src/components/PopupEditQuestion.vue';
 import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
@@ -217,15 +218,12 @@ function onSelectShape(obj) {
 
 function editQuestion() {
   $q.dialog({
-    title: 'Question',
-    message: 'Enter question:',
-    prompt: {
-      model: store.graph.question,
-      type: 'text', // optional
-      autogrow: true,
+    component: PopupEditQuestion,
+
+    // props forwarded to your custom component
+    componentProps: {
+      question: store.graph.question,
     },
-    cancel: true,
-    persistent: true,
   })
     .onOk((data) => {
       store.graph.question = data;
