@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
+    <q-card class="q-dialog-plugin" style="width: 560px">
       <!--
         ...content
         ... use q-card-section for it?
@@ -10,43 +10,115 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <div class="row items-start">
+        <div class="row item-start">
           <div class="col q-ma-sm">
             <q-select
-              v-model="dot1"
-              :options="options"
+              v-model="vals['dot1']"
+              :options="options['dot1']"
               label="Dot 1"
-              use-input
-              @filter="filterFn"
             />
           </div>
           <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Dot 2" />
+            <q-select
+              v-model="vals['dot2']"
+              :options="options['dot2']"
+              label="Dot 2"
+            />
           </div>
           <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Dot 3" />
-          </div>
-        </div>
-        <div class="row items-start">
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 1-2" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 2-3" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 3-1" />
+            <q-select
+              v-model="vals['dot3']"
+              :options="options['dot3']"
+              label="Dot 3"
+            />
           </div>
         </div>
         <div class="row items-start">
           <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 1" />
+            <q-select
+              v-model="vals['side12']"
+              :options="options['side12']"
+              label="Side 1-2"
+              use-input
+              @input-value="(val) => inputFn(val, 'side12')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side12')
+              "
+              @blur="() => blurFn('side12')"
+            />
           </div>
           <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 2" />
+            <q-select
+              v-model="vals['side23']"
+              :options="options['side23']"
+              label="Side 2-3"
+              use-input
+              @input-value="(val) => inputFn(val, 'side23')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side23')
+              "
+              @blur="() => blurFn('side23')"
+            />
           </div>
           <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 3" />
+            <q-select
+              v-model="vals['side31']"
+              :options="options['side31']"
+              label="Side 3-1"
+              use-input
+              @input-value="(val) => inputFn(val, 'side31')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side31')
+              "
+              @blur="() => blurFn('side31')"
+            />
+          </div>
+        </div>
+        <div class="row items-start">
+          <div class="col q-ma-sm">
+            <q-select
+              v-model="vals['angle1']"
+              :options="options['angle1']"
+              label="Angle 1"
+              use-input
+              @input-value="(val) => inputFn(val, 'angle1')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allAngles', 'angle1')
+              "
+              @blur="() => blurFn('angle1')"
+            />
+          </div>
+          <div class="col q-ma-sm">
+            <q-select
+              v-model="vals['angle2']"
+              :options="options['angle2']"
+              label="Angle 2"
+              use-input
+              @input-value="(val) => inputFn(val, 'angle2')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allAngles', 'angle2')
+              "
+              @blur="() => blurFn('angle2')"
+            />
+          </div>
+          <div class="col q-ma-sm">
+            <q-select
+              v-model="vals['angle3']"
+              :options="options['angle3']"
+              label="Angle 3"
+              use-input
+              @input-value="(val) => inputFn(val, 'angle3')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allAngles', 'angle3')
+              "
+              @blur="() => blurFn('angle3')"
+            />
           </div>
         </div>
       </q-card-section>
@@ -65,13 +137,6 @@ import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
 
-const options = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
-
-function filterFn(val, update, abort) {
-  update(() => {
-    dot1.value = val;
-  });
-}
 const store = useGraphStore();
 
 const props = defineProps({
@@ -93,9 +158,82 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 //                    example: onDialogOK({ /*...*/ }) - with payload
 // onDialogCancel - Function to call to settle dialog with "cancel" outcome
 
+//TODO: read from graph
+const allOptions = {
+  allDots: ['', 'd001 - A', 'd002 - B', 'd003 - C'],
+  allLines: ['', 'l004 - A', 'l005 - B', 'l006 - C'],
+  allAngles: ['', 'a007 - A', 'a008 - B', 'a009 - C'],
+};
+
+const options = ref({
+  dot1: allOptions['allDots'],
+  dot2: allOptions['allDots'],
+  dot3: allOptions['allDots'],
+  side12: allOptions['allLines'],
+  side23: allOptions['allLines'],
+  side31: allOptions['allLines'],
+  angle1: allOptions['allAngles'],
+  angle2: allOptions['allAngles'],
+  angle3: allOptions['allAngles'],
+});
+
+const vals = ref({
+  dot1: null,
+  dot2: null,
+  dot3: null,
+  angle1: 60,
+  angle2: 60,
+  angle3: 60,
+  side12: 100,
+  side23: 100,
+  side31: 100,
+});
+
+const inputVals = ref({});
+
+function inputFn(val, key) {
+  inputVals.value[key] = val;
+}
+
+function filterFn(val, update, optionKey, key) {
+  if (val === '') {
+    update(() => {
+      options.value[key] = allOptions[optionKey];
+
+      // here you have access to "ref" which
+      // is the Vue reference of the QSelect
+    });
+    return;
+  }
+
+  update(() => {
+    const needle = val.toLowerCase();
+    options.value[key] = allOptions[optionKey].filter(
+      (v) => v.toLowerCase().indexOf(needle) > -1
+    );
+  });
+}
+
+function blurFn(key) {
+  if (inputVals.value[key]) {
+    vals.value[key] = inputVals.value[key];
+  }
+}
+
+/*-- Following code needs modifying --*/
+
+const angle1 = ref(60);
+const angle2 = ref(60);
+const side1 = ref(100);
+const side2 = ref(100);
+const side3 = ref(100);
+const dot1 = ref();
+const dot2 = ref();
+const dot3 = ref();
+
 // this is part of our example (so not required)
 function onOKClick() {
-  console.log(dot1.value);
+  console.log(vals.value['dot1']);
   if (tab.value == '2Angle1Side') {
     let s1 = side1.value;
     let a1 = angle1.value;
@@ -237,12 +375,4 @@ function checkDot(val) {
 const tab = ref('2Angle1Side');
 const splitterModel = ref(20);
 const direction = ref(1);
-const angle1 = ref(60);
-const angle2 = ref(60);
-const side1 = ref(100);
-const side2 = ref(100);
-const side3 = ref(100);
-const dot1 = ref();
-const dot2 = ref();
-const dot3 = ref();
 </script>
