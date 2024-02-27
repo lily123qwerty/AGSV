@@ -23,20 +23,12 @@
     </q-item> -->
 
     <q-item>
-      <q-item-section
+      <!-- <q-item-section
         ><q-item-label>{{ degrees }}°</q-item-label>
         <q-item-label caption>degrees</q-item-label>
-      </q-item-section>
+      </q-item-section> -->
       <q-item-section avatar>
-        <!-- <q-slider
-          v-model="degrees"
-          :min="1"
-          :max="179"
-          :label-value="degrees + '°'"
-          label
-          label-always
-        /> -->
-        <q-knob
+        <!-- <q-knob
           :min="0"
           :inner-min="1"
           :max="360"
@@ -48,7 +40,17 @@
           track-color="grey-3"
           font-size="18px"
           >{{ degrees }}°
-        </q-knob>
+        </q-knob> -->
+        <q-input
+          label="degrees"
+          v-model="degrees"
+          type="number"
+          :rules="[
+            (val) =>
+              (val > -180 && val < 180) ||
+              'angle must between 0 and 180 degree',
+          ]"
+        />
       </q-item-section>
     </q-item>
 
@@ -74,6 +76,23 @@
           v-model="size"
           :min="10"
           :max="30"
+          label
+          label-always
+          markers
+        />
+      </q-item-section>
+    </q-item>
+
+    <q-item v-if="visible"
+      ><q-item-section><q-item-label>Round</q-item-label> </q-item-section>
+    </q-item>
+
+    <q-item v-if="visible">
+      <q-item-section>
+        <q-slider
+          v-model="round"
+          :min="0"
+          :max="5"
           label
           label-always
           markers
@@ -112,7 +131,7 @@ const sides = computed(
 );
 
 const degrees = computed({
-  get: () => Math.round(radiansToDegrees(angle.value.radian) * 100) / 100,
+  get: () => radiansToDegrees(angle.value.radian),
   set: (val) => (angle.value.radian = degreesToRadians(Number(val))),
 });
 
@@ -129,5 +148,10 @@ const color = computed({
 const size = computed({
   get: () => angle.value.style.size,
   set: (val) => (angle.value.style.size = Number(val)),
+});
+
+const round = computed({
+  get: () => angle.value.style.round,
+  set: (val) => (angle.value.style.round = Number(val)),
 });
 </script>

@@ -6,48 +6,141 @@
         ... use q-card-section for it?
       -->
       <q-card-section>
-        <div class="text-h6">Add Triangle</div>
+        <div class="text-h6">add triangle</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <div class="row items-start">
-          <div class="col q-ma-sm">
-            <q-select
-              v-model="dot1"
-              :options="options"
-              label="Dot 1"
-              use-input
-              @filter="filterFn"
-            />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Dot 2" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Dot 3" />
-          </div>
-        </div>
-        <div class="row items-start">
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 1-2" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 2-3" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Side 3-1" />
-          </div>
-        </div>
-        <div class="row items-start">
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 1" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 2" />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select v-model="model" :options="options" label="Angle 3" />
-          </div>
+        <div class="q-pa-md">
+          <q-card>
+            <q-tabs
+              v-model="tab"
+              dense
+              class="text-grey"
+              active-color="primary"
+              indicator-color="primary"
+              align="justify"
+              narrow-indicator
+            >
+              <q-tab name="2Angle1Side" label="2 angle 1 side" />
+              <q-tab name="innerAngle2Side" label="inner angle 2 side" />
+              <q-tab name="outerAngle2Side" label="outer angle 2 side" />
+              <q-tab name="3dots" label="3 dots" />
+              <q-tab name="3sides" label="3 sides" />
+            </q-tabs>
+
+            <q-separator />
+
+            <q-tab-panels
+              v-model="tab"
+              animated
+              transition-prev="jump-up"
+              transition-next="jump-up"
+            >
+              <q-tab-panel name="2Angle1Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[checkAngle]"
+                  />
+                  <q-input
+                    v-model="angle2"
+                    label="angle 2"
+                    :rules="[
+                      (val) =>
+                        (val > -180 && val < 180) ||
+                        'angle must between 0 and 180 degree',
+                    ]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="innerAngle2Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[checkAngle]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                  <q-input
+                    v-model="side2"
+                    label="side 2"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="outerAngle2Side">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="angle1"
+                    label="angle 1"
+                    :rules="[checkAngle]"
+                  />
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                  <q-input
+                    v-model="side2"
+                    label="side 2"
+                    :rules="[checkSide]"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="3dots">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input v-model="dot1" label="dot 1" :rules="[checkDot]" />
+                  <q-input v-model="dot2" label="dot 2" :rules="[checkDot]" />
+                  <q-input v-model="dot3" label="dot 3" :rules="[checkDot]" />
+                </div>
+              </q-tab-panel>
+
+              <q-tab-panel name="3sides">
+                <div class="q-gutter-md" style="max-width: 300px">
+                  <q-input
+                    v-model="side1"
+                    label="side 1"
+                    :rules="[checkSide]"
+                  />
+                  <q-input
+                    v-model="side2"
+                    label="side 2"
+                    :rules="[[(val) => val <= 0 || 'invalid number']]"
+                  />
+                  <q-input
+                    v-model="side3"
+                    label="side 3"
+                    :rules="[[(val) => val <= 0 || 'invalid number']]"
+                  />
+                </div>
+              </q-tab-panel>
+
+              <!-- <q-tab-panel name="alarms">
+                                <div class="text-h6">Alarms</div>
+                                Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit.
+                            </q-tab-panel>
+
+                            <q-tab-panel name="movies">
+                                <div class="text-h6">Movies</div>
+                                Lorem ipsum dolor sit amet consectetur
+                                adipisicing elit.
+                            </q-tab-panel> -->
+            </q-tab-panels>
+          </q-card>
         </div>
       </q-card-section>
 
@@ -65,13 +158,6 @@ import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
 
-const options = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
-
-function filterFn(val, update, abort) {
-  update(() => {
-    dot1.value = val;
-  });
-}
 const store = useGraphStore();
 
 const props = defineProps({
@@ -95,7 +181,6 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 
 // this is part of our example (so not required)
 function onOKClick() {
-  console.log(dot1.value);
   if (tab.value == '2Angle1Side') {
     let s1 = side1.value;
     let a1 = angle1.value;

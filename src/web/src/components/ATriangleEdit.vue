@@ -22,6 +22,23 @@
       </q-item-section>
     </q-item>
 
+    <q-item v-if="visible"
+      ><q-item-section><q-item-label>Round</q-item-label> </q-item-section>
+    </q-item>
+
+    <q-item v-if="visible">
+      <q-item-section>
+        <q-slider
+          v-model="round"
+          :min="0"
+          :max="5"
+          label
+          label-always
+          markers
+        />
+      </q-item-section>
+    </q-item>
+
     <a-color-picker v-if="visible" v-model="color" />
   </q-list>
 </template>
@@ -49,5 +66,10 @@ const visible = computed({
 const color = computed({
   get: () => triangle.value.style.color,
   set: (val) => (triangle.value.style.color = val),
+});
+
+const round = computed({
+  get: () => triangle.value.style.round,
+  set: (val) => (triangle.value.style.round = val),
 });
 </script>

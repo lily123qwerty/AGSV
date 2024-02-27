@@ -1,8 +1,9 @@
 export default class Style {
-  constructor({ visible, size, color }) {
+  constructor({ visible, size, color, round }) {
     this._visible = visible !== undefined ? visible : true;
     this._size = size !== undefined ? size : 5;
     this._color = color !== undefined ? color : 'black';
+    this._round = round !== undefined ? round : 1;
   }
 
   get visible() {
@@ -29,11 +30,20 @@ export default class Style {
     this._color = val;
   }
 
+  get round() {
+    return this._round;
+  }
+
+  set round(val) {
+    this._round = val;
+  }
+
   toJSON() {
     return {
       visible: this.visible,
       size: this.size,
       color: this.color,
+      round: this.round,
     };
   }
 

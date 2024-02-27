@@ -413,7 +413,6 @@ export default class Graph {
     );
   }
 
-  // TODO: need check
   addTriangleByOuterAngle2Side(angle1, side1, side3, direction) {
     //                dot3
     //               /     \
@@ -424,7 +423,7 @@ export default class Graph {
     let x1 = x_min,
       y1 = y_min,
       x2,
-      y2 = y_min,
+      y2,
       x3,
       y3;
 
@@ -460,7 +459,6 @@ export default class Graph {
     }
 
     if (typeof side1 == 'object') {
-      //side is a line key
       shareLine1 = side1;
       let line = side1;
       dot1 = line.ends[0];
@@ -478,18 +476,25 @@ export default class Graph {
       //side is a line key
       shareLine3 = side3;
       let line = side3;
-      dot2 = line.ends[0];
-      dot3 = line.ends[1];
+      dot2 = side3.ends[0];
+      dot3 = side3.ends[1];
       x2 = dot2.x;
       y2 = dot2.y;
       x3 = dot3.x;
       y3 = dot3.y;
 
       let angle2 =
-        Math.PI - angle1 - Math.asin((Math.sin(angle1) * side1) / side3);
-      r = shareLine3.radian(dot2) + angle2 - Math.PI;
-      x1 = Math.cos(r + Math.PI) * side1 + x2;
-      y1 = Math.sin(r + Math.PI) * side1 + y2;
+        Math.PI - angle1 - Math.asin((Math.sin(angle1) * side1) / side3.length);
+      r = side3.radian(dot2) + angle2 - Math.PI;
+      x1 = Math.cos(line.radian(dot2) + angle2) * side1 + x2;
+      y1 = Math.sin(line.radian(dot2) + angle2) * side1 + y2;
+
+      if (direction == -1) {
+        let mid = { x: (x3 + x2) / 2, y: (y3 + y2) / 2 };
+        x1 = mid.x + (mid.x - x1);
+        y1 = mid.y + (mid.y - y1);
+        dot1 = this.addDot(x1, y1);
+      }
 
       side3 = line.length;
     }
@@ -499,15 +504,10 @@ export default class Graph {
 
     let angle2 =
       Math.PI - angle1 - Math.asin((Math.sin(angle1) * side1) / side3);
-    x3 = side3 * Math.cos(Math.PI + r - angle2);
-    y3 = side3 * Math.sin(Math.PI + r - angle2);
+    x3 = side3 * Math.cos(Math.PI + r - angle2) + x2;
+    y3 = side3 * Math.sin(Math.PI + r - angle2) + y2;
 
     if (!dot1) {
-      if (direction == -1 && shareLine3) {
-        let mid = { x: (x3 + x2) / 2, y: (y3 + y2) / 2 };
-        x1 = mid.x + (mid.x - x1);
-        y1 = mid.y + (mid.y - y1);
-      }
       dot1 = this.addDot(x1, y1);
     }
 
@@ -536,24 +536,72 @@ export default class Graph {
     );
   }
 
-  // TODO: make this function work
-  addTriangleBy3Side(side1, side2, side3) {
-    var x1 = 0,
-      y1 = 0,
-      x2 = side1,
-      y2 = 0,
+  addTriangleBy3Side(side1, side2, side3, direction) {
+    direction = direction || 1;
+    //                dot3
+    //               /     \
+    //            side2       \
+    //            /              \
+    //          dot1------side1----dot2
+    let x1 = x_min,
+      y1 = y_min,
+      x2,
+      y2,
       x3,
       y3;
-    var angle1 =
-      (side1 * side1 + side3 * side3 - side2 * side2) / (2 * side1 * side3);
-    angle1 = Math.acos(angle1);
-    x3 = side3 * Math.cos(angle1);
-    y3 = side3 * Math.sin(angle1);
+    let dot1, dot2, dot3;
+    let shareLine = null;
+    let r = 0;
 
-    var dot_key_1 = addDot(x1, y1);
-    var dot_key_2 = addDot(x2, y2);
-    var dot_key_3 = addDot(x3, y3);
-    return addTriangleBy3Dot(dot_key_1, dot_key_2, dot_key_3);
+    console.log(side1, side2, side3);
+
+    if (typeof side1 == 'object') {
+      //side is a line key
+      shareLine = side1;
+      let line = side1;
+      dot1 = line.ends[0];
+      dot2 = line.ends[1];
+      x1 = dot1.x;
+      y1 = dot1.y;
+
+      r = line.radian(dot1);
+      side1 = line.length;
+    }
+    x2 = side1 * Math.cos(r) + x1;
+    y2 = side1 * Math.sin(r) + y1;
+
+    if (!dot1) {
+      dot1 = this.addDot(x1, y1);
+    }
+
+    if (!dot2) {
+      dot2 = this.addDot(x2, y2);
+    }
+
+    let angle1 = Math.acos(
+      (side1 * side1 + side2 * side2 - side3 * side3) / 2 / side1 / side2
+    );
+
+    x3 = Math.cos(angle1 + r) * side2 + x1;
+    y3 = Math.sin(angle1 + r) * side2 + y1;
+
+    if (direction == -1) {
+      let mid = { x: (x2 + x1) / 2, y: (y2 + y1) / 2 };
+      x3 = mid.x + (mid.x - x3);
+      y3 = mid.y + (mid.y - y3);
+    }
+
+    dot3 = this.addDot(x3, y3);
+    return this.addTriangleBy3Dot(
+      dot1,
+      dot2,
+      dot3,
+      null,
+      null,
+      shareLine,
+      null,
+      null
+    );
   }
 
   addCircleByRadius(r) {}

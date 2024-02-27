@@ -78,5 +78,8 @@ export const useGraphStore = defineStore('graph', {
         null
       );
     },
+    addTriangleBy3Side(side1, side2, side3) {
+      return this.graph.addTriangleBy3Side(side1, side2, side3);
+    },
   },
 });

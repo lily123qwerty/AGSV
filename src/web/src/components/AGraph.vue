@@ -157,7 +157,10 @@ const labels = computed(() => {
 
   //angle label
   angles.value.forEach((angle) => {
-    let label = Math.round(radiansToDegrees(angle.radian)) + '°';
+    let label =
+      Math.round(radiansToDegrees(angle.radian) * 10 ** angle.style.round) /
+        10 ** angle.style.round +
+      '°';
     const r1 = angle.sides1[0].radian(angle.vertex);
     const r2 = angle.sides2[0].radian(angle.vertex);
     const r = angle.radian / 2;
@@ -206,7 +209,9 @@ const labels = computed(() => {
       x = x * scale.value + margin * Math.cos(r - Math.PI / 2);
       y = y * scale.value + margin * Math.sin(r - Math.PI / 2);
 
-      let lineLabel = Math.round(line.length * 10) / 10;
+      let lineLabel =
+        Math.round(line.length * 10 ** line.style.round) /
+        10 ** line.style.round;
       l.push({
         key: line.key,
         x,
@@ -235,7 +240,9 @@ const labels = computed(() => {
           3) *
         scale.value;
 
-      let area = Math.round(triangle.area * 100) / 100;
+      let area =
+        Math.round(triangle.area * 10 ** triangle.style.round) /
+        10 ** triangle.style.round;
 
       l.push({
         key: triangle.key,
