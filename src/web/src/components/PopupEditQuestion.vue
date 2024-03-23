@@ -13,6 +13,22 @@
         <q-input v-model="question" outlined autogrow autofocus
       /></q-card-section>
 
+      <q-card-section>
+        <div class="q-pa-md row">
+          <div class="col-6">
+            <q-select
+              v-model="category"
+              :options="categories"
+              label="Category"
+            />
+          </div>
+
+          <div class="col-6">
+            <q-toggle v-model="published" label="Publish" left-label />
+          </div>
+        </div>
+      </q-card-section>
+
       <!-- buttons example -->
       <q-card-actions align="right" class="q-pr-md q-pb-md">
         <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
@@ -25,10 +41,17 @@
 <script setup>
 import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
+import { useUserStore } from '../stores/user';
 
 const props = defineProps({
   question: String,
+  category: String,
+  published: Boolean,
 });
+
+const userStore = useUserStore();
+
+const categories = userStore.categories.map((c) => c.name);
 
 defineEmits([
   // REQUIRED; need to specify some events that your
@@ -47,8 +70,16 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 
 const question = ref(props.question);
 
+const category = ref(props.category);
+
+const published = ref(props.published);
+
 // this is part of our example (so not required)
 function onOKClick() {
-  onDialogOK(question.value);
+  onDialogOK({
+    question: question.value,
+    category: category.value,
+    published: published.value,
+  });
 }
 </script>

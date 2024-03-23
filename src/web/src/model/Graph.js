@@ -3,6 +3,7 @@ import Dot from './Dot';
 import Line from './Line';
 import Angle from './Angle';
 import Triangle from './Triangle';
+import Circle from './Circle';
 import Shape from './Shape';
 
 const x_min = 50;
@@ -16,9 +17,12 @@ export default class Graph {
     this._lines = {};
     this._angles = {};
     this._triangles = {};
+    this._circles = {};
     this._id = null;
     this._uid = null;
     this._question = '';
+    this._published = false;
+    this._category = '';
   }
 
   _makeKey(prefix) {
@@ -58,12 +62,32 @@ export default class Graph {
     return this._triangles;
   }
 
+  get circles() {
+    return this._circles;
+  }
+
   get question() {
     return this._question;
   }
 
   set question(val) {
     this._question = val;
+  }
+
+  get published() {
+    return this._published;
+  }
+
+  set published(val) {
+    this._published = val;
+  }
+
+  get category() {
+    return this._category;
+  }
+
+  set category(val) {
+    this._category = val;
   }
 
   get bounds() {
@@ -77,6 +101,31 @@ export default class Graph {
       left = Math.min(left, obj.x);
       bottom = Math.max(bottom, obj.y);
       right = Math.max(right, obj.x);
+    });
+    Object.entries(this.circles).forEach(([key, obj]) => {
+      if (obj.semiCircle) {
+        const r = obj.diameter.radian(obj.diameter.ends[0]);
+        if (r < Math.PI) {
+          left = Math.min(left, obj.center.x - obj.radius);
+          if (r < Math.PI / 2) {
+            top = Math.min(top, obj.center.y + obj.radius);
+          } else {
+            bottom = Math.max(bottom, obj.center.y - obj.radius);
+          }
+        } else {
+          right = Math.max(right, obj.center.x + obj.radius);
+          if (r > (Math.PI / 2) * 3) {
+            top = Math.min(top, obj.center.y + obj.radius);
+          } else {
+            bottom = Math.max(bottom, obj.center.y - obj.radius);
+          }
+        }
+      } else {
+        top = Math.min(top, obj.center.y - obj.radius);
+        left = Math.min(left, obj.center.x - obj.radius);
+        bottom = Math.max(bottom, obj.center.y + obj.radius);
+        right = Math.max(right, obj.center.x + obj.radius);
+      }
     });
 
     return { top, left, bottom, right };
@@ -122,6 +171,8 @@ export default class Graph {
       key_seq: this._key_seq,
       uid: this._uid,
       question: this._question,
+      published: this._published,
+      category: this._category,
     };
   }
 
@@ -153,6 +204,10 @@ export default class Graph {
     g._key_seq = json.key_seq;
 
     g._question = json.question;
+
+    g._published = json.published;
+
+    g._category = json.category;
 
     return g;
   }
@@ -604,9 +659,27 @@ export default class Graph {
     );
   }
 
-  addCircleByRadius(r) {}
-
-  addCircleByCircumference(c) {}
+  // TODO: check
+  addCircle(c, radius, diameter) {
+    let center = c;
+    let semiCircle = false;
+    if (typeof diameter == 'object') {
+      semiCircle = true;
+    }
+    if (!(center instanceof Dot)) {
+      console.log;
+      center = this.addDot(c.x, c.y);
+    }
+    let circle = new Circle(
+      center,
+      radius,
+      semiCircle,
+      diameter,
+      this._makeKey('c')
+    );
+    this.circles[circle.key] = circle;
+    return circle;
+  }
 
   addParallelogram(angle, side1, side2) {}
 

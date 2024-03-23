@@ -21,6 +21,13 @@
         :scale="scale"
       ></a-triangle>
 
+      <a-circle
+        v-for="c in circles"
+        :key="c.key"
+        :circle="c"
+        :scale="scale"
+      ></a-circle>
+
       <a-dot
         v-for="dot in dots"
         :key="dot.key"
@@ -55,6 +62,7 @@ import ATriangle from './ATriangle.vue';
 import ADot from './ADot.vue';
 import AText from './AText.vue';
 import AAngle from './AAngle.vue';
+import ACircle from './ACircle.vue';
 import { radiansToDegrees } from 'src/model/helper';
 
 const props = defineProps({
@@ -98,6 +106,10 @@ const height = computed(() => {
 
 const triangles = computed(() =>
   Object.entries(props.graph.triangles).map(([key, obj]) => obj)
+);
+
+const circles = computed(() =>
+  Object.entries(props.graph.circles).map(([key, obj]) => obj)
 );
 
 const dots = computed(() =>

@@ -6,6 +6,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import Graph from 'src/model/Graph';
+import Category from 'src/model/Category';
 import {
   doc,
   setDoc,
@@ -15,14 +16,23 @@ import {
   getFirestore,
   query,
   where,
+  getDoc,
   getDocs,
 } from 'firebase/firestore';
 
 export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: false,
-    graphs: [],
-  }),
+  state: () => {
+    const categories = [];
+    categories.push(new Category('cm', 'Competition Math'));
+    categories.push(new Category('ib', 'IB'));
+    categories.push(new Category('igcse', 'IGCSE'));
+
+    return {
+      user: false,
+      graphs: [],
+      categories,
+    };
+  },
 
   getters: {
     // doubleCount(state) {
@@ -117,6 +127,14 @@ export const useUserStore = defineStore('user', {
       });
 
       console.log(this.graphs);
+    },
+
+    async getGraphByID(id) {
+      const db = getFirestore();
+      const d = await getDoc(doc(db, 'graphs', id));
+      const graph = Graph.fromJSON(d.data());
+
+      return graph;
     },
   },
 });

@@ -82,7 +82,7 @@ const toDelete = ref(null);
 function clickEdit(graph) {
   graphStore.graph = graph;
   graphStore.history = new History(graph);
-  router.push('/');
+  router.push('/graph');
 }
 
 async function clickRemove(graph) {
@@ -97,7 +97,7 @@ async function clickRemove(graph) {
 function clickAdd() {
   graphStore.graph = new Graph();
   graphStore.history = new History();
-  router.push('/');
+  router.push('/graph');
 }
 </script>
 

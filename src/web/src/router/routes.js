@@ -17,9 +17,14 @@ const routes = [
   },
 
   {
-    path: '/',
+    path: '/graph',
     component: () => import('layouts/GraphLayout.vue'),
     children: [{ path: '', component: () => import('pages/GraphPage.vue') }],
+  },
+  {
+    path: '/',
+    component: () => import('layouts/LandingLayout.vue'),
+    children: [{ path: '', component: () => import('pages/LandingPage.vue') }],
   },
 
   {

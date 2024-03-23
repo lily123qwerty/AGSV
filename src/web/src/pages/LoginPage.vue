@@ -144,7 +144,7 @@ const submit = async () => {
       waiting.value = false;
       console.log(errorCode);
       if (!errorCode) {
-        router.push('/');
+        router.push('/home');
       } else if (errorCode == 'auth/invalid-login-credentials') {
         emailError.value = 'Email may be wrong';
         passwordError.value = 'Password may be wrong';

@@ -21,7 +21,11 @@
             >
               <q-tooltip class="tooltip">Add a triangle</q-tooltip></q-btn
             >
-            <q-btn outline :size="btnSize" icon="mdi-circle-outline"
+            <q-btn
+              outline
+              :size="btnSize"
+              icon="mdi-circle-outline"
+              @click="addCircle"
               ><q-tooltip class="tooltip">Add a cycle</q-tooltip></q-btn
             >
             <q-btn outline :size="btnSize" icon="mdi-square-outline"
@@ -60,7 +64,7 @@
               :size="btnSize"
               icon="save"
               @click="save"
-              ><q-tooltip class="tooltip">Save and quit</q-tooltip></q-btn
+              ><q-tooltip class="tooltip">Save</q-tooltip></q-btn
             >
           </q-btn-group>
 
@@ -159,6 +163,11 @@ const rightDrawerOpen = ref(false);
 
 const isSaving = ref(false);
 
+// TODO: test circle
+function addCircle() {
+  store.addCircle({ x: 50, y: 50 }, 50);
+}
+
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
@@ -181,7 +190,7 @@ async function save() {
     isSaving.value = true;
     await userStore.save(store.graph);
     isSaving.value = false;
-    router.push('/home');
+    // router.push('/home');
   } catch (e) {
     isSaving.value = false;
   }
@@ -223,10 +232,15 @@ function editQuestion() {
     // props forwarded to your custom component
     componentProps: {
       question: store.graph.question,
+      category: store.graph.category,
+      published: store.graph.published,
     },
   })
     .onOk((data) => {
-      store.graph.question = data;
+      console.log(data);
+      store.graph.question = data.question;
+      store.graph.category = data.category;
+      store.graph.published = data.published;
       // console.log('>>>> OK, received', data);
     })
     .onCancel(() => {

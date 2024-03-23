@@ -16,6 +16,14 @@
               v-model="vals['dot1']"
               :options="options['dot1']"
               label="Dot 1"
+              :disable="
+                vals.angle1 ||
+                vals.angle2 ||
+                vals.angle3 ||
+                vals.side12 ||
+                vals.side23 ||
+                vals.side31
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -23,6 +31,14 @@
               v-model="vals['dot2']"
               :options="options['dot2']"
               label="Dot 2"
+              :disable="
+                vals.angle1 ||
+                vals.angle2 ||
+                vals.angle3 ||
+                vals.side12 ||
+                vals.side23 ||
+                vals.side31
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -30,6 +46,14 @@
               v-model="vals['dot3']"
               :options="options['dot3']"
               label="Dot 3"
+              :disable="
+                vals.angle1 ||
+                vals.angle2 ||
+                vals.angle3 ||
+                vals.side12 ||
+                vals.side23 ||
+                vals.side31
+              "
             />
           </div>
         </div>
@@ -46,6 +70,12 @@
                 (val, update) => filterFn(val, update, 'allLines', 'side12')
               "
               @blur="() => blurFn('side12')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (angle3 && (angle1 || angle2))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -60,6 +90,12 @@
                 (val, update) => filterFn(val, update, 'allLines', 'side23')
               "
               @blur="() => blurFn('side23')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (angle1 && (angle2 || angle3))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -74,6 +110,12 @@
                 (val, update) => filterFn(val, update, 'allLines', 'side31')
               "
               @blur="() => blurFn('side31')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (angle2 && (angle1 || angle3))
+              "
             />
           </div>
         </div>
@@ -90,6 +132,12 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle1')
               "
               @blur="() => blurFn('angle1')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (side23 && (angle2 || angle3))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -104,6 +152,12 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle2')
               "
               @blur="() => blurFn('angle2')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (side31 && (angle1 || angle3))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -118,6 +172,12 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle3')
               "
               @blur="() => blurFn('angle3')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (side12 && (angle1 || angle2))
+              "
             />
           </div>
         </div>
@@ -136,6 +196,7 @@
 import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
+import { isInDestructureAssignment } from 'vue/compiler-sfc';
 
 const store = useGraphStore();
 
@@ -158,11 +219,10 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 //                    example: onDialogOK({ /*...*/ }) - with payload
 // onDialogCancel - Function to call to settle dialog with "cancel" outcome
 
-//TODO: read from graph
 const allOptions = {
-  allDots: ['', 'd001 - A', 'd002 - B', 'd003 - C'],
-  allLines: ['', 'l004 - A', 'l005 - B', 'l006 - C'],
-  allAngles: ['', 'a007 - A', 'a008 - B', 'a009 - C'],
+  allDots: Object.entries(store.graph.dots).map(([key, obj]) => key),
+  allLines: Object.entries(store.graph.lines).map(([key, obj]) => key),
+  allAngles: Object.entries(store.graph.angles).map(([key, obj]) => key),
 };
 
 const options = ref({
@@ -181,12 +241,12 @@ const vals = ref({
   dot1: null,
   dot2: null,
   dot3: null,
-  angle1: 60,
-  angle2: 60,
-  angle3: 60,
-  side12: 100,
-  side23: 100,
-  side31: 100,
+  angle1: null,
+  angle2: null,
+  angle3: null,
+  side12: null,
+  side23: null,
+  side31: null,
 });
 
 const inputVals = ref({});
@@ -222,157 +282,235 @@ function blurFn(key) {
 
 /*-- Following code needs modifying --*/
 
-const angle1 = ref(60);
-const angle2 = ref(60);
-const side1 = ref(100);
-const side2 = ref(100);
-const side3 = ref(100);
-const dot1 = ref();
-const dot2 = ref();
-const dot3 = ref();
-
 // this is part of our example (so not required)
 function onOKClick() {
-  console.log(vals.value['dot1']);
-  if (tab.value == '2Angle1Side') {
-    let s1 = side1.value;
-    let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
-    if (isNaN(s1)) {
-      s1 = store.graph.lines[s1];
-    } else {
-      s1 = parseFloat(s1);
-    }
+  let angle1 = vals.value.angle1;
+  let angle2 = vals.value.angle2;
+  let angle3 = vals.value.angle3;
+  let side12 = vals.value.side12;
+  let side23 = vals.value.side23;
+  let side31 = vals.value.side31;
+  let dot1 = vals.value.dot1;
+  let dot2 = vals.value.dot2;
+  let dot3 = vals.value.dot3;
 
-    if (isNaN(a1)) {
-      a1 = store.graph.angles[a1];
-    } else {
-      a1 = parseFloat(a1);
-    }
-    if (s1) {
-      store.addTriangleBy2Angle1Side(a1, angle2.value, s1);
-      store.historyPush();
-      // let c = store.graph.center;
-      // store.graph.translate(
-      //     store.viewBox.width / 2 - c.x,
-      //     store.viewBox.height / 2 - c.y
-      // );
-    }
-  } else if (tab.value == 'innerAngle2Side') {
-    let s1 = side1.value;
-    let s2 = side2.value;
-    let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
-    if (isNaN(s1)) {
-      s1 = store.graph.lines[s1];
-    } else {
-      s1 = parseFloat(s1);
-    }
-    if (isNaN(s2)) {
-      s2 = store.graph.lines[s2];
-    } else {
-      s2 = parseFloat(s2);
-    }
-    if (isNaN(a1)) {
-      a1 = store.graph.angles[a1];
-    } else {
-      a1 = parseFloat(a1);
-    }
-
-    if (s1) {
-      store.addTriangleByInnerAngle2Side(a1, s1, s2);
-      store.historyPush();
-    }
-  } else if (tab.value == 'outerAngle2Side') {
-    let s1 = side1.value;
-    let s2 = side2.value;
-    let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
-    if (isNaN(s1)) {
-      s1 = store.graph.lines[s1];
-    } else {
-      s1 = parseFloat(s1);
-    }
-    if (isNaN(s2)) {
-      s2 = store.graph.lines[s2];
-    } else {
-      s2 = parseFloat(s2);
-    }
-    if (isNaN(a1)) {
-      a1 = store.graph.angles[a1];
-    } else {
-      a1 = parseFloat(a1);
-    }
-
-    if (s1) {
-      store.addTriangleByOuterAngle2Side(a1, s1, s2);
-      store.historyPush();
-    }
-  } else if (tab.value == '3dots') {
+  // 3dots
+  if (dot1 && dot2 && dot3) {
     store.addTriangleBy3Dot(
-      store.graph.dots[dot1.value],
-      store.graph.dots[dot2.value],
-      store.graph.dots[dot3.value]
-    );
-    store.historyPush();
-  } else if (tab.value == '3sides') {
-    let s1 = side1.value;
-    if (isNaN(s1)) {
-      s1 = store.graph.lines[s1];
-    } else {
-      s1 = parseFloat(s1);
-    }
-    store.addTriangleBy3Side(
-      s1,
-      parseFloat(side2.value),
-      parseFloat(side3.value)
+      store.graph.dots[dot1],
+      store.graph.dots[dot2],
+      store.graph.dots[dot3]
     );
   }
+
+  // 3sides
+  if (side12 && side23 && side31) {
+    if (isNaN(side12)) {
+      store.addTriangleBy3Side(
+        store.graph.lines[side12],
+        parseFloat(side23),
+        parseFloat(side31)
+      );
+    } else if (isNaN(side23)) {
+      store.addTriangleBy3Side(
+        store.graph.lines[side23],
+        parseFloat(side31),
+        parseFloat(side12)
+      );
+    } else if (isNaN(side31)) {
+      store.addTriangleBy3Side(
+        store.graph.lines[side31],
+        parseFloat(side12),
+        parseFloat(side23)
+      );
+    } else {
+      store.addTriangleBy3Side(
+        parseFloat(side12),
+        parseFloat(side23),
+        parseFloat(side31)
+      );
+    }
+  }
+
+  if (angle1) {
+    if (isNaN(angle1)) {
+      angle1 = store.graph.angles[angle1];
+    } else {
+      angle1 = parseFloat(angle1);
+    }
+
+    // 2angle 1 side
+    if (angle2 && side12) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+      } else {
+        side12 = parseFloat(side12);
+      }
+      if (side12) {
+        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
+      }
+    }
+    if (angle3 && side31) {
+      if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+      } else {
+        side31 = parseFloat(side31);
+      }
+      if (side31) {
+        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
+      }
+    }
+
+    // inner angle 2 side
+    if (side12 && side31) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+        store.addTriangleByInnerAngle2Side(angle1, side12, parseFloat(side31));
+      } else if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+        store.addTriangleByInnerAngle2Side(angle1, side23, parseFloat(side31));
+      } else {
+        side12 = parseFloat(side12);
+        side31 = parseFloat(side31);
+        store.addTriangleByInnerAngle2Side(angle1, side12, side31);
+      }
+    }
+
+    // outer angle 2 side
+    if (side12 && side23) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+      } else {
+        side12 = parseFloat(side12);
+      }
+      if (isNaN(side23)) {
+        side23 = store.graph.lines[side23];
+      } else {
+        side23 = parseFloat(side23);
+      }
+      store.addTriangleByOuterAngle2Side(angle1, side12, side23);
+    }
+  }
+
+  if (angle2) {
+    if (isNaN(angle2)) {
+      angle2 = store.graph.angles[angle2];
+    } else {
+      angle2 = parseFloat(angle2);
+    }
+    // 2angle 1 side
+    if (angle3 && side23) {
+      if (isNaN(side23)) {
+        side23 = store.graph.lines[side23];
+      } else {
+        side23 = parseFloat(side23);
+      }
+      if (side23) {
+        store.addTriangleBy2Angle1Side(angle2, angle3, side23);
+      }
+    }
+    if (angle1 && side12) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+      } else {
+        side12 = parseFloat(side12);
+      }
+      if (side12) {
+        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
+      }
+    }
+
+    // inner angle 2 side
+    if (side12 && side23) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+        store.addTriangleByInnerAngle2Side(angle2, side12, parseFloat(side23));
+      } else if (isNaN(side23)) {
+        side23 = store.graph.lines[side23];
+        store.addTriangleByInnerAngle2Side(angle2, side23, parseFloat(side12));
+      } else {
+        side12 = parseFloat(side12);
+        side23 = parseFloat(side23);
+        store.addTriangleByInnerAngle2Side(angle2, side12, side23);
+      }
+    }
+
+    // outer angle 2 side
+    if (side23 && side31) {
+      if (isNaN(side23)) {
+        side23 = store.graph.lines[side23];
+      } else {
+        side23 = parseFloat(side23);
+      }
+      if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+      } else {
+        side31 = parseFloat(side31);
+      }
+      store.addTriangleByOuterAngle2Side(angle2, side23, side31);
+    }
+  }
+
+  if (angle3) {
+    if (isNaN(angle3)) {
+      angle3 = store.graph.angles[angle3];
+    } else {
+      angle3 = parseFloat(angle3);
+    }
+    // 2angle 1 side
+    if (angle1 && side31) {
+      if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+      } else {
+        side31 = parseFloat(side31);
+      }
+      if (side31) {
+        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
+      }
+    }
+    if (angle2 && side31) {
+      if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+      } else {
+        side31 = parseFloat(side31);
+      }
+      if (side31) {
+        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
+      }
+    }
+
+    // inner angle 2 side
+    if (side23 && side31) {
+      if (isNaN(side23)) {
+        side23 = store.graph.lines[side23];
+        store.addTriangleByInnerAngle2Side(angle3, side23, parseFloat(side31));
+      } else if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+        store.addTriangleByInnerAngle2Side(angle3, side31, parseFloat(side23));
+      } else {
+        side23 = parseFloat(side23);
+        side31 = parseFloat(side31);
+        store.addTriangleByInnerAngle2Side(angle3, side23, side31);
+      }
+    }
+
+    // outer angle 2 side
+    if (side31 && side12) {
+      if (isNaN(side31)) {
+        side31 = store.graph.lines[side31];
+      } else {
+        side31 = parseFloat(side31);
+      }
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+      } else {
+        side12 = parseFloat(side12);
+      }
+      store.addTriangleByOuterAngle2Side(angle3, side31, side12);
+    }
+  }
+  store.historyPush();
 
   onDialogOK();
 }
-
-function checkSide(val) {
-  if (isNaN(val)) {
-    if (store.graph.lines[val]) {
-      return true;
-    } else {
-      return 'invalid line key';
-    }
-  } else if (val <= 0) {
-    return 'invalid number';
-  } else {
-    return true;
-  }
-}
-
-function checkAngle(val) {
-  if (isNaN(val)) {
-    if (store.graph.angles[val]) {
-      return true;
-    } else {
-      return 'invalid line key';
-    }
-  } else if (val < -180 || val > 180) {
-    return 'invalid number';
-  } else {
-    return true;
-  }
-}
-
-function checkDot(val) {
-  if (isNaN(val)) {
-    if (store.graph.dots[val]) {
-      return true;
-    } else {
-      return 'invalid dot key';
-    }
-  } else {
-    return 'please put in a dot key';
-  }
-}
-
-const tab = ref('2Angle1Side');
-const splitterModel = ref(20);
-const direction = ref(1);
 </script>
