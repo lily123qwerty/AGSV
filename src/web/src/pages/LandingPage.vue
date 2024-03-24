@@ -15,22 +15,33 @@
             color="primary"
             @click="router.push('/graph')"
             label="Get Started"
+            size="20px"
           />
         </div>
       </div>
       <div class="example">
-        <div v-if="graph">
+        <div
+          class="example-container column justify-center items-center shadow-9"
+          v-if="graph"
+        >
           <a-graph :graph="graph" />
-          <div class="example-question">{{ graph.question }}</div>
+          <div class="example-question q-mt-lg">
+            {{ graph.question }}
+          </div>
         </div>
       </div>
     </div>
-    <div class="catalog vertical-middle">
-      <q-btn color="primary" label="Get Started" />
-      <q-btn color="primary" label="Get Started" />
-      <q-btn color="primary" label="Get Started" />
-      <q-btn color="primary" label="Get Started" />
-      <q-btn color="primary" label="Get Started" />
+    <div class="catalog row justify-start items-center">
+      <div v-for="c in userStore.categories" :key="c.key" class="q-mr-lg">
+        <q-btn
+          color="primary"
+          icon="mail"
+          :label="c.name"
+          rounded
+          outline
+          size="14px"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +52,6 @@ import Graph from '../model/Graph';
 import { useGraphStore } from 'stores/graph';
 import { useUserStore } from '../stores/user';
 import AGraph from 'components/AGraph.vue';
-import History from 'src/model/History';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -104,9 +114,9 @@ onMounted(async () => {
   bottom: 0;
   width: 100%;
   height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  //display: flex;
+  // justify-content: space-between;
+  // align-items: center;
   padding-left: 30px;
   padding-right: 30px;
 }
@@ -122,27 +132,51 @@ div.intro {
   align-items: center;
 }
 div.intro-content {
-  text-align: justify;
+  text-align: left;
   padding-left: 30px;
   padding-right: 30px;
+
+  h5 {
+    font-size: 30px;
+    font-family: sans-serif;
+  }
+
+  p {
+    text-align: justify;
+    font-size: 16px;
+    font-family: sans-serif;
+  }
 }
 div.example {
   // background-color: blueviolet;
   position: relative;
-  text-align: center;
   height: 100%;
   width: 50%;
   float: right;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-div.example-question {
-  font-size: 14px;
-  font-family: sans-serif;
-  text-align: left;
-  // text-justify: inter-word;
-  padding-left: 30px;
-  padding-right: 30px;
+
+  .example-container {
+    position: absolute;
+    left: 40px;
+    top: 40px;
+    right: 55px;
+    bottom: 55px;
+    // border: 1px solid black;
+    box-shadow: black 0px 0px 0px 1px inset, rgb(255, 255, 255) 5px 5px 0px -1px,
+      black 5px 5px, rgb(255, 255, 255) 10px 10px 0px -1px, black 10px 10px,
+      rgb(255, 255, 255) 15px 15px 0px -1px, black 15px 15px;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // text-align: center;
+  }
+
+  div.example-question {
+    font-size: 17px;
+    font-family: sans-serif;
+    text-align: justify;
+    // text-justify: inter-word;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 </style>

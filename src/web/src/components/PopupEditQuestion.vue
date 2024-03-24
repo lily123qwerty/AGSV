@@ -14,18 +14,18 @@
       /></q-card-section>
 
       <q-card-section>
-        <div class="q-pa-md row">
-          <div class="col-6">
+        <div class="row justify-between items-center">
+          <div class="col-7">
             <q-select
+              outlined
+              dense
               v-model="category"
               :options="categories"
               label="Category"
             />
           </div>
 
-          <div class="col-6">
-            <q-toggle v-model="published" label="Publish" left-label />
-          </div>
+          <q-toggle v-model="published" label="Publish" left-label />
         </div>
       </q-card-section>
 

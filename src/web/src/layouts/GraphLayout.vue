@@ -6,10 +6,13 @@
 
         <q-toolbar-title>
           &nbsp;
-          <q-avatar square>
-            <img src="agsv-icon.svg" />
-          </q-avatar>
-          AGSV
+          <router-link to="/" style="color: white; text-decoration: none">
+            <q-avatar square>
+              <img src="agsv-icon.svg" />
+            </q-avatar>
+            AGSV
+          </router-link>
+
           <!-- new shape button group -->
 
           <q-btn-group outline rounded class="first-btns">
