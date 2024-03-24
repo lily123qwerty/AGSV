@@ -69,6 +69,14 @@
               @click="save"
               ><q-tooltip class="tooltip">Save</q-tooltip></q-btn
             >
+            <q-btn
+              v-if="userStore.user && !isSaving"
+              outline
+              :size="btnSize"
+              icon="home"
+              @click="() => router.push('/home')"
+              ><q-tooltip class="tooltip">Home</q-tooltip></q-btn
+            >
           </q-btn-group>
 
           <!-- <q-btn class="q-ml-sm" color="secondary" label="test" @click="test" />

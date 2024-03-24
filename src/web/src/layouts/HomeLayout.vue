@@ -6,10 +6,12 @@
 
         <q-toolbar-title>
           &nbsp;
-          <q-avatar square>
-            <img src="agsv-icon.svg" />
-          </q-avatar>
-          AGSV
+          <router-link to="/" style="color: white; text-decoration: none">
+            <q-avatar square>
+              <img src="/agsv-icon.svg" />
+            </q-avatar>
+            AGSV
+          </router-link>
         </q-toolbar-title>
         <q-btn
           v-if="!userStore.user"

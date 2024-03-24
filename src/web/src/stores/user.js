@@ -129,6 +129,27 @@ export const useUserStore = defineStore('user', {
       console.log(this.graphs);
     },
 
+    async getCategoryGraphs(key) {
+      const db = getFirestore();
+
+      const q = query(
+        collection(db, 'graphs'),
+        where('category', '==', key),
+        where('published', '==', true)
+      );
+      const qs = await getDocs(q);
+      const graphs = [];
+
+      qs.forEach((doc) => {
+        const graph = Graph.fromJSON(doc.data());
+        graph.id = doc.id;
+        graphs.push(graph);
+      });
+
+      console.log(graphs);
+      return graphs;
+    },
+
     async getGraphByID(id) {
       const db = getFirestore();
       const d = await getDoc(doc(db, 'graphs', id));

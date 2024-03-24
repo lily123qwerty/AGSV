@@ -32,6 +32,19 @@
       </div>
     </div>
     <div class="catalog row justify-start items-center">
+      <div class="q-mr-lg">
+        <q-btn
+          v-if="userStore.user"
+          color="primary"
+          icon="home"
+          label="my graphs"
+          rounded
+          outline
+          size="14px"
+          @click="() => router.push('/home')"
+        />
+      </div>
+
       <div v-for="c in userStore.categories" :key="c.key" class="q-mr-lg">
         <q-btn
           color="primary"
@@ -39,6 +52,7 @@
           :label="c.name"
           rounded
           outline
+          @click="() => router.push('/category/' + c.key)"
           size="14px"
         />
       </div>

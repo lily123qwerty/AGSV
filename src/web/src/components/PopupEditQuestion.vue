@@ -51,7 +51,10 @@ const props = defineProps({
 
 const userStore = useUserStore();
 
-const categories = userStore.categories.map((c) => c.name);
+const categories = userStore.categories.map((c) => ({
+  value: c.key,
+  label: c.name,
+}));
 
 defineEmits([
   // REQUIRED; need to specify some events that your
@@ -78,7 +81,7 @@ const published = ref(props.published);
 function onOKClick() {
   onDialogOK({
     question: question.value,
-    category: category.value,
+    category: category.value.value,
     published: published.value,
   });
 }
