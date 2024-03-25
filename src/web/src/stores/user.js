@@ -31,6 +31,7 @@ export const useUserStore = defineStore('user', {
       user: false,
       graphs: [],
       categories,
+      selectedShape: false,
     };
   },
 
@@ -41,6 +42,10 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
+    getCategoryByKey(key) {
+      return this.categories.filter((c) => c.key == key).shift();
+    },
+
     login(email, password) {},
 
     logout() {},

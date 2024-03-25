@@ -74,7 +74,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (angle3 && (angle1 || angle2))
+                (vals.angle3 && (vals.angle1 || vals.angle2))
               "
             />
           </div>
@@ -94,7 +94,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (angle1 && (angle2 || angle3))
+                (vals.angle1 && (vals.angle2 || vals.angle3))
               "
             />
           </div>
@@ -114,7 +114,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (angle2 && (angle1 || angle3))
+                (vals.angle2 && (vals.angle1 || vals.angle3))
               "
             />
           </div>
@@ -136,7 +136,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (side23 && (angle2 || angle3))
+                (vals.side23 && (vals.angle2 || vals.angle3))
               "
             />
           </div>
@@ -156,7 +156,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (side31 && (angle1 || angle3))
+                (vals.side31 && (vals.angle1 || vals.angle3))
               "
             />
           </div>
@@ -176,7 +176,7 @@
                 vals.dot1 ||
                 vals.dot2 ||
                 vals.dot3 ||
-                (side12 && (angle1 || angle2))
+                (vals.side12 && (vals.angle1 || vals.angle2))
               "
             />
           </div>

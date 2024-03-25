@@ -18,24 +18,36 @@ const routes = [
 
   {
     path: '/graph',
-    component: () => import('layouts/GraphLayout.vue'),
-    children: [{ path: '', component: () => import('pages/GraphPage.vue') }],
+    component: () => import('layouts/MainLayout.vue'),
+    props: { showLeftDrawer: true },
+    children: [
+      {
+        path: '',
+        components: {
+          default: () => import('pages/GraphPage.vue'),
+          title: () => import('pages/GraphPageToolbar.vue'),
+          left: () => import('pages/GraphPageTreeView.vue'),
+          right: () => import('pages/GraphPageEditView.vue'),
+        },
+      },
+    ],
   },
   {
     path: '/',
-    component: () => import('layouts/LandingLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/LandingPage.vue') }],
   },
 
   {
     path: '/home',
-    component: () => import('layouts/HomeLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
+    props: { titleText: 'My Graphs' },
     children: [{ path: '', component: () => import('pages/HomePage.vue') }],
   },
 
   {
     path: '/category/:key',
-    component: () => import('layouts/HomeLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/CategoryPage.vue') }],
   },
 

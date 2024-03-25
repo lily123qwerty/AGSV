@@ -83,7 +83,7 @@ async function getGraph(id) {
     try {
       graph.value = await userStore.getGraphByID(id);
       graphsCache[id] = graph.value;
-      console.log(graph);
+      // console.log(graph);
     } catch (e) {
       console.log(e);
     }

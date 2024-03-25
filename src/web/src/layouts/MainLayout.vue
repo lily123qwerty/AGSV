@@ -1,116 +1,110 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header class="bg-primary text-white q-gutter-x-sm" height-hint="98">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
+        <router-link class="logo" to="/">
+          <q-avatar square>
+            <img src="/agsv-icon.svg" />
+          </q-avatar>
+          AGSV
+        </router-link>
 
         <q-toolbar-title>
-          Quasar App
+          <div class="title-text" v-if="title">{{ title }}</div>
+          <router-view
+            v-else
+            name="title"
+            @hide-right="rightDrawerOpen = false"
+          />
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn
+          v-if="!userStore.user"
+          outline
+          style="color: white"
+          label="Login"
+          to="/user/login"
+        />
+        <q-btn
+          v-if="userStore.user"
+          outline
+          style="color: white"
+          label="Logout"
+          @click="userStore.logout"
+        />
+        <q-btn
+          v-if="rightDrawerOpen"
+          dense
+          flat
+          round
+          icon="close"
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        />
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+    <q-drawer v-model="leftDrawerOpen" side="left" bordered>
+      <router-view name="left" @show-right="rightDrawerOpen = true" />
+    </q-drawer>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+    <q-drawer v-model="rightDrawerOpen" side="right" bordered>
+      <router-view name="right" />
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view @set-title="(t) => (pageTitle = t)" />
     </q-page-container>
+
+    <q-footer bordered class="bg-grey-8 text-white">
+      <q-toolbar>
+        <q-toolbar-title>
+          <div>create by Lily</div>
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+<script setup>
+import { ref, computed } from 'vue';
+import { useUserStore } from '../stores/user';
+import { useRouter } from 'vue-router';
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+const props = defineProps({
+  showLeftDrawer: Boolean,
+  showRightDrawer: Boolean,
+  titleText: String,
+});
 
-export default defineComponent({
-  name: 'MainLayout',
+const userStore = useUserStore();
 
-  components: {
-    EssentialLink
-  },
+const leftDrawerOpen = computed(() => props.showLeftDrawer || false);
+const rightDrawerOpen = ref(false);
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+const pageTitle = ref(false);
+const title = computed(() => props.titleText || pageTitle.value || false);
 
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
-})
+const router = useRouter();
+router.beforeEach((to, from, next) => {
+  rightDrawerOpen.value = false;
+  pageTitle.value = false;
+  next();
+});
 </script>
+
+<style lang="scss" scoped>
+.q-toolbar {
+  padding-right: 20px;
+  .logo {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.title-text {
+  text-align: center;
+}
+</style>

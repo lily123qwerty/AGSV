@@ -15,40 +15,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import Graph from '../model/Graph';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useGraphStore } from 'stores/graph';
 import { useUserStore } from '../stores/user';
 import AGraph from 'components/AGraph.vue';
-import History from 'src/model/History';
 import { useRoute } from 'vue-router';
+
+const emit = defineEmits(['setTitle']);
 
 const route = useRoute();
 
 const userStore = useUserStore();
 const graphStore = useGraphStore();
 
-const confirmDelete = ref(false);
-const toDelete = ref(null);
-
 const graphs = ref([]);
 
+const category = computed(() => userStore.getCategoryByKey(route.params.key));
+
 onMounted(async () => {
+  emit('setTitle', category.value.name);
+
   try {
-    console.log(route.params);
-    graphs.value = await userStore.getCategoryGraphs(route.params.key);
+    graphs.value = await userStore.getCategoryGraphs(category.value.key);
   } catch (e) {
     console.log(e);
   }
 });
-
-watch(
-  () => route.params.key,
-  (newKey, oldKey) => {
-    // react to route changes...
-    console.log(newKey);
-  }
-);
 </script>
 
 <style lang="scss" scoped>
@@ -61,12 +53,6 @@ watch(
   width: 200px;
   height: 200px;
   overflow: hidden;
-}
-
-.add-btn {
-  background-color: aquamarine;
-  width: 200px;
-  height: 200px;
 }
 
 .card-question {

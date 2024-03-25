@@ -71,6 +71,8 @@ import AGraph from 'components/AGraph.vue';
 import History from 'src/model/History';
 import { useRouter } from 'vue-router';
 
+const emit = defineEmits(['setTitle']);
+
 const router = useRouter();
 
 const userStore = useUserStore();
