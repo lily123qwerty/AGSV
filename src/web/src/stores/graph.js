@@ -81,8 +81,8 @@ export const useGraphStore = defineStore('graph', {
     addTriangleBy3Side(side1, side2, side3) {
       return this.graph.addTriangleBy3Side(side1, side2, side3);
     },
-    addCircle(center, radius, diameter) {
-      return this.graph.addCircle(center, radius, diameter);
+    addCircle(center, radius, semiCircle, diameter) {
+      return this.graph.addCircle(center, radius, semiCircle, diameter);
     },
   },
 });

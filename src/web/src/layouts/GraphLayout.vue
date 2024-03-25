@@ -176,7 +176,7 @@ const isSaving = ref(false);
 
 // TODO: test circle
 function addCircle() {
-  store.addCircle({ x: 50, y: 50 }, 50);
+  store.addCircle({ x: 50, y: 50 }, 50, true);
 }
 
 function toggleLeftDrawer() {

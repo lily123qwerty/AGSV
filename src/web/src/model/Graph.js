@@ -660,18 +660,33 @@ export default class Graph {
   }
 
   // TODO: check
-  addCircle(c, radius, diameter) {
-    let center = c;
-    let semiCircle = false;
-    if (typeof diameter == 'object') {
-      semiCircle = true;
-    }
-    if (!(center instanceof Dot)) {
+  addCircle(c, radius, semiCircle, diameter) {
+    // create a circle
+
+    // create a circle with shared diameter
+
+    // create a circle with shared radius
+
+    // create a semi-circle
+
+    // create a semi-circle with shared diameter
+
+    if (!(c instanceof Dot)) {
       console.log;
-      center = this.addDot(c.x, c.y);
+      c = this.addDot(c.x, c.y);
     }
+
+    if (c == undefined || c == null) {
+    }
+    // create a semi-circle
+    if (semiCircle) {
+      if (!(typeof diameter == 'object')) {
+      }
+      diameter = this.addLine(diameter, c.x - radius, c.x + radius);
+    }
+
     let circle = new Circle(
-      center,
+      c,
       radius,
       semiCircle,
       diameter,
