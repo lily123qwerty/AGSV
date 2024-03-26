@@ -10,11 +10,8 @@ import { useUserStore } from '../stores/user';
 
 const userStore = useUserStore();
 
-const emit = defineEmits(['showRight']);
-
 function onSelectShape(obj) {
-  userStore.selectedShape = obj;
-  emit('showRight');
+  userStore.editingObject = obj;
 }
 </script>
 

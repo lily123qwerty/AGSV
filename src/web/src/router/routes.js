@@ -27,7 +27,6 @@ const routes = [
           default: () => import('pages/GraphPage.vue'),
           title: () => import('pages/GraphPageToolbar.vue'),
           left: () => import('pages/GraphPageTreeView.vue'),
-          right: () => import('pages/GraphPageEditView.vue'),
         },
       },
     ],

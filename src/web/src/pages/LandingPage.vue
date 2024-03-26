@@ -32,9 +32,8 @@
       </div>
     </div>
     <div class="catalog row justify-start items-center">
-      <div class="q-mr-lg">
+      <div class="q-mr-lg" v-if="userStore.user">
         <q-btn
-          v-if="userStore.user"
           color="primary"
           icon="home"
           label="my graphs"
@@ -111,7 +110,7 @@ onMounted(async () => {
 .top-part {
   position: absolute;
   top: 0;
-  bottom: 60px;
+  bottom: 80px;
   width: 100%;
   // background-color: brown;
 }
@@ -127,7 +126,7 @@ onMounted(async () => {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 60px;
+  height: 80px;
   //display: flex;
   // justify-content: space-between;
   // align-items: center;

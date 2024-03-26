@@ -4,7 +4,7 @@
       <q-toolbar>
         <!-- <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" /> -->
         <router-link class="logo" to="/">
-          <q-avatar square>
+          <q-avatar square size="md">
             <img src="/agsv-icon.svg" />
           </q-avatar>
           AGSV
@@ -21,45 +21,47 @@
 
         <q-btn
           v-if="!userStore.user"
-          outline
+          flat
           style="color: white"
           label="Login"
           to="/user/login"
         />
-        <q-btn
-          v-if="userStore.user"
-          outline
-          style="color: white"
-          label="Logout"
-          @click="userStore.logout"
-        />
+        <q-btn v-if="userStore.user" dense flat round @click="showProfile">
+          <q-avatar size="32px">
+            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+          </q-avatar>
+        </q-btn>
         <q-btn
           v-if="rightDrawerOpen"
+          class="q-ml-sm"
           dense
           flat
           round
           icon="close"
-          @click="rightDrawerOpen = !rightDrawerOpen"
+          @click="userStore.editingObject = false"
         />
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" side="left" bordered>
-      <router-view name="left" @show-right="rightDrawerOpen = true" />
+      <router-view name="left" />
     </q-drawer>
 
     <q-drawer v-model="rightDrawerOpen" side="right" bordered>
-      <router-view name="right" />
+      <editing-view />
     </q-drawer>
 
     <q-page-container>
       <router-view @set-title="(t) => (pageTitle = t)" />
     </q-page-container>
 
-    <q-footer bordered class="bg-grey-8 text-white">
+    <q-footer bordered height-hint="30" class="bg-grey-2 text-grey-7">
       <q-toolbar>
-        <q-toolbar-title>
-          <div>create by Lily</div>
+        <q-toolbar-title class="row justify-center footer-text">
+          Created by Lily Qi with passion for math, &nbsp;<a
+            href="mailto:lily.luna.qi@icloud.com"
+            >CONTACT ME</a
+          >&nbsp; if you feel the same.
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -67,9 +69,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useUserStore } from '../stores/user';
 import { useRouter } from 'vue-router';
+import EditingView from 'pages/EditingView.vue';
 
 const props = defineProps({
   showLeftDrawer: Boolean,
@@ -91,6 +94,19 @@ router.beforeEach((to, from, next) => {
   pageTitle.value = false;
   next();
 });
+
+function showProfile() {
+  userStore.editingObject = userStore.user;
+  console.log(userStore.user.constructor.name);
+  rightDrawerOpen.value = true;
+}
+
+watch(
+  computed(() => userStore.editingObject),
+  (val) => {
+    rightDrawerOpen.value = val != false;
+  }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -106,5 +122,12 @@ router.beforeEach((to, from, next) => {
 
 .title-text {
   text-align: center;
+}
+
+.footer-text {
+  font-size: 15px;
+  a {
+    color: $grey-8;
+  }
 }
 </style>

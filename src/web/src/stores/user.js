@@ -31,7 +31,7 @@ export const useUserStore = defineStore('user', {
       user: false,
       graphs: [],
       categories,
-      selectedShape: false,
+      editingObject: false,
     };
   },
 

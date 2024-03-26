@@ -125,19 +125,19 @@
 
     <q-drawer v-model="rightDrawerOpen" side="right" bordered>
       <!-- drawer content -->
-      <a-dot-edit v-if="selectedShapeClass == 'Dot'" :dot="selectedShape" />
+      <a-dot-edit v-if="editingObjectClass == 'Dot'" :dot="editingObject" />
       <a-line-edit
-        v-if="selectedShapeClass == 'Line'"
-        :line="selectedShape"
+        v-if="editingObjectClass == 'Line'"
+        :line="editingObject"
         @rotate-graph="onRotateGraph"
       />
       <a-angle-edit
-        v-if="selectedShapeClass == 'Angle'"
-        :angle="selectedShape"
+        v-if="editingObjectClass == 'Angle'"
+        :angle="editingObject"
       />
       <a-triangle-edit
-        v-if="selectedShapeClass == 'Triangle'"
-        :triangle="selectedShape"
+        v-if="editingObjectClass == 'Triangle'"
+        :triangle="editingObject"
       />
     </q-drawer>
 
@@ -227,12 +227,12 @@ function popupAddTriangle() {
     });
 }
 
-const selectedShape = ref(null);
-const selectedShapeClass = ref(null);
+const editingObject = ref(null);
+const editingObjectClass = ref(null);
 
 function onSelectShape(obj) {
-  selectedShape.value = obj;
-  selectedShapeClass.value = obj.constructor.name;
+  editingObject.value = obj;
+  editingObjectClass.value = obj.constructor.name;
   rightDrawerOpen.value = true;
 }
 

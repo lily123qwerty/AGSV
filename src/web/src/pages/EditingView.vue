@@ -1,15 +1,19 @@
 <template>
   <div>
-    <a-dot-edit v-if="selectedShapeClass == 'Dot'" :dot="selectedShape" />
+    <a-dot-edit v-if="editingObjectClass == 'Dot'" :dot="editingObject" />
     <a-line-edit
-      v-if="selectedShapeClass == 'Line'"
-      :line="selectedShape"
+      v-if="editingObjectClass == 'Line'"
+      :line="editingObject"
       @rotate-graph="onRotateGraph"
     />
-    <a-angle-edit v-if="selectedShapeClass == 'Angle'" :angle="selectedShape" />
+    <a-angle-edit v-if="editingObjectClass == 'Angle'" :angle="editingObject" />
     <a-triangle-edit
-      v-if="selectedShapeClass == 'Triangle'"
-      :triangle="selectedShape"
+      v-if="editingObjectClass == 'Triangle'"
+      :triangle="editingObject"
+    />
+    <profile-edit
+      v-if="editingObjectClass == 'UserImpl'"
+      :user="editingObject"
     />
   </div>
 </template>
@@ -21,14 +25,15 @@ import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
 import ATriangleEdit from 'src/components/ATriangleEdit.vue';
+import ProfileEdit from 'src/components/ProfileEdit.vue';
 import { useUserStore } from '../stores/user';
 
 const store = useGraphStore();
 const userStore = useUserStore();
 
-const selectedShape = computed(() => userStore.selectedShape);
-const selectedShapeClass = computed(() =>
-  userStore.selectedShape ? userStore.selectedShape.constructor.name : null
+const editingObject = computed(() => userStore.editingObject);
+const editingObjectClass = computed(() =>
+  userStore.editingObject ? userStore.editingObject.constructor.name : null
 );
 
 function onRotateGraph(r, c) {
