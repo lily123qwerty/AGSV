@@ -670,13 +670,22 @@ export default class Graph {
     // create a semi-circle
 
     // create a semi-circle with shared diameter
-
-    if (!(c instanceof Dot)) {
-      console.log;
-      c = this.addDot(c.x, c.y);
+    // all center situation
+    if (!c) {
+      if (typeof radius == 'object') {
+        c = radius.ends[0];
+        radius = radius.length;
+      } else if (typeof diameter == 'object') {
+        c = {
+          x: (diameter.ends[0].x + diameter.ends[1].x) / 2,
+          y: (diameter.ends[0].y + diameter.ends[1].y) / 2,
+        };
+      } else {
+        c = { x: 50, y: 50 };
+      }
     }
-
-    if (c == undefined || c == null) {
+    if (!(c instanceof Dot)) {
+      c = this.addDot(c.x, c.y);
     }
     // create a semi-circle
     if (semiCircle) {
