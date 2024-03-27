@@ -28,7 +28,7 @@
         />
         <q-btn v-if="userStore.user" dense flat round @click="showProfile">
           <q-avatar size="32px">
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+            <img :src="userStore.user.photoURL || '/defaultAvatar.jpg'" />
           </q-avatar>
         </q-btn>
         <q-btn

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-page-container class="pt-0-important bg-auth">
+    <q-page-container class="pt-0-important bg-secondary">
       <q-page>
         <div class="row" style="height: 100vh">
           <div class="col-12 flex content-center justify-center">
@@ -26,7 +26,7 @@
 }
 
 .bg-auth {
-  background-color: #f0f4f3;
+  /* background-color: red; */
   /* background-image: url('src/assets/bg-auth.png'); */
   background-size: cover;
   background-repeat: no-repeat;

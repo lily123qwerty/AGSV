@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-page">
+  <q-page>
     <div class="top-part">
       <div class="intro">
         <div class="intro-content">
@@ -56,7 +56,7 @@
         />
       </div>
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script setup>
@@ -114,13 +114,6 @@ onMounted(async () => {
   width: 100%;
   // background-color: brown;
 }
-.landing-page {
-  position: absolute;
-  top: 50px;
-  bottom: 51px;
-  right: 0;
-  left: 0;
-}
 .catalog {
   // background-color: aqua;
   position: absolute;
@@ -169,9 +162,9 @@ div.example {
 
   .example-container {
     position: absolute;
-    left: 40px;
+    left: 0px;
     top: 40px;
-    right: 55px;
+    right: 45px;
     bottom: 55px;
     // border: 1px solid black;
     box-shadow: black 0px 0px 0px 1px inset, rgb(255, 255, 255) 5px 5px 0px -1px,

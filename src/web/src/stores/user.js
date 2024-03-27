@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from 'firebase/auth';
 import Graph from 'src/model/Graph';
 import Category from 'src/model/Category';
@@ -83,6 +84,16 @@ export const useUserStore = defineStore('user', {
     logout() {
       const auth = getAuth();
       signOut(auth);
+    },
+
+    async updateUserName(displayName) {
+      await updateProfile(this.user, { displayName });
+      this.user.displayName = displayName;
+    },
+
+    async updateUserPhoto(photoURL) {
+      await updateProfile(this.user, { photoURL });
+      this.user.photoURL = photoURL;
     },
 
     async save(graph) {
