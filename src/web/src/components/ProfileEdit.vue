@@ -4,7 +4,7 @@
 
     <q-item class="q-mb-sm">
       <q-item-section class="row justify-center items-center">
-        <q-avatar size="100px">
+        <q-avatar size="150px">
           <img :src="user.photoURL || '/defaultAvatar.jpg'" />
         </q-avatar>
       </q-item-section>
@@ -71,17 +71,19 @@ const props = defineProps({
 
 const user = computed(() => props.user);
 
+let _name = user.value.displayName;
 let updateNameTask = false;
 const name = computed({
-  get: () => user.value.displayName,
+  get: () => _name,
   set: (val) => {
-    user.value.displayName = val;
+    _name = val;
     if (updateNameTask) {
       clearTimeout(updateNameTask);
     }
-    updateNameTask = setTimeout(() => {
-      userStore.updateUserName(user.value.displayName);
+    updateNameTask = setTimeout(async () => {
       updateNameTask = false;
+      await userStore.updateUserName(_name);
+      user.value.displayName = _name;
     }, 1000);
   },
 });
@@ -95,10 +97,9 @@ function logout() {
 const uploader = ref(null);
 
 function onUploaded(info) {
-  const photoURL = info[0].uploadUrl;
-  // console.log(photoURL);
-  // uploader.value.reset();
-  userStore.updateUserPhoto(photoURL);
+  user.value.photoURL = info[info.length - 1].uploadUrl;
+  userStore.updateUserPhoto(user.value.photoURL);
+  uploader.value.reset();
 }
 </script>
 

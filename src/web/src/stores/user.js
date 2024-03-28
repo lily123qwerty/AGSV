@@ -88,12 +88,10 @@ export const useUserStore = defineStore('user', {
 
     async updateUserName(displayName) {
       await updateProfile(this.user, { displayName });
-      this.user.displayName = displayName;
     },
 
     async updateUserPhoto(photoURL) {
       await updateProfile(this.user, { photoURL });
-      this.user.photoURL = photoURL;
     },
 
     async save(graph) {

@@ -40,7 +40,6 @@ export default createUploaderComponent({
     watch(
       () => uploadProgressList,
       () => {
-        console.log('watch', uploadProgressList.value);
         uploadInProgress.value = false;
         if (uploadProgressList.value.length) {
           uploadInProgress.value = uploadProgressList.value.reduce(
@@ -53,12 +52,19 @@ export default createUploaderComponent({
             uploadedFiles &&
             uploadedFiles.value.length >= uploadProgressList.value.length
           ) {
-            emit('uploaded', uploadedFiles.value);
+            // BUG: this uploadedFiles never reset
+            // emit('uploaded', uploadedFiles.value);
           }
         }
       },
       { deep: true }
     );
+
+    watch(uploadInProgress, (newVal, oldVal) => {
+      if (oldVal === true && newVal === false) {
+        emit('uploaded', uploadedFiles.value);
+      }
+    });
 
     // [ REQUIRED! ]
     // We're working on uploading files
@@ -92,9 +98,6 @@ export default createUploaderComponent({
 
         //? 👇 This can be whatever you want ~ can use UUID to generate unique file names
         const fileName = `${Date.now()}-${fileToUpload.name}`;
-
-        console.log(fileToUpload);
-        console.log(fileName);
 
         const storage = getStorage();
         const storageRef = firebaseRef(
