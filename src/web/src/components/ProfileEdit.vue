@@ -18,7 +18,11 @@
 
     <q-item>
       <q-item-section>
-        <q-input v-model="name" label="Name" />
+        <q-input
+          v-model="user.displayName"
+          label="Name"
+          @update:model-value="onUpdateName"
+        />
       </q-item-section>
     </q-item>
 
@@ -71,22 +75,16 @@ const props = defineProps({
 
 const user = computed(() => props.user);
 
-let _name = user.value.displayName;
 let updateNameTask = false;
-const name = computed({
-  get: () => _name,
-  set: (val) => {
-    _name = val;
-    if (updateNameTask) {
-      clearTimeout(updateNameTask);
-    }
-    updateNameTask = setTimeout(async () => {
-      updateNameTask = false;
-      await userStore.updateUserName(_name);
-      user.value.displayName = _name;
-    }, 1000);
-  },
-});
+function onUpdateName(val) {
+  if (updateNameTask) {
+    clearTimeout(updateNameTask);
+  }
+  updateNameTask = setTimeout(async () => {
+    updateNameTask = false;
+    await userStore.updateUserName(val);
+  }, 1000);
+}
 
 function logout() {
   userStore.editingObject = false;
