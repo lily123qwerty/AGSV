@@ -157,9 +157,9 @@ function editQuestion() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .tooltip {
   font-size: 14px;
-  background-color: $accent;
+  background-color: $secondary;
 }
 </style>

@@ -123,7 +123,8 @@ function clickAdd() {
 
 .card-question {
   font-size: 14px;
-  font-family: sans-serif;
+  font-family: $font-question;
+  font-weight: 500;
   text-align: left;
   // text-justify: inter-word;
   overflow: hidden;

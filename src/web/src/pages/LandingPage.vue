@@ -26,7 +26,7 @@
         >
           <a-graph :graph="graph" />
           <div class="example-question q-mt-lg">
-            {{ graph.question }}
+            <span v-html="question"></span>
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Graph from '../model/Graph';
 import { useGraphStore } from 'stores/graph';
 import { useUserStore } from '../stores/user';
@@ -73,6 +73,8 @@ const userStore = useUserStore();
 const graphStore = useGraphStore();
 
 const graph = ref(null);
+const question = computed(() => graph.value.question.replace('\n', '<p>'));
+
 const graphsCache = {};
 
 async function getGraph(id) {
@@ -143,14 +145,17 @@ div.intro-content {
   padding-right: 30px;
 
   h5 {
-    font-size: 30px;
-    font-family: sans-serif;
+    font-family: Copperplate, Copperplate Gothic Light, fantasy;
+    font-size: 36px;
+    font-weight: 800;
   }
 
   p {
+    font-family: Geneva, Tahoma, Verdana, sans-serif;
     text-align: justify;
-    font-size: 16px;
-    font-family: sans-serif;
+    font-size: 18px;
+    // font-weight: 300;
+    margin-bottom: 30px;
   }
 }
 div.example {
@@ -177,8 +182,9 @@ div.example {
   }
 
   div.example-question {
+    font-family: $font-question;
     font-size: 17px;
-    font-family: sans-serif;
+    font-weight: 500;
     text-align: justify;
     // text-justify: inter-word;
     padding-left: 30px;

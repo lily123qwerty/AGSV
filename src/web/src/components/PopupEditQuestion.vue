@@ -81,7 +81,7 @@ const published = ref(props.published);
 function onOKClick() {
   onDialogOK({
     question: question.value,
-    category: category.value.value,
+    category: category.value,
     published: published.value,
   });
 }

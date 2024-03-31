@@ -57,7 +57,7 @@ onMounted(async () => {
 
 .card-question {
   font-size: 14px;
-  font-family: sans-serif;
+  font-family: $font-question;
   text-align: left;
   // text-justify: inter-word;
   overflow: hidden;
