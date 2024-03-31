@@ -1,18 +1,21 @@
 <template>
-  <div>
-    <a-dot-edit v-if="editingObjectClass == 'Dot'" :dot="editingObject" />
+  <div v-if="editingObject">
+    <a-dot-edit v-if="editingObject instanceof Dot" :dot="editingObject" />
     <a-line-edit
-      v-if="editingObjectClass == 'Line'"
+      v-if="editingObject instanceof Line"
       :line="editingObject"
       @rotate-graph="onRotateGraph"
     />
-    <a-angle-edit v-if="editingObjectClass == 'Angle'" :angle="editingObject" />
+    <a-angle-edit
+      v-if="editingObject instanceof Angle"
+      :angle="editingObject"
+    />
     <a-triangle-edit
-      v-if="editingObjectClass == 'Triangle'"
+      v-if="editingObject instanceof Triangle"
       :triangle="editingObject"
     />
     <profile-edit
-      v-if="editingObjectClass == 'UserImpl'"
+      v-if="editingObject == userStore.user"
       :user="editingObject"
     />
   </div>
@@ -21,6 +24,10 @@
 <script setup>
 import { computed } from 'vue';
 import { useGraphStore } from 'stores/graph';
+import Triangle from 'src/model/Triangle';
+import Dot from 'src/model/Dot';
+import Line from 'src/model/Line';
+import Angle from 'src/model/Angle';
 import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
