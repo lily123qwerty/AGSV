@@ -26,9 +26,9 @@ import {
 export const useUserStore = defineStore('user', {
   state: () => {
     const categories = [];
-    categories.push(new Category('cm', 'Competition Math'));
-    categories.push(new Category('ib', 'IB'));
-    categories.push(new Category('igcse', 'IGCSE'));
+    categories.push(new Category('cm', 'Competition Math', 'mdi-rocket'));
+    categories.push(new Category('ib', 'IB', 'mdi-library'));
+    categories.push(new Category('igcse', 'IGCSE', 'mdi-library'));
 
     return {
       user: false,

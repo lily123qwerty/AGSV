@@ -47,7 +47,7 @@
       <div v-for="c in userStore.categories" :key="c.key" class="q-mr-lg">
         <q-btn
           color="primary"
-          icon="mail"
+          :icon="c.icon"
           :label="c.name"
           rounded
           outline

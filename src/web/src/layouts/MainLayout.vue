@@ -115,8 +115,10 @@ watch(
   .logo {
     color: white;
     text-decoration: none;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
+    font-family: Copperplate, Copperplate Gothic Light, fantasy;
+    // font-family: Tahoma, Verdana, Segoe, sans-serif;
   }
 }
 
