@@ -47,7 +47,7 @@
           outline
           color="primary"
           label="Change Password"
-          @click="logout"
+          @click="changePassword"
         />
       </q-item-section>
     </q-item>
@@ -62,12 +62,14 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useQuasar } from 'quasar';
 import { useUserStore } from '../stores/user';
 import { useRouter } from 'vue-router';
 import FirebaseUploader from './FirebaseUploader';
 
 const router = useRouter();
 const userStore = useUserStore();
+const $q = useQuasar();
 
 const props = defineProps({
   user: Object,
@@ -98,6 +100,32 @@ function onUploaded(info) {
   user.value.photoURL = info[info.length - 1].uploadUrl;
   userStore.updateUserPhoto(user.value.photoURL);
   uploader.value.reset();
+}
+
+function changePassword() {
+  $q.dialog({
+    title: 'Change Password',
+    message: 'please enter your new password:',
+    prompt: {
+      model: '',
+      type: 'text', // optional
+    },
+    cancel: true,
+    persistent: true,
+  })
+    .onOk((newPassword) => {
+      try {
+        userStore.updatePassword(newPassword);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    .onCancel(() => {
+      // console.log('>>>> Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
 }
 </script>
 

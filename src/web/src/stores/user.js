@@ -5,6 +5,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  updatePassword,
+  reauthenticateWithCredential,
 } from 'firebase/auth';
 import Graph from 'src/model/Graph';
 import Category from 'src/model/Category';
@@ -92,6 +94,17 @@ export const useUserStore = defineStore('user', {
 
     async updateUserPhoto(photoURL) {
       await updateProfile(this.user, { photoURL });
+    },
+
+    async updatePassword(newPassword) {
+      // const auth = getAuth();
+      // // await reauthenticateWithCredential(this.user, oldPassword);
+      // const userCredential = signInWithEmailAndPassword(
+      //   auth,
+      //   this.user.email,
+      //   oldPassword
+      // );
+      await updatePassword(this.user, newPassword);
     },
 
     async save(graph) {
