@@ -9,7 +9,8 @@
             drawing an accurate graph for geometric questions? AGSV is what you
             are looking for! Wether you are a student, teacher, or just someone
             who interested or struggling with geometry, we provide tools that
-            allows you to create and explore 2D geometric shapes.
+            allows you to visualise geometry shapes exactly with accurate
+            details.
           </p>
           <q-btn
             color="primary"

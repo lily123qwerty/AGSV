@@ -16,6 +16,19 @@
               v-model="vals['center']"
               :options="options['center']"
               label="Center"
+              use-input
+              @input-value="(val) => inputFn(val, 'center')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allDots', 'center')
+              "
+              @blur="() => blurFn('center')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (vals.angle3 && (vals.angle1 || vals.angle2))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -23,6 +36,19 @@
               v-model="vals['radius']"
               :options="options['radius']"
               label="radius"
+              use-input
+              @input-value="(val) => inputFn(val, 'radius')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'radius')
+              "
+              @blur="() => blurFn('radius')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (vals.angle3 && (vals.angle1 || vals.angle2))
+              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -30,10 +56,23 @@
               v-model="vals['diamter']"
               :options="options['diameter']"
               label="diameter"
+              use-input
+              @input-value="(val) => inputFn(val, 'diameter')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'diameter')
+              "
+              @blur="() => blurFn('diameter')"
+              :disable="
+                vals.dot1 ||
+                vals.dot2 ||
+                vals.dot3 ||
+                (vals.angle3 && (vals.angle1 || vals.angle2))
+              "
             />
           </div>
           <div class="col q-ma-sm">
-            <q-toggle v-model="vals['semiCircle']" label="diameter" />
+            <q-toggle v-model="vals['semiCircle']" label="semi circle" />
           </div>
         </div>
       </q-card-section>
@@ -127,15 +166,10 @@ function blurFn(key) {
 
 // this is part of our example (so not required)
 function onOKClick() {
-  let angle1 = vals.value.angle1;
-  let angle2 = vals.value.angle2;
-  let angle3 = vals.value.angle3;
-  let side12 = vals.value.side12;
-  let side23 = vals.value.side23;
-  let side31 = vals.value.side31;
-  let dot1 = vals.value.dot1;
-  let dot2 = vals.value.dot2;
-  let dot3 = vals.value.dot3;
+  let center = vals.value.center;
+  let radius = vals.value.radius;
+  let diameter = vals.value.diameter;
+  let semiCircle = vals.value.semiCircle;
 
   // 3dots
   if (dot1 && dot2 && dot3) {

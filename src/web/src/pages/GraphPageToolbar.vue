@@ -13,13 +13,17 @@
         outline
         :size="btnSize"
         icon="mdi-circle-outline"
-        @click="addCircle"
+        @click="popupAddCircle"
         ><q-tooltip class="tooltip">Add a cycle</q-tooltip></q-btn
       >
-      <q-btn outline :size="btnSize" icon="mdi-square-outline"
+      <q-btn outline :size="btnSize" icon="mdi-square-outline" disabled
         ><q-tooltip class="tooltip">Add a parallelogram</q-tooltip></q-btn
       >
-      <q-btn outline :size="btnSize" icon="svguse:myicons.svg#trapezium"
+      <q-btn
+        outline
+        :size="btnSize"
+        icon="svguse:myicons.svg#trapezium"
+        disabled
         ><q-tooltip class="tooltip">Add a trapezium</q-tooltip></q-btn
       >
       <q-btn
@@ -27,6 +31,7 @@
         :size="btnSize"
         icon="mdi-hexagon-outline"
         @click="store.graph.rotate(1)"
+        disabled
         ><q-tooltip class="tooltip">Add a regular polygon</q-tooltip></q-btn
       >
     </q-btn-group>
@@ -69,6 +74,7 @@ import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
 import { useQuasar } from 'quasar';
 import PopupAddTriangle from 'src/components/PopupAddTriangle.vue';
+import PopupAddCircle from 'src/components/PopupAddCircle.vue';
 import PopupEditQuestion from 'src/components/PopupEditQuestion.vue';
 import { useUserStore } from '../stores/user';
 import { useRouter } from 'vue-router';
@@ -83,11 +89,6 @@ const userStore = useUserStore();
 const btnSize = ref('13px');
 
 const isSaving = ref(false);
-
-// TODO: test circle
-function addCircle() {
-  store.addCircle({ x: 50, y: 50 }, 50);
-}
 
 function undo() {
   store.historyUndo();
@@ -115,6 +116,25 @@ const $q = useQuasar();
 function popupAddTriangle() {
   $q.dialog({
     component: PopupAddTriangle,
+
+    // props forwarded to your custom component
+    componentProps: {},
+  })
+    .onOk(() => {
+      console.log('OK');
+    })
+    .onCancel(() => {
+      console.log('Cancel');
+    })
+    .onDismiss(() => {
+      console.log('Called on OK or Cancel');
+    });
+}
+
+// TODO: test circle
+function popupAddCircle() {
+  $q.dialog({
+    component: PopupAddCircle,
 
     // props forwarded to your custom component
     componentProps: {},

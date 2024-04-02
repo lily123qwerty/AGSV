@@ -42,45 +42,27 @@ const allShape = computed(() => {
     obj,
     handler: (node) => (onSelectTree(node), onSelectShape(node)),
     children: [
-      {
-        label: 'vertices',
-        key: 'vertices_' + key,
+      ...obj.vertices.map((obj) => ({
+        label: obj.key + (obj.label ? ': ' + obj.label : ''),
+        key: 'vertices_' + key + '_' + obj.key,
         icon: 'mdi-circle-medium',
-        handler: onSelectTree,
-        children: obj.vertices.map((obj) => ({
-          label: obj.key + (obj.label ? ': ' + obj.label : ''),
-          key: 'vertices_' + key + '_' + obj.key,
-          icon: 'mdi-circle-medium',
-          obj,
-          handler: onSelectShape,
-        })),
-      },
-      {
-        label: 'sides',
-        key: 'sides_' + key,
+        obj,
+        handler: onSelectShape,
+      })),
+      ...obj.edges.map((obj) => ({
+        label: obj.key + (obj.label ? ': ' + obj.label : ''),
+        key: 'sides_' + key + '_' + obj.key,
         icon: 'horizontal_rule',
-        handler: onSelectTree,
-        children: obj.edges.map((obj) => ({
-          label: obj.key + (obj.label ? ': ' + obj.label : ''),
-          key: 'sides_' + key + '_' + obj.key,
-          icon: 'horizontal_rule',
-          obj,
-          handler: onSelectShape,
-        })),
-      },
-      {
-        label: 'angles',
-        key: 'angles_' + key,
+        obj,
+        handler: onSelectShape,
+      })),
+      ...obj.angles.map((obj) => ({
+        label: obj.key + (obj.label ? ': ' + obj.label : ''),
+        key: 'angles_' + key + '_' + obj.key,
         icon: 'mdi-angle-acute',
-        handler: onSelectTree,
-        children: obj.angles.map((obj) => ({
-          label: obj.key + (obj.label ? ': ' + obj.label : ''),
-          key: 'angles_' + key + '_' + obj.key,
-          icon: 'mdi-angle-acute',
-          obj,
-          handler: onSelectShape,
-        })),
-      },
+        obj,
+        handler: onSelectShape,
+      })),
     ],
   }));
   // let circleKey = Object.entries(store.graph.circles).map(([key, obj]) => ({
@@ -116,24 +98,24 @@ const allShape = computed(() => {
       //disabled: true,
       children: [],
     },
-    {
-      label: 'parallelogram',
-      key: 'parallelogram',
-      icon: 'mdi-square-outline',
-      children: [],
-    },
-    {
-      label: 'trapezium',
-      key: 'trapezium',
-      icon: 'svguse:myicons.svg#trapezium',
-      children: [],
-    },
-    {
-      label: 'regular polygon',
-      key: 'regular polygon',
-      icon: 'mdi-hexagon-outline',
-      children: [],
-    },
+    // {
+    //   label: 'parallelogram',
+    //   key: 'parallelogram',
+    //   icon: 'mdi-square-outline',
+    //   children: [],
+    // },
+    // {
+    //   label: 'trapezium',
+    //   key: 'trapezium',
+    //   icon: 'svguse:myicons.svg#trapezium',
+    //   children: [],
+    // },
+    // {
+    //   label: 'regular polygon',
+    //   key: 'regular polygon',
+    //   icon: 'mdi-hexagon-outline',
+    //   children: [],
+    // },
   ];
 });
 </script>

@@ -58,10 +58,10 @@
     <q-footer bordered height-hint="30" class="bg-grey-2 text-grey-7">
       <q-toolbar>
         <q-toolbar-title class="row justify-center footer-text">
-          Created by Lily Qi with passion for math, &nbsp;<a
+          Created by Lily Qi with passion for math, please &nbsp;<a
             href="mailto:lily.luna.qi@icloud.com"
             >CONTACT ME</a
-          >&nbsp; if you feel the same.
+          >&nbsp; if you meet any problem.
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
