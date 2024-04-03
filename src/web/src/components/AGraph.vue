@@ -270,7 +270,7 @@ const labels = computed(() => {
 });
 
 onMounted(() => {
-  console.log(props.graph.toJSON());
+  // console.log(props.graph.toJSON());
 });
 </script>
 

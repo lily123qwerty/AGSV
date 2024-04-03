@@ -26,6 +26,7 @@ function onSelectTree(node) {
 }
 
 function onSelectShape(node) {
+  console.log(node);
   selected.value = node.key;
   emit('selectShape', node.obj);
 }
@@ -85,19 +86,20 @@ const allShape = computed(() => {
 
   return [
     {
-      label: 'Triangle',
-      key: 'Triangle',
-      icon: 'mdi-triangle-outline',
-      handler: onSelectTree,
-      children: triangles,
+      label: 'Graph',
+      key: 'Graph',
+      icon: 'mdi-shape-outline',
+      obj: store.graph,
+      handler: (node) => (onSelectTree(node), onSelectShape(node)),
+      children: [...triangles],
     },
-    {
-      label: 'Circle',
-      key: 'Circle',
-      icon: 'mdi-circle-outline',
-      //disabled: true,
-      children: [],
-    },
+    // {
+    //   label: 'Circle',
+    //   key: 'Circle',
+    //   icon: 'mdi-circle-outline',
+    //   //disabled: true,
+    //   children: [],
+    // },
     // {
     //   label: 'parallelogram',
     //   key: 'parallelogram',

@@ -147,7 +147,7 @@ div.intro-content {
 
   h5 {
     font-family: Copperplate, Copperplate Gothic Light, fantasy;
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 800;
   }
 

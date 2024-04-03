@@ -12,17 +12,105 @@ const default_side = 100;
 
 export default class Graph {
   constructor() {
+    this._init();
+  }
+
+  _init() {
+    this._id = null;
+    this._question = '';
+
+    //Shapes
     this._key_seq = 0;
     this._dots = {};
     this._lines = {};
     this._angles = {};
     this._triangles = {};
     this._circles = {};
-    this._id = null;
-    this._uid = null;
-    this._question = '';
-    this._published = false;
+
+    //Meta Info
     this._category = '';
+    this._published = false;
+    this._highlighted = false;
+    this._lastEdited = null;
+
+    //Owner Info
+    this._uid = null;
+    this._ownerEmail = null;
+    this._ownerPhoto = null;
+    this._ownerName = null;
+  }
+
+  toJSON() {
+    const json = {
+      dots: Object.entries(this.dots).map(([key, obj]) => obj.toJSON()),
+      lines: Object.entries(this.lines).map(([key, obj]) => obj.toJSON()),
+      angles: Object.entries(this.angles).map(([key, obj]) => obj.toJSON()),
+      triangles: Object.entries(this.triangles).map(([key, obj]) =>
+        obj.toJSON()
+      ),
+      key_seq: this._key_seq,
+      question: this._question,
+      published: this._published,
+      highlighted: this._highlighted,
+      category: this._category,
+    };
+
+    if (this._id) json.id = this.id;
+    if (this._lastEdited) json.lastEdited = this._lastEdited;
+    if (this._uid) json.uid = this._uid;
+    if (this._ownerEmail) json.ownerEmail = this._ownerEmail;
+    if (this._ownerPhoto) json.ownerPhoto = this._ownerPhoto;
+    if (this._ownerName) json.ownerName = this._ownerName;
+
+    return json;
+  }
+
+  fromJSON(json) {
+    this._init();
+
+    json.dots.forEach((j) => {
+      let obj = Dot.fromJSON(j);
+      this.dots[obj.key] = obj;
+    });
+
+    json.lines.forEach((j) => {
+      let obj = Line.fromJSON(j, this.dots);
+      this.lines[obj.key] = obj;
+    });
+
+    json.angles.forEach((j) => {
+      let obj = Angle.fromJSON(j, this.dots, this.lines);
+      this.angles[obj.key] = obj;
+    });
+
+    json.triangles.forEach((j) => {
+      let obj = Triangle.fromJSON(j, this.dots, this.lines, this.angles);
+      this.triangles[obj.key] = obj;
+    });
+
+    this._id = json.id || null;
+    this._key_seq = json.key_seq;
+    this._question = json.question || '';
+    this._published = json.published || false;
+    this._highlighted = json.highlighted || false;
+    this._category = json.category || '';
+    this._uid = json.uid || null;
+    this._ownerEmail = json.ownerEmail || null;
+    this._ownerPhoto = json.ownerPhoto || null;
+    this._ownerName = json.ownerName || null;
+    this._lastEdited = json.lastEdited || null;
+  }
+
+  static fromJSON(json) {
+    const g = new Graph();
+    g.fromJSON(json);
+    return g;
+  }
+
+  static fromDoc(doc) {
+    const g = Graph.fromJSON(doc.data());
+    g.id = doc.id;
+    return g;
   }
 
   _makeKey(prefix) {
@@ -44,6 +132,38 @@ export default class Graph {
 
   set uid(val) {
     this._uid = val;
+  }
+
+  get ownerEmail() {
+    return this._ownerEmail;
+  }
+
+  set ownerEmail(val) {
+    this._ownerEmail = val;
+  }
+
+  get ownerPhoto() {
+    return this._ownerPhoto;
+  }
+
+  set ownerPhoto(val) {
+    this._ownerPhoto = val;
+  }
+
+  get ownerName() {
+    return this._ownerName;
+  }
+
+  set ownerName(val) {
+    this._ownerName = val;
+  }
+
+  get lastEdited() {
+    return this._lastEdited && new Date(this._lastEdited.seconds * 1000);
+  }
+
+  set lastEdited(val) {
+    this._lastEdited = val;
   }
 
   get dots() {
@@ -80,6 +200,14 @@ export default class Graph {
 
   set published(val) {
     this._published = val;
+  }
+
+  get highlighted() {
+    return this._highlighted;
+  }
+
+  set highlighted(val) {
+    this._highlighted = val;
   }
 
   get category() {
@@ -158,58 +286,6 @@ export default class Graph {
         obj.y = d.y + c.y;
       });
     }
-  }
-
-  toJSON() {
-    return {
-      dots: Object.entries(this.dots).map(([key, obj]) => obj.toJSON()),
-      lines: Object.entries(this.lines).map(([key, obj]) => obj.toJSON()),
-      angles: Object.entries(this.angles).map(([key, obj]) => obj.toJSON()),
-      triangles: Object.entries(this.triangles).map(([key, obj]) =>
-        obj.toJSON()
-      ),
-      key_seq: this._key_seq,
-      uid: this._uid,
-      question: this._question,
-      published: this._published,
-      category: this._category,
-    };
-  }
-
-  static fromJSON(json) {
-    let g = new Graph();
-
-    json.dots.forEach((j) => {
-      let obj = Dot.fromJSON(j);
-      g.dots[obj.key] = obj;
-    });
-
-    json.lines.forEach((j) => {
-      let obj = Line.fromJSON(j, g.dots);
-      g.lines[obj.key] = obj;
-    });
-
-    json.angles.forEach((j) => {
-      let obj = Angle.fromJSON(j, g.dots, g.lines);
-      g.angles[obj.key] = obj;
-    });
-
-    json.triangles.forEach((j) => {
-      let obj = Triangle.fromJSON(j, g.dots, g.lines, g.angles);
-      g.triangles[obj.key] = obj;
-    });
-
-    g._uid = json.uid;
-
-    g._key_seq = json.key_seq;
-
-    g._question = json.question;
-
-    g._published = json.published;
-
-    g._category = json.category;
-
-    return g;
   }
 
   addDot(x, y) {

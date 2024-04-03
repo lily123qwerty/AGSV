@@ -14,6 +14,10 @@
       v-if="editingObject instanceof Triangle"
       :triangle="editingObject"
     />
+    <a-graph-edit
+      v-if="editingObject instanceof Graph"
+      :graph="editingObject"
+    />
     <profile-edit
       v-if="editingObject == userStore.user"
       :user="editingObject"
@@ -32,8 +36,10 @@ import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
 import ATriangleEdit from 'src/components/ATriangleEdit.vue';
+import AGraphEdit from 'src/components/AGraphEdit.vue';
 import ProfileEdit from 'src/components/ProfileEdit.vue';
 import { useUserStore } from '../stores/user';
+import Graph from 'src/model/Graph';
 
 const store = useGraphStore();
 const userStore = useUserStore();

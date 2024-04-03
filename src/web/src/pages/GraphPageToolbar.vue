@@ -37,12 +37,6 @@
     </q-btn-group>
 
     <q-btn-group outline rounded class="q-ml-md">
-      <q-btn outline :size="btnSize" icon="edit" @click="editQuestion"
-        ><q-tooltip class="tooltip">question</q-tooltip></q-btn
-      >
-    </q-btn-group>
-
-    <q-btn-group outline rounded class="q-ml-md">
       <q-btn outline :size="btnSize" icon="undo" @click="undo"
         ><q-tooltip class="tooltip">Undo</q-tooltip></q-btn
       >
@@ -50,15 +44,16 @@
         ><q-tooltip class="tooltip">Redo</q-tooltip></q-btn
       >
       <q-btn
-        v-if="userStore.user && !isSaving"
+        v-if="userStore.user"
         outline
         :size="btnSize"
+        :disabled="isSaving"
         icon="save"
         @click="save"
         ><q-tooltip class="tooltip">Save</q-tooltip></q-btn
       >
       <q-btn
-        v-if="userStore.user && !isSaving"
+        v-if="userStore.user"
         outline
         :size="btnSize"
         icon="home"
@@ -72,16 +67,16 @@
 <script setup>
 import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
-import { useQuasar } from 'quasar';
+import { useQuasar, Notify } from 'quasar';
 import PopupAddTriangle from 'src/components/PopupAddTriangle.vue';
 import PopupAddCircle from 'src/components/PopupAddCircle.vue';
-import PopupEditQuestion from 'src/components/PopupEditQuestion.vue';
 import { useUserStore } from '../stores/user';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 
 const emit = defineEmits(['hideRight']);
 
 const router = useRouter();
+const $q = useQuasar();
 
 const store = useGraphStore();
 const userStore = useUserStore();
@@ -89,6 +84,27 @@ const userStore = useUserStore();
 const btnSize = ref('13px');
 
 const isSaving = ref(false);
+
+onBeforeRouteLeave((to, from, next) => {
+  if ((store.history && store.history.hasHistory) || store.metaEdited) {
+    $q.dialog({
+      title: 'Confirm',
+      message: 'You have modified the graph. Would you like to discard?',
+      ok: {
+        label: 'Discard',
+      },
+      cancel: true,
+      persistent: true,
+    })
+      .onOk(() => {
+        store.history.restore();
+        next();
+      })
+      .onCancel(() => {});
+  } else {
+    next();
+  }
+});
 
 function undo() {
   store.historyUndo();
@@ -100,19 +116,48 @@ function redo() {
   emit('hideRight');
 }
 
-async function save() {
+async function _save() {
   try {
     isSaving.value = true;
     await userStore.save(store.graph);
+    store.history.reset();
+    store.metaEdited = false;
     isSaving.value = false;
     // router.push('/home');
+    Notify.create({
+      message: 'Graph saved.',
+      color: 'positive',
+      icon: 'check',
+      position: 'top',
+    });
   } catch (e) {
     isSaving.value = false;
+    throw e;
+  }
+}
+
+async function save() {
+  if (
+    store.graph.uid &&
+    userStore.user &&
+    store.graph.uid != userStore.user.uid
+  ) {
+    $q.dialog({
+      title: 'Confirm',
+      message: 'You are not owner of the graph. Would you like to make a copy?',
+      cancel: true,
+      persistent: true,
+    }).onOk(() => {
+      store.graph.id = null;
+      store.graph.uid = null;
+      _save();
+    });
+  } else {
+    _save();
   }
 }
 
 //popups
-const $q = useQuasar();
 function popupAddTriangle() {
   $q.dialog({
     component: PopupAddTriangle,
@@ -147,32 +192,6 @@ function popupAddCircle() {
     })
     .onDismiss(() => {
       console.log('Called on OK or Cancel');
-    });
-}
-
-function editQuestion() {
-  $q.dialog({
-    component: PopupEditQuestion,
-
-    // props forwarded to your custom component
-    componentProps: {
-      question: store.graph.question,
-      category: store.graph.category,
-      published: store.graph.published,
-    },
-  })
-    .onOk((data) => {
-      console.log(data);
-      store.graph.question = data.question;
-      store.graph.category = data.category;
-      store.graph.published = data.published;
-      // console.log('>>>> OK, received', data);
-    })
-    .onCancel(() => {
-      // console.log('>>>> Cancel')
-    })
-    .onDismiss(() => {
-      // console.log('I am triggered on both OK and Cancel')
     });
 }
 </script>

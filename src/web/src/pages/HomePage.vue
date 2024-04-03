@@ -1,65 +1,36 @@
 <template>
-  <div class="q-pa-md row items-center justify-start q-gutter-md">
-    <q-card v-for="g in userStore.graphs" :key="g.id" class="my-card">
-      <q-card-section horizontal>
-        <div class="graph-container col-7">
-          <a-graph :graph="g" trumbnail />
-        </div>
+  <q-page>
+    <div class="q-pa-md row items-center justify-start q-gutter-md">
+      <q-btn
+        color="primary"
+        outline
+        icon="add"
+        label="New Graph"
+        @click="clickAdd"
+      />
+    </div>
 
-        <q-card-section>
-          <div class="card-question">{{ g.question }}</div>
+    <div class="q-pa-md row items-center justify-start q-gutter-md">
+      <q-card v-for="g in userStore.graphs" :key="g.id" class="my-card">
+        <q-card-section horizontal>
+          <div class="graph-container col-7">
+            <a-graph :graph="g" trumbnail />
+          </div>
+
+          <q-card-section>
+            <div class="card-question">{{ g.question }}</div>
+          </q-card-section>
         </q-card-section>
-      </q-card-section>
 
-      <q-separator />
+        <q-separator />
 
-      <q-card-actions>
-        <q-btn flat color="primary" @click="clickEdit(g)"> Edit </q-btn>
-        <q-btn
-          flat
-          color="primary"
-          @click="
-            confirmDelete = true;
-            toDelete = g;
-          "
-        >
-          Remove
-        </q-btn>
-      </q-card-actions>
-    </q-card>
-
-    <q-btn
-      class="q-ml-xl"
-      size="40px"
-      round
-      color="secondary"
-      icon="add"
-      @click="clickAdd"
-    />
-  </div>
-
-  <q-dialog v-model="confirmDelete" persistent>
-    <q-card>
-      <q-card-section class="row items-center">
-        <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
-        <span class="q-ml-sm"
-          >Thi will be perminently removed, are you sure you want to remove
-          this?</span
-        >
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup />
-        <q-btn
-          flat
-          label="Delete"
-          color="primary"
-          v-close-popup
-          @click="clickRemove(toDelete)"
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+        <q-card-actions class="row justify-around">
+          <q-btn flat color="primary" @click="clickEdit(g)"> Edit </q-btn>
+          <q-btn flat color="primary" @click="clickRemove(g)"> Remove </q-btn>
+        </q-card-actions>
+      </q-card>
+    </div>
+  </q-page>
 </template>
 
 <script setup>
@@ -68,12 +39,13 @@ import Graph from '../model/Graph';
 import { useGraphStore } from 'stores/graph';
 import { useUserStore } from '../stores/user';
 import AGraph from 'components/AGraph.vue';
-import History from 'src/model/History';
+import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['setTitle']);
 
 const router = useRouter();
+const $q = useQuasar();
 
 const userStore = useUserStore();
 const graphStore = useGraphStore();
@@ -82,23 +54,28 @@ const confirmDelete = ref(false);
 const toDelete = ref(null);
 
 function clickEdit(graph) {
-  graphStore.graph = graph;
-  graphStore.history = new History(graph);
+  graphStore.reset(graph);
   router.push('/graph');
 }
 
-async function clickRemove(graph) {
-  try {
-    await userStore.delete(graph);
-    console.log('delete successful');
-  } catch (e) {
-    console.log(e);
-  }
+function clickRemove(graph) {
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Are you going to remove the graph?',
+    ok: {
+      label: 'Remove',
+    },
+    cancel: true,
+    persistent: false,
+  })
+    .onOk(() => {
+      userStore.delete(graph);
+    })
+    .onCancel(() => {});
 }
 
 function clickAdd() {
-  graphStore.graph = new Graph();
-  graphStore.history = new History();
+  graphStore.reset(new Graph());
   router.push('/graph');
 }
 </script>

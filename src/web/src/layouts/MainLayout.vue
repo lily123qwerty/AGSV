@@ -69,10 +69,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onErrorCaptured } from 'vue';
 import { useUserStore } from '../stores/user';
+import { useGraphStore } from 'stores/graph';
 import { useRouter } from 'vue-router';
 import EditingView from 'pages/EditingView.vue';
+import { useQuasar, Notify } from 'quasar';
 
 const props = defineProps({
   showLeftDrawer: Boolean,
@@ -80,7 +82,10 @@ const props = defineProps({
   titleText: String,
 });
 
+const $q = useQuasar();
+
 const userStore = useUserStore();
+const store = useGraphStore();
 
 const leftDrawerOpen = computed(() => props.showLeftDrawer || false);
 const rightDrawerOpen = ref(false);
@@ -90,7 +95,8 @@ const title = computed(() => props.titleText || pageTitle.value || false);
 
 const router = useRouter();
 router.beforeEach((to, from, next) => {
-  rightDrawerOpen.value = false;
+  userStore.editingObject = false;
+  // rightDrawerOpen.value = false;
   pageTitle.value = false;
   next();
 });
@@ -107,6 +113,17 @@ watch(
     rightDrawerOpen.value = val != false;
   }
 );
+
+onErrorCaptured((error) => {
+  console.log('onErrorCaptured:', error.message);
+  Notify.create({
+    message: error.message,
+    color: 'red',
+    icon: 'warning',
+    position: 'top',
+  });
+  return false;
+});
 </script>
 
 <style lang="scss" scoped>
