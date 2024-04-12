@@ -5,14 +5,29 @@
     <q-item class="q-mb-sm">
       <q-item-section class="row justify-center items-center">
         <q-avatar size="150px">
-          <img :src="user.photoURL || '/defaultAvatar.jpg'" />
+          <img
+            :src="user.photoURL || '/defaultAvatar.jpg'"
+            style="object-fit: cover; width: 100%; height: 100%"
+          />
         </q-avatar>
       </q-item-section>
     </q-item>
 
     <q-item>
       <q-item-section>
-        <q-input disable v-model="user.email" label="Email" />
+        <q-input disable v-model="user.email" label="Email">
+          <template v-slot:after>
+            <q-btn
+              v-if="!user.emailVerified"
+              color="warning"
+              round
+              dense
+              flat
+              icon="mdi-email-alert"
+              @click="onVerifyEmail"
+            />
+          </template>
+        </q-input>
       </q-item-section>
     </q-item>
 
@@ -22,7 +37,11 @@
           v-model="user.displayName"
           label="Name"
           @update:model-value="onUpdateName"
-        />
+        >
+          <!-- <template v-slot:before>
+            <q-icon name="mdi-account" color="primary" />
+          </template> -->
+        </q-input>
       </q-item-section>
     </q-item>
 
@@ -62,7 +81,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
+import { useQuasar, Notify } from 'quasar';
 import { useUserStore } from '../stores/user';
 import { useRouter } from 'vue-router';
 import FirebaseUploader from './FirebaseUploader';
@@ -91,7 +110,7 @@ function onUpdateName(val) {
 function logout() {
   userStore.editingObject = false;
   userStore.logout();
-  router.push('/');
+  // router.push('/');
 }
 
 const uploader = ref(null);
@@ -102,30 +121,59 @@ function onUploaded(info) {
   uploader.value.reset();
 }
 
-function changePassword() {
+async function changePassword() {
+  // $q.dialog({
+  //   title: 'Change Password',
+  //   message: 'please enter your new password:',
+  //   prompt: {
+  //     model: '',
+  //     type: 'text', // optional
+  //   },
+  //   cancel: true,
+  //   persistent: false,
+  // })
+  //   .onOk((newPassword) => {
+  //     userStore.updatePassword(newPassword);
+  //   })
+  //   .onCancel(() => {
+  //     // console.log('>>>> Cancel')
+  //   })
+  //   .onDismiss(() => {
+  //     // console.log('I am triggered on both OK and Cancel')
+  //   });
+  if (user.value.emailVerified) {
+    await userStore.resetPassword();
+    $q.dialog({
+      title: 'Notice',
+      message: 'Please check your email to reset password',
+    });
+  } else {
+    $q.dialog({
+      title: 'Notice',
+      message: 'Please verify your email first',
+    });
+  }
+}
+
+function onVerifyEmail() {
   $q.dialog({
-    title: 'Change Password',
-    message: 'please enter your new password:',
-    prompt: {
-      model: '',
-      type: 'text', // optional
+    title: 'Your email is not verified',
+    message:
+      'Please check your email to find the verification link. If you can not find it, we can send the link again.',
+    ok: {
+      label: 'resend',
     },
     cancel: true,
-    persistent: true,
-  })
-    .onOk((newPassword) => {
-      try {
-        userStore.updatePassword(newPassword);
-      } catch (error) {
-        console.log(error);
-      }
-    })
-    .onCancel(() => {
-      // console.log('>>>> Cancel')
-    })
-    .onDismiss(() => {
-      // console.log('I am triggered on both OK and Cancel')
+    persistent: false,
+  }).onOk(async () => {
+    await userStore.sendEmailVerification();
+    Notify.create({
+      message: 'Please check your email to find the verification link.',
+      color: 'positive',
+      icon: 'check',
+      position: 'top',
     });
+  });
 }
 </script>
 

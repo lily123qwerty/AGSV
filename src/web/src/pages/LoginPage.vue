@@ -95,6 +95,15 @@
                     :loading="waiting"
                   ></q-btn>
 
+                  <q-btn
+                    class="full-width fredoka q-mt-sm"
+                    color="primary"
+                    label="Forget Password"
+                    rounded
+                    flat
+                    @click="onForgetPassword"
+                  ></q-btn>
+
                   <div class="q-mt-lg">
                     <div class="q-mt-sm">
                       Don't have an account yet?
@@ -118,9 +127,12 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useQuasar, Notify } from 'quasar';
 import { validateEmail } from '../model/helper';
 import { useUserStore } from 'stores/user';
 import { useRouter } from 'vue-router';
+
+const $q = useQuasar();
 
 const router = useRouter();
 
@@ -140,12 +152,12 @@ const passwordError = ref(null);
 const submit = async () => {
   if (form.value.validate()) {
     waiting.value = true;
-    store.login(email.value, password.value, (errorCode, errorMessage) => {
+    try {
+      await store.login(email.value, password.value);
       waiting.value = false;
-      console.log(errorCode);
-      if (!errorCode) {
-        router.push('/home');
-      } else if (errorCode == 'auth/invalid-login-credentials') {
+      router.push('/home');
+    } catch (error) {
+      if (error.code == 'auth/invalid-login-credentials') {
         emailError.value = 'Email may be wrong';
         passwordError.value = 'Password may be wrong';
 
@@ -157,7 +169,29 @@ const submit = async () => {
         emailError.value = null;
         passwordError.value = null;
       }
-    });
+      waiting.value = false;
+    }
   }
 };
+
+function onForgetPassword() {
+  $q.dialog({
+    title: 'Forget Password',
+    message: 'Please enter your email. We will send you a password reset link.',
+    prompt: {
+      model: email.value,
+      type: 'text', // optional
+    },
+    cancel: true,
+    persistent: false,
+  }).onOk(async (data) => {
+    await store.forgetPassword(data);
+    Notify.create({
+      message: 'Please check your email to find the password reset link.',
+      color: 'positive',
+      icon: 'check',
+      position: 'top',
+    });
+  });
+}
 </script>

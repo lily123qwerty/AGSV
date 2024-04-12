@@ -6,7 +6,8 @@ import {
   signOut,
   updateProfile,
   updatePassword,
-  reauthenticateWithCredential,
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import Graph from 'src/model/Graph';
 import Category from 'src/model/Category';
@@ -24,6 +25,25 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
+import { Notify } from 'quasar';
+
+async function notifyError(asyncAction) {
+  try {
+    return await asyncAction();
+  } catch (error) {
+    console.log(error.message);
+    Notify.create({
+      message: error.message,
+      color: 'red',
+      icon: 'warning',
+      position: 'top',
+    });
+    throw error;
+  }
+}
+
+// const PUBLIC_DOMAIN = 'https://argv.fun';
+const PUBLIC_DOMAIN = 'http://localhost:9000'; //for Development
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -53,6 +73,7 @@ export const useUserStore = defineStore('user', {
 
     needUser() {
       if (this.user == null) throw new Error('You must login!');
+      // throw new Error('You must login!');
     },
 
     needAdmin() {
@@ -76,34 +97,40 @@ export const useUserStore = defineStore('user', {
       User Actions
     */
 
-    register(name, email, password, callback) {
-      const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          callback();
-        })
-        .catch((error) => {
-          // console.log(error);
-          const errorCode = error.code;
-          const errorMessage = error.message;
+    async register(displayName, email, password) {
+      await notifyError(async () => {
+        const auth = getAuth();
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        await updateProfile(userCredential.user, { displayName });
 
-          callback(errorCode, errorMessage);
-        });
+        const actionCodeSettings = {
+          url: PUBLIC_DOMAIN,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(userCredential.user, actionCodeSettings);
+      });
     },
 
-    login(email, password, callback) {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          callback();
-        })
-        .catch((error) => {
-          console.log(error);
-          const errorCode = error.code;
-          const errorMessage = error.message;
+    async sendEmailVerification() {
+      await notifyError(async () => {
+        this.needUser();
+        const actionCodeSettings = {
+          url: PUBLIC_DOMAIN,
+          handleCodeInApp: false,
+        };
+        await sendEmailVerification(this.user, actionCodeSettings);
+      });
+    },
 
-          callback(errorCode, errorMessage);
-        });
+    async login(email, password) {
+      await notifyError(async () => {
+        const auth = getAuth();
+        await signInWithEmailAndPassword(auth, email, password);
+      });
     },
 
     logout() {
@@ -112,18 +139,47 @@ export const useUserStore = defineStore('user', {
     },
 
     async updateUserName(displayName) {
-      this.needUser();
-      await updateProfile(this.user, { displayName });
+      await notifyError(async () => {
+        this.needUser();
+        await updateProfile(this.user, { displayName });
+      });
     },
 
     async updateUserPhoto(photoURL) {
-      this.needUser();
-      await updateProfile(this.user, { photoURL });
+      await notifyError(async () => {
+        this.needUser();
+        await updateProfile(this.user, { photoURL });
+      });
     },
 
-    async updatePassword(newPassword) {
-      this.needUser();
-      await updatePassword(this.user, newPassword);
+    // async updatePassword(newPassword) {
+    //   await notifyError(async () => {
+    //     this.needUser();
+    //     await updatePassword(this.user, newPassword);
+    //   });
+    // },
+
+    async resetPassword() {
+      await notifyError(async () => {
+        this.needUser();
+        const actionCodeSettings = {
+          url: PUBLIC_DOMAIN,
+          handleCodeInApp: false,
+        };
+        const auth = getAuth();
+        await sendPasswordResetEmail(auth, this.user.email, actionCodeSettings);
+      });
+    },
+
+    async forgetPassword(email) {
+      await notifyError(async () => {
+        const actionCodeSettings = {
+          url: PUBLIC_DOMAIN,
+          handleCodeInApp: false,
+        };
+        const auth = getAuth();
+        await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      });
     },
 
     /*
@@ -131,64 +187,76 @@ export const useUserStore = defineStore('user', {
     */
 
     async save(graph) {
-      this.needOwner(graph);
+      await notifyError(async () => {
+        this.needOwner(graph);
 
-      if (!graph.uid) graph.uid = this.user.uid;
+        if (!graph.uid) graph.uid = this.user.uid;
 
-      if (graph.uid == this.user.uid) {
-        graph.ownerEmail = this.user.email;
-        graph.ownerPhoto = this.user.photoURL;
-        graph.ownerName = this.user.displayName;
-      }
+        if (graph.uid == this.user.uid) {
+          graph.ownerEmail = this.user.email;
+          graph.ownerPhoto = this.user.photoURL;
+          graph.ownerName = this.user.displayName;
+        }
 
-      graph.lastEdited = serverTimestamp();
+        graph.lastEdited = serverTimestamp();
 
-      const db = getFirestore();
+        const db = getFirestore();
 
-      if (graph.id) {
-        // update
-        await setDoc(doc(db, 'graphs', graph.id), graph.toJSON());
-      } else {
-        // create
-        const docRef = await addDoc(collection(db, 'graphs'), graph.toJSON());
-        // console.log('Document written with ID: ', docRef.id);
-        graph.id = docRef.id;
-        this.graphs.push(graph);
-      }
+        if (graph.id) {
+          // update
+          await setDoc(doc(db, 'graphs', graph.id), graph.toJSON());
+        } else {
+          // create
+          const docRef = await addDoc(collection(db, 'graphs'), graph.toJSON());
+          // console.log('Document written with ID: ', docRef.id);
+          graph.id = docRef.id;
+          this.graphs.push(graph);
+        }
+      });
     },
 
     async publish(graph, published) {
-      this.needAdmin();
-      await updateDoc(doc(getFirestore(), 'graphs', graph.id), { published });
-      graph.published = published;
+      await notifyError(async () => {
+        this.needAdmin();
+        await updateDoc(doc(getFirestore(), 'graphs', graph.id), { published });
+        graph.published = published;
+      });
     },
 
     async highlight(graph, highlighted) {
-      this.needAdmin();
-      await updateDoc(doc(getFirestore(), 'graphs', graph.id), { highlighted });
-      graph.highlighted = highlighted;
+      await notifyError(async () => {
+        this.needAdmin();
+        await updateDoc(doc(getFirestore(), 'graphs', graph.id), {
+          highlighted,
+        });
+        graph.highlighted = highlighted;
+      });
     },
 
     async delete(graph) {
-      this.needAdminOrOwner(graph);
-      await deleteDoc(doc(getFirestore(), 'graphs', graph.id));
-      this.graphs = this.graphs.filter((g) => g.id != graph.id);
+      await notifyError(async () => {
+        this.needAdminOrOwner(graph);
+        await deleteDoc(doc(getFirestore(), 'graphs', graph.id));
+        this.graphs = this.graphs.filter((g) => g.id != graph.id);
+      });
     },
 
     async getMyGraphs() {
-      if (!this.user) return;
-      const db = getFirestore();
+      await notifyError(async () => {
+        if (!this.user) return;
+        const db = getFirestore();
 
-      const q = query(
-        collection(db, 'graphs'),
-        where('uid', '==', this.user.uid)
-      );
-      const qs = await getDocs(q);
-      this.graphs = [];
+        const q = query(
+          collection(db, 'graphs'),
+          where('uid', '==', this.user.uid)
+        );
+        const qs = await getDocs(q);
+        this.graphs = [];
 
-      qs.forEach((doc) => {
-        const graph = Graph.fromDoc(doc);
-        this.graphs.push(graph);
+        qs.forEach((doc) => {
+          const graph = Graph.fromDoc(doc);
+          this.graphs.push(graph);
+        });
       });
     },
 
@@ -207,30 +275,35 @@ export const useUserStore = defineStore('user', {
     },
 
     async getCategoryGraphs(key) {
-      const db = getFirestore();
+      return await notifyError(async () => {
+        const db = getFirestore();
 
-      let q = query(collection(db, 'graphs'), where('category', '==', key));
-      //   where('published', '==', true)
-      // );
-      const qs = await getDocs(q);
-      const graphs = [];
+        let q = query(collection(db, 'graphs'), where('category', '==', key));
+        //   where('published', '==', true)
+        // );
+        const qs = await getDocs(q);
+        const graphs = [];
 
-      qs.forEach((doc) => {
-        const graph = Graph.fromDoc(doc);
-        graphs.push(graph);
-        if (this.user && this.user.uid == graph.uid) this.updateMyGraphs(graph);
-        console.log(graph.toJSON());
+        qs.forEach((doc) => {
+          const graph = Graph.fromDoc(doc);
+          graphs.push(graph);
+          if (this.user && this.user.uid == graph.uid)
+            this.updateMyGraphs(graph);
+          console.log(graph.toJSON());
+        });
+
+        return graphs;
       });
-
-      return graphs;
     },
 
     async getGraphByID(id) {
-      const db = getFirestore();
-      const d = await getDoc(doc(db, 'graphs', id));
-      const graph = Graph.fromDoc(d);
+      return await notifyError(async () => {
+        const db = getFirestore();
+        const d = await getDoc(doc(db, 'graphs', id));
+        const graph = Graph.fromDoc(d);
 
-      return graph;
+        return graph;
+      });
     },
   },
 });

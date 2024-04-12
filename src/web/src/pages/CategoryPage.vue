@@ -17,7 +17,11 @@
         <q-item class="q-px-sm q-py-none">
           <q-item-section avatar>
             <q-avatar>
-              <img v-if="g.ownerPhoto" :src="g.ownerPhoto" />
+              <img
+                v-if="g.ownerPhoto"
+                :src="g.ownerPhoto"
+                style="object-fit: cover; width: 100%; height: 100%"
+              />
             </q-avatar>
           </q-item-section>
 

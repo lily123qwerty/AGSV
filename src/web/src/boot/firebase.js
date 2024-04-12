@@ -6,6 +6,7 @@ import { useUserStore } from '../stores/user';
 
 // import 'firebase/firestore'; // eslint-disable-line
 
+// Lily's Config
 const firebaseConfig = {
   apiKey: 'AIzaSyBPZmWzY5be8-XUiZlJwcZLFXnJXYV0Mqo',
   authDomain: 'agsv-f154d.firebaseapp.com',
@@ -15,6 +16,17 @@ const firebaseConfig = {
   appId: '1:469144188212:web:d3d6803554b3b326b1e161',
   measurementId: 'G-X91LWFRSXK',
 };
+
+// Oren's Config
+// const firebaseConfig = {
+//   apiKey: 'AIzaSyD8EaEePA69-SZN6uEqiOn8wJOd0ATRlZU',
+//   authDomain: 'agsv-219d6.firebaseapp.com',
+//   projectId: 'agsv-219d6',
+//   storageBucket: 'agsv-219d6.appspot.com',
+//   messagingSenderId: '807835082235',
+//   appId: '1:807835082235:web:6e1bcd2799982f516c3f5e',
+//   measurementId: 'G-R6LPQE2VGJ',
+// };
 
 const userStore = useUserStore();
 
@@ -31,6 +43,7 @@ export default ({ app, router, store }) => {
       userStore.getMyGraphs();
     } else {
       userStore.graphs = [];
+      router.push('/');
     }
   });
 

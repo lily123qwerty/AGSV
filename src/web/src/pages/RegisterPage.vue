@@ -147,25 +147,21 @@ const emailError = ref(null);
 const submit = async () => {
   if (form.value.validate()) {
     waiting.value = true;
-    store.register(
-      name.value,
-      email.value,
-      password.value,
-      (errorCode, errorMessage) => {
+    try {
+      await store.register(name.value, email.value, password.value);
+      waiting.value = false;
+      router.push('/');
+    } catch (error) {
+      if (error.code == 'auth/email-already-in-use') {
+        emailError.value = 'Email already in use';
+
+        emailInput.value.validate();
+        emailInput.value.focus();
+
+        emailError.value = null;
         waiting.value = false;
-        // console.log(errorCode);
-        if (!errorCode) {
-          router.push('/');
-        } else if (errorCode == 'auth/email-already-in-use') {
-          emailError.value = 'Email already in use';
-
-          emailInput.value.validate();
-          emailInput.value.focus();
-
-          emailError.value = null;
-        }
       }
-    );
+    }
   }
 };
 </script>

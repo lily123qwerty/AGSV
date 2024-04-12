@@ -68,25 +68,31 @@ export default class Graph {
   fromJSON(json) {
     this._init();
 
-    json.dots.forEach((j) => {
-      let obj = Dot.fromJSON(j);
-      this.dots[obj.key] = obj;
-    });
+    json = json || {};
 
-    json.lines.forEach((j) => {
-      let obj = Line.fromJSON(j, this.dots);
-      this.lines[obj.key] = obj;
-    });
+    if (json.dots)
+      json.dots.forEach((j) => {
+        let obj = Dot.fromJSON(j);
+        this.dots[obj.key] = obj;
+      });
 
-    json.angles.forEach((j) => {
-      let obj = Angle.fromJSON(j, this.dots, this.lines);
-      this.angles[obj.key] = obj;
-    });
+    if (json.lines)
+      json.lines.forEach((j) => {
+        let obj = Line.fromJSON(j, this.dots);
+        this.lines[obj.key] = obj;
+      });
 
-    json.triangles.forEach((j) => {
-      let obj = Triangle.fromJSON(j, this.dots, this.lines, this.angles);
-      this.triangles[obj.key] = obj;
-    });
+    if (json.angles)
+      json.angles.forEach((j) => {
+        let obj = Angle.fromJSON(j, this.dots, this.lines);
+        this.angles[obj.key] = obj;
+      });
+
+    if (json.triangles)
+      json.triangles.forEach((j) => {
+        let obj = Triangle.fromJSON(j, this.dots, this.lines, this.angles);
+        this.triangles[obj.key] = obj;
+      });
 
     this._id = json.id || null;
     this._key_seq = json.key_seq;

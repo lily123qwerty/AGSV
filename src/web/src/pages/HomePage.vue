@@ -50,9 +50,6 @@ const $q = useQuasar();
 const userStore = useUserStore();
 const graphStore = useGraphStore();
 
-const confirmDelete = ref(false);
-const toDelete = ref(null);
-
 function clickEdit(graph) {
   graphStore.reset(graph);
   router.push('/graph');

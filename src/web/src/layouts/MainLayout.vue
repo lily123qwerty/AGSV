@@ -28,7 +28,10 @@
         />
         <q-btn v-if="userStore.user" dense flat round @click="showProfile">
           <q-avatar size="32px">
-            <img :src="userStore.user.photoURL || '/defaultAvatar.jpg'" />
+            <img
+              :src="userStore.user.photoURL || '/defaultAvatar.jpg'"
+              style="object-fit: cover; width: 100%; height: 100%"
+            />
           </q-avatar>
         </q-btn>
         <q-btn
@@ -103,7 +106,6 @@ router.beforeEach((to, from, next) => {
 
 function showProfile() {
   userStore.editingObject = userStore.user;
-  console.log(userStore.user.constructor.name);
   rightDrawerOpen.value = true;
 }
 
@@ -114,16 +116,48 @@ watch(
   }
 );
 
-onErrorCaptured((error) => {
-  console.log('onErrorCaptured:', error.message);
-  Notify.create({
-    message: error.message,
-    color: 'red',
-    icon: 'warning',
-    position: 'top',
-  });
-  return false;
-});
+// onErrorCaptured((error) => {
+//   console.log('onErrorCaptured:', error.message);
+//   Notify.create({
+//     message: error.message,
+//     color: 'red',
+//     icon: 'warning',
+//     position: 'top',
+//   });
+//   return false;
+// });
+
+// userStore.$onAction(
+//   ({
+//     name, // name of the action
+//     store, // store instance, same as `someStore`
+//     args, // array of parameters passed to the action
+//     after, // hook after the action returns or resolves
+//     onError, // hook if the action throws or rejects
+//   }) => {
+//     // a shared variable for this specific action call
+//     const startTime = Date.now();
+//     // this will trigger before an action on `store` is executed
+//     console.log(`Start "${name}" with params [${args.join(', ')}].`);
+
+//     // this will trigger if the action succeeds and after it has fully run.
+//     // it waits for any returned promised
+//     after((result) => {
+//       console.log(
+//         `Finished "${name}" after ${
+//           Date.now() - startTime
+//         }ms.\nResult: ${result}.`
+//       );
+//     });
+
+//     // this will trigger if the action throws or returns a promise that rejects
+//     onError((error) => {
+//       console.warn(
+//         `Failed "${name}" after ${Date.now() - startTime}ms.\nError: ${error}.`
+//       );
+//     });
+//   }
+// );
 </script>
 
 <style lang="scss" scoped>
