@@ -43,12 +43,7 @@
                 (val, update) => filterFn(val, update, 'allLines', 'radius')
               "
               @blur="() => blurFn('radius')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle3 && (vals.angle1 || vals.angle2))
-              "
+              :disable="vals.diameter"
             />
           </div>
           <div class="col q-ma-sm">
@@ -63,12 +58,7 @@
                 (val, update) => filterFn(val, update, 'allLines', 'diameter')
               "
               @blur="() => blurFn('diameter')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle3 && (vals.angle1 || vals.angle2))
-              "
+              :disable="vals.radius"
             />
           </div>
           <div class="col q-ma-sm">
@@ -170,6 +160,12 @@ function onOKClick() {
   let radius = vals.value.radius;
   let diameter = vals.value.diameter;
   let semiCircle = vals.value.semiCircle;
+
+  if (!center) {
+    center = { x: 50, y: 50 };
+  } else {
+    center = store.graph.dots[center];
+  }
 
   // 3dots
   if (dot1 && dot2 && dot3) {
