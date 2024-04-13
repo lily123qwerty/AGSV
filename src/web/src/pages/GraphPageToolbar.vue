@@ -164,16 +164,7 @@ function popupAddTriangle() {
 
     // props forwarded to your custom component
     componentProps: {},
-  })
-    .onOk(() => {
-      console.log('OK');
-    })
-    .onCancel(() => {
-      console.log('Cancel');
-    })
-    .onDismiss(() => {
-      console.log('Called on OK or Cancel');
-    });
+  }).onOk(() => {});
 }
 
 // TODO: test circle
@@ -183,16 +174,7 @@ function popupAddCircle() {
 
     // props forwarded to your custom component
     componentProps: {},
-  })
-    .onOk(() => {
-      console.log('OK');
-    })
-    .onCancel(() => {
-      console.log('Cancel');
-    })
-    .onDismiss(() => {
-      console.log('Called on OK or Cancel');
-    });
+  }).onOk(() => {});
 }
 </script>
 

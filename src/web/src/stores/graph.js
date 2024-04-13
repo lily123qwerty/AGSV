@@ -24,15 +24,15 @@ export const useGraphStore = defineStore('graph', {
     },
 
     historyPush() {
-      this.history.push();
+      this.history.push(this.graph);
     },
 
     historyUndo() {
-      this.history.moveBackward();
+      this.history.moveBackward(this.graph);
     },
 
     historyRedo() {
-      this.history.moveForward();
+      this.history.moveForward(this.graph);
     },
 
     addTriangleBy2Angle1Side(angle1, angle2, side, direction) {

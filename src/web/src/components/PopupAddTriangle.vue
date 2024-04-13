@@ -6,125 +6,63 @@
         ... use q-card-section for it?
       -->
       <q-card-section>
-        <div class="text-h6">Add Triangle</div>
+        <div class="row justify-between items-center">
+          <div class="text-h6">Add Triangle</div>
+          <q-select
+            outlined
+            dense
+            v-model="method"
+            :options="allMethod"
+            emit-value
+            map-options
+            label="Method"
+          />
+        </div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <div class="row item-start">
-          <div class="col q-ma-sm">
+          <div class="col q-gutter-sm">
             <q-select
+              v-if="method == 'ddd'"
               v-model="vals['dot1']"
               :options="options['dot1']"
-              label="Dot 1"
-              :disable="
-                vals.angle1 ||
-                vals.angle2 ||
-                vals.angle3 ||
-                vals.side12 ||
-                vals.side23 ||
-                vals.side31
-              "
+              emit-value
+              map-options
+              label="Dot A"
             />
-          </div>
-          <div class="col q-ma-sm">
+
             <q-select
+              v-if="method == 'ddd'"
               v-model="vals['dot2']"
               :options="options['dot2']"
-              label="Dot 2"
-              :disable="
-                vals.angle1 ||
-                vals.angle2 ||
-                vals.angle3 ||
-                vals.side12 ||
-                vals.side23 ||
-                vals.side31
-              "
+              emit-value
+              map-options
+              label="Dot B"
             />
-          </div>
-          <div class="col q-ma-sm">
+
             <q-select
+              v-if="method == 'ddd'"
               v-model="vals['dot3']"
               :options="options['dot3']"
-              label="Dot 3"
-              :disable="
-                vals.angle1 ||
-                vals.angle2 ||
-                vals.angle3 ||
-                vals.side12 ||
-                vals.side23 ||
-                vals.side31
-              "
+              emit-value
+              map-options
+              label="Dot C"
             />
-          </div>
-        </div>
-        <div class="row items-start">
-          <div class="col q-ma-sm">
+
             <q-select
-              v-model="vals['side12']"
-              :options="options['side12']"
-              label="Side 1-2"
-              use-input
-              @input-value="(val) => inputFn(val, 'side12')"
-              @new-value="(val, done) => done(val)"
-              @filter="
-                (val, update) => filterFn(val, update, 'allLines', 'side12')
+              v-if="
+                method == 'aaa' ||
+                method == 'aas' ||
+                method == 'asa' ||
+                method == 'ass' ||
+                method == 'sas'
               "
-              @blur="() => blurFn('side12')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle3 && (vals.angle1 || vals.angle2))
-              "
-            />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select
-              v-model="vals['side23']"
-              :options="options['side23']"
-              label="Side 2-3"
-              use-input
-              @input-value="(val) => inputFn(val, 'side23')"
-              @new-value="(val, done) => done(val)"
-              @filter="
-                (val, update) => filterFn(val, update, 'allLines', 'side23')
-              "
-              @blur="() => blurFn('side23')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle1 && (vals.angle2 || vals.angle3))
-              "
-            />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select
-              v-model="vals['side31']"
-              :options="options['side31']"
-              label="Side 3-1"
-              use-input
-              @input-value="(val) => inputFn(val, 'side31')"
-              @new-value="(val, done) => done(val)"
-              @filter="
-                (val, update) => filterFn(val, update, 'allLines', 'side31')
-              "
-              @blur="() => blurFn('side31')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle2 && (vals.angle1 || vals.angle3))
-              "
-            />
-          </div>
-        </div>
-        <div class="row items-start">
-          <div class="col q-ma-sm">
-            <q-select
               v-model="vals['angle1']"
               :options="options['angle1']"
-              label="Angle 1"
+              emit-value
+              map-options
+              label="Angle a"
               use-input
               @input-value="(val) => inputFn(val, 'angle1')"
               @new-value="(val, done) => done(val)"
@@ -132,19 +70,20 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle1')
               "
               @blur="() => blurFn('angle1')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.side23 && (vals.angle2 || vals.angle3))
-              "
             />
-          </div>
-          <div class="col q-ma-sm">
-            <q-select
+
+            <!-- <q-select
+              v-if="
+                method == 'aaa' ||
+                method == 'aas' ||
+                method == 'asa' ||
+                method == 'sas'
+              "
               v-model="vals['angle2']"
               :options="options['angle2']"
-              label="Angle 2"
+              emit-value
+              map-options
+              label="Angle b"
               use-input
               @input-value="(val) => inputFn(val, 'angle2')"
               @new-value="(val, done) => done(val)"
@@ -152,19 +91,21 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle2')
               "
               @blur="() => blurFn('angle2')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.side31 && (vals.angle1 || vals.angle3))
-              "
+            /> -->
+
+            <q-input
+              v-if="method == 'aaa' || method == 'aas' || method == 'asa'"
+              v-model="vals['angle2']"
+              label="Angle b"
             />
-          </div>
-          <div class="col q-ma-sm">
+
             <q-select
+              v-if="method == 'aaa'"
               v-model="vals['angle3']"
               :options="options['angle3']"
-              label="Angle 3"
+              emit-value
+              map-options
+              label="Angle c"
               use-input
               @input-value="(val) => inputFn(val, 'angle3')"
               @new-value="(val, done) => done(val)"
@@ -172,13 +113,69 @@
                 (val, update) => filterFn(val, update, 'allAngles', 'angle3')
               "
               @blur="() => blurFn('angle3')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.side12 && (vals.angle1 || vals.angle2))
-              "
             />
+
+            <q-select
+              v-if="
+                method == 'sss' ||
+                method == 'asa' ||
+                method == 'ass' ||
+                method == 'sas'
+              "
+              v-model="vals['side12']"
+              :options="options['side12']"
+              emit-value
+              map-options
+              label="Side AB"
+              use-input
+              @input-value="(val) => inputFn(val, 'side12')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side12')
+              "
+              @blur="() => blurFn('side12')"
+            />
+
+            <q-select
+              v-if="method == 'sss' || method == 'aas' || method == 'ass'"
+              v-model="vals['side23']"
+              :options="options['side23']"
+              emit-value
+              map-options
+              label="Side BC"
+              use-input
+              @input-value="(val) => inputFn(val, 'side23')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side23')
+              "
+              @blur="() => blurFn('side23')"
+            />
+
+            <!-- <q-select
+              v-if="method == 'sss' || method == 'sas'"
+              v-model="vals['side31']"
+              :options="options['side31']"
+              emit-value
+              map-options
+              label="Side AC"
+              use-input
+              @input-value="(val) => inputFn(val, 'side31')"
+              @new-value="(val, done) => done(val)"
+              @filter="
+                (val, update) => filterFn(val, update, 'allLines', 'side31')
+              "
+              @blur="() => blurFn('side31')"
+            /> -->
+
+            <q-input
+              v-if="method == 'sss' || method == 'sas'"
+              v-model="vals['side31']"
+              label="Side AC"
+            />
+          </div>
+          <div class="col col-7 q-ml-sm">
+            <a-demo-triangle :method="method" />
           </div>
         </div>
       </q-card-section>
@@ -196,7 +193,7 @@
 import { useDialogPluginComponent } from 'quasar';
 import { ref } from 'vue';
 import { useGraphStore } from 'stores/graph';
-import { isInDestructureAssignment } from 'vue/compiler-sfc';
+import ADemoTriangle from './ADemoTriangle.vue';
 
 const store = useGraphStore();
 
@@ -219,10 +216,52 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 //                    example: onDialogOK({ /*...*/ }) - with payload
 // onDialogCancel - Function to call to settle dialog with "cancel" outcome
 
+const method = ref('asa');
+
+const allMethod = [
+  // {
+  //   value: 'aaa',
+  //   label: 'AAA Angle-Angle-Angle',
+  // },
+  {
+    value: 'asa',
+    label: 'ASA Angle-Side-Angle',
+  },
+  {
+    value: 'sas',
+    label: 'SAS Side-Angle-Side',
+  },
+  {
+    value: 'ass',
+    label: 'ASS Angle-Side-Side',
+  },
+  // {
+  //   value: 'aas',
+  //   label: 'AAS Angle-Angle-Side',
+  // },
+  {
+    value: 'sss',
+    label: 'SSS Side-Side-Side',
+  },
+  {
+    value: 'ddd',
+    label: 'DDD Dot-Dot-Dot',
+  },
+];
+
 const allOptions = {
-  allDots: Object.entries(store.graph.dots).map(([key, obj]) => key),
-  allLines: Object.entries(store.graph.lines).map(([key, obj]) => key),
-  allAngles: Object.entries(store.graph.angles).map(([key, obj]) => key),
+  allDots: Object.entries(store.graph.dots).map(([key, obj]) => ({
+    value: key,
+    label: key + (obj.label ? ': ' + obj.label : ''),
+  })),
+  allLines: Object.entries(store.graph.lines).map(([key, obj]) => ({
+    value: key,
+    label: key + (obj.label ? ': ' + obj.label : ''),
+  })),
+  allAngles: Object.entries(store.graph.angles).map(([key, obj]) => ({
+    value: key,
+    label: key + (obj.label ? ': ' + obj.label : ''),
+  })),
 };
 
 const options = ref({
@@ -256,6 +295,7 @@ function inputFn(val, key) {
 }
 
 function filterFn(val, update, optionKey, key) {
+  // console.log(optionKey, allOptions[optionKey]);
   if (val === '') {
     update(() => {
       options.value[key] = allOptions[optionKey];
@@ -269,7 +309,7 @@ function filterFn(val, update, optionKey, key) {
   update(() => {
     const needle = val.toLowerCase();
     options.value[key] = allOptions[optionKey].filter(
-      (v) => v.toLowerCase().indexOf(needle) > -1
+      (v) => v.label.toLowerCase().indexOf(needle) > -1
     );
   });
 }
@@ -294,222 +334,97 @@ function onOKClick() {
   let dot2 = vals.value.dot2;
   let dot3 = vals.value.dot3;
 
-  // 3dots
-  if (dot1 && dot2 && dot3) {
-    store.addTriangleBy3Dot(
-      store.graph.dots[dot1],
-      store.graph.dots[dot2],
-      store.graph.dots[dot3]
-    );
-  }
+  let edited = false;
 
-  // 3sides
-  if (side12 && side23 && side31) {
-    if (isNaN(side12)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side12],
-        parseFloat(side23),
-        parseFloat(side31)
-      );
-    } else if (isNaN(side23)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side23],
-        parseFloat(side31),
-        parseFloat(side12)
-      );
-    } else if (isNaN(side31)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side31],
-        parseFloat(side12),
-        parseFloat(side23)
-      );
-    } else {
-      store.addTriangleBy3Side(
-        parseFloat(side12),
-        parseFloat(side23),
-        parseFloat(side31)
-      );
-    }
-  }
-
-  if (angle1) {
-    if (isNaN(angle1)) {
-      angle1 = store.graph.angles[angle1];
-    } else {
-      angle1 = parseFloat(angle1);
-    }
-
-    // 2angle 1 side
-    if (angle2 && side12) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
+  if (method.value == 'asa') {
+    if (angle1 && angle2 && side12) {
+      if (isNaN(angle1)) {
+        angle1 = store.graph.angles[angle1];
       } else {
-        side12 = parseFloat(side12);
+        angle1 = parseFloat(angle1);
       }
-      if (side12) {
-        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
-      }
-    }
-    if (angle3 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
 
-    // inner angle 2 side
-    if (side12 && side31) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-        store.addTriangleByInnerAngle2Side(angle1, side12, parseFloat(side31));
-      } else if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-        store.addTriangleByInnerAngle2Side(angle1, side23, parseFloat(side31));
-      } else {
-        side12 = parseFloat(side12);
-        side31 = parseFloat(side31);
-        store.addTriangleByInnerAngle2Side(angle1, side12, side31);
-      }
-    }
-
-    // outer angle 2 side
-    if (side12 && side23) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-      } else {
-        side23 = parseFloat(side23);
-      }
-      store.addTriangleByOuterAngle2Side(angle1, side12, side23);
-    }
-  }
-
-  if (angle2) {
-    if (isNaN(angle2)) {
-      angle2 = store.graph.angles[angle2];
-    } else {
       angle2 = parseFloat(angle2);
-    }
-    // 2angle 1 side
-    if (angle3 && side23) {
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-      } else {
-        side23 = parseFloat(side23);
-      }
-      if (side23) {
-        store.addTriangleBy2Angle1Side(angle2, angle3, side23);
-      }
-    }
-    if (angle1 && side12) {
+
       if (isNaN(side12)) {
         side12 = store.graph.lines[side12];
       } else {
         side12 = parseFloat(side12);
       }
-      if (side12) {
-        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
-      }
-    }
 
-    // inner angle 2 side
-    if (side12 && side23) {
+      store.addTriangleBy2Angle1Side(angle1, angle2, side12);
+      edited = true;
+    }
+  } else if (method.value == 'sas') {
+    if (angle1 && side12 && side31) {
+      if (isNaN(angle1)) {
+        angle1 = store.graph.angles[angle1];
+      } else {
+        angle1 = parseFloat(angle1);
+      }
+
       if (isNaN(side12)) {
         side12 = store.graph.lines[side12];
-        store.addTriangleByInnerAngle2Side(angle2, side12, parseFloat(side23));
-      } else if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-        store.addTriangleByInnerAngle2Side(angle2, side23, parseFloat(side12));
       } else {
         side12 = parseFloat(side12);
-        side23 = parseFloat(side23);
-        store.addTriangleByInnerAngle2Side(angle2, side12, side23);
       }
-    }
 
-    // outer angle 2 side
-    if (side23 && side31) {
+      side31 = parseFloat(side31);
+
+      store.addTriangleByInnerAngle2Side(angle1, side12, side31);
+      edited = true;
+    }
+  } else if (method.value == 'ass') {
+    if (angle1 && side12 && side23) {
+      if (isNaN(angle1)) {
+        angle1 = store.graph.angles[angle1];
+      } else {
+        angle1 = parseFloat(angle1);
+      }
+
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
+      } else {
+        side12 = parseFloat(side12);
+      }
+
       if (isNaN(side23)) {
         side23 = store.graph.lines[side23];
       } else {
         side23 = parseFloat(side23);
       }
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
+
+      store.addTriangleByOuterAngle2Side(angle1, side12, side23);
+      edited = true;
+    }
+  } else if (method.value == 'sss') {
+    if (side31 && side12 && side23) {
+      if (isNaN(side12)) {
+        side12 = store.graph.lines[side12];
       } else {
-        side31 = parseFloat(side31);
+        side12 = parseFloat(side12);
       }
-      store.addTriangleByOuterAngle2Side(angle2, side23, side31);
+
+      side23 = parseFloat(side23);
+      side31 = parseFloat(side31);
+
+      store.addTriangleBy3Side(side12, side23, side31);
+      edited = true;
+    }
+  } else if (method.value == 'ddd') {
+    if (dot1 && dot2 && dot3) {
+      store.addTriangleBy3Dot(
+        store.graph.dots[dot1],
+        store.graph.dots[dot2],
+        store.graph.dots[dot3]
+      );
+      edited = true;
     }
   }
 
-  if (angle3) {
-    if (isNaN(angle3)) {
-      angle3 = store.graph.angles[angle3];
-    } else {
-      angle3 = parseFloat(angle3);
-    }
-    // 2angle 1 side
-    if (angle1 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
-    if (angle2 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
-
-    // inner angle 2 side
-    if (side23 && side31) {
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-        store.addTriangleByInnerAngle2Side(angle3, side23, parseFloat(side31));
-      } else if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-        store.addTriangleByInnerAngle2Side(angle3, side31, parseFloat(side23));
-      } else {
-        side23 = parseFloat(side23);
-        side31 = parseFloat(side31);
-        store.addTriangleByInnerAngle2Side(angle3, side23, side31);
-      }
-    }
-
-    // outer angle 2 side
-    if (side31 && side12) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      store.addTriangleByOuterAngle2Side(angle3, side31, side12);
-    }
+  if (edited) {
+    store.historyPush();
   }
-  store.historyPush();
 
   onDialogOK();
 }

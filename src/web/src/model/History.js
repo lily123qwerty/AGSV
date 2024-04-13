@@ -2,12 +2,11 @@ import Graph from './Graph';
 
 export default class History {
   constructor(graph) {
-    this._graph = graph || new Graph();
-    this.reset();
+    this.reset(graph || new Graph());
   }
 
-  reset() {
-    this._history = [this._graph.toJSON()];
+  reset(graph) {
+    this._history = [graph.toJSON()];
     this._index = 0;
   }
 
@@ -15,29 +14,29 @@ export default class History {
     return this._index > 0;
   }
 
-  push() {
+  push(graph) {
     if (this._index < this._history.length - 1) {
       this._history.splice(this._index + 1, this._history.length);
     }
-    this._history.push(this._graph.toJSON());
+    this._history.push(graph.toJSON());
     this._index = this._history.length - 1;
   }
 
-  moveBackward() {
+  moveBackward(graph) {
     if (this._index > 0) {
       this._index--;
-      this._graph.fromJSON(this._history[this._index]);
+      graph.fromJSON(this._history[this._index]);
     }
   }
 
-  moveForward() {
+  moveForward(graph) {
     if (this._index < this._history.length - 1) {
       this._index++;
-      this._graph.fromJSON(this._history[this._index]);
+      graph.fromJSON(this._history[this._index]);
     }
   }
 
-  restore() {
-    this._graph.fromJSON(this._history[0]);
+  restore(graph) {
+    graph.fromJSON(this._history[0]);
   }
 }

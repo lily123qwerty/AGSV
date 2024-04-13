@@ -551,6 +551,8 @@ export default class Graph {
   }
 
   addTriangleByOuterAngle2Side(angle1, side1, side3, direction) {
+    //TODO: NOT RIGHT
+    console.log('addTriangleByOuterAngle2Side', angle1, side1, side3);
     //                dot3
     //               /     \
     //            side2      side3
@@ -674,6 +676,8 @@ export default class Graph {
   }
 
   addTriangleBy3Side(side1, side2, side3, direction) {
+    //TODO: NOT RIGHT
+    console.log('addTriangleBy3Side', side1, side2, side3);
     direction = direction || 1;
     //                dot3
     //               /     \
@@ -689,8 +693,6 @@ export default class Graph {
     let dot1, dot2, dot3;
     let shareLine = null;
     let r = 0;
-
-    console.log(side1, side2, side3);
 
     if (typeof side1 == 'object') {
       //side is a line key
