@@ -86,7 +86,7 @@ const btnSize = ref('13px');
 const isSaving = ref(false);
 
 onBeforeRouteLeave((to, from, next) => {
-  if ((store.history && store.history.hasHistory) || store.metaEdited) {
+  if (store.hasHistory() || store.metaEdited) {
     $q.dialog({
       title: 'Confirm',
       message: 'You have modified the graph. Would you like to discard?',
@@ -97,7 +97,7 @@ onBeforeRouteLeave((to, from, next) => {
       persistent: true,
     })
       .onOk(() => {
-        store.history.restore();
+        store.restoreHistory();
         next();
       })
       .onCancel(() => {});

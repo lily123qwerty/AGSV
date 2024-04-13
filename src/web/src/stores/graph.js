@@ -35,6 +35,14 @@ export const useGraphStore = defineStore('graph', {
       this.history.moveForward(this.graph);
     },
 
+    hasHistory() {
+      return this.history && this.history.hasHistory;
+    },
+
+    restoreHistory() {
+      this.history.restore(this.graph);
+    },
+
     addTriangleBy2Angle1Side(angle1, angle2, side, direction) {
       return this.graph.addTriangleBy2Angle1Side(
         angle1,
