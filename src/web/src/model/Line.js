@@ -8,6 +8,11 @@ export default class Line extends Shape {
     if (!style) {
       this.style.visible = false;
     }
+    this._ends.forEach((dot) => dot.addRefCount());
+  }
+
+  delete() {
+    this._ends.forEach((dot) => dot.delRefCount());
   }
 
   get ends() {

@@ -11,6 +11,16 @@ export default class Triangle extends Shape {
       this.style.visible = false;
       this.style.color = 'red';
     }
+
+    this._vertices.forEach((dot) => dot.addRefCount());
+    this._edges.forEach((line) => line.addRefCount());
+    this._angles.forEach((angle) => angle.addRefCount());
+  }
+
+  delete() {
+    this._vertices.forEach((dot) => dot.delRefCount());
+    this._edges.forEach((line) => line.delRefCount());
+    this._angles.forEach((angle) => angle.delRefCount());
   }
 
   get vertices() {

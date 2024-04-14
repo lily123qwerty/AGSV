@@ -328,31 +328,39 @@ export default class Graph {
     return angle2;
   }
 
-  deleteTriangle(t) {
-    let vertices = t.vertices;
-    let edges = t.edges;
-    let angles = t.angles;
-
-    this._triangles.delete(t.key);
-    this.vertices.forEach((obj) => {
-      for (let i = 0; i < vertices.length; i++) {
-        if (
-          obj.vertices[0] == vertices[i] ||
-          obj.vertices[1] == vertices[i] ||
-          obj.vertices[2] == vertices[i]
-        ) {
-          vertices[i] == null;
-        }
+  purge() {
+    Object.keys(this._angles).forEach((key) => {
+      const angle = this._angles[key];
+      if (angle.refCount <= 0) {
+        angle.delete();
+        delete this._angles[key];
       }
     });
-    this.circles.forEach((obj) => {
-      for (let i = 0; i < vertices.length; i++) {
-        if (obj.radius == vertices[i] || obj.diameter == vertices[i]) {
-          vertices[i] == null;
-        }
+
+    Object.keys(this._lines).forEach((key) => {
+      const line = this._lines[key];
+      if (line.refCount <= 0) {
+        line.delete();
+        delete this._lines[key];
+      }
+    });
+
+    Object.keys(this._dots).forEach((key) => {
+      const dot = this._dots[key];
+      if (dot.refCount <= 0) {
+        dot.delete();
+        delete this._dots[key];
       }
     });
   }
+
+  deleteTriangle(t) {
+    t.delete();
+    delete this._triangles[t.key];
+    this.purge();
+  }
+
+  deleteCycle(c) {}
 
   addTriangleBy3Dot(dot1, dot2, dot3, sa1, sa2, ss1, ss2, ss3) {
     //                dot3

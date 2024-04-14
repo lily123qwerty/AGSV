@@ -3,6 +3,7 @@ export default class Shape {
   constructor(key, style) {
     this._key = key;
     this._style = style || new Style({});
+    this._refCount = 0;
   }
 
   get key() {
@@ -19,6 +20,18 @@ export default class Shape {
 
   get label() {
     return null;
+  }
+
+  get refCount() {
+    return this._refCount;
+  }
+
+  addRefCount() {
+    this._refCount++;
+  }
+
+  delRefCount() {
+    this._refCount--;
   }
 
   toJSON() {

@@ -55,9 +55,11 @@ import { ref, computed } from 'vue';
 import { useQuasar, Notify } from 'quasar';
 import AColorPicker from 'src/components/AColorPicker.vue';
 import { useUserStore } from '../stores/user';
+import { useGraphStore } from '../stores/graph';
 
 const $q = useQuasar();
 const userStore = useUserStore();
+const store = useGraphStore();
 
 const props = defineProps({
   triangle: Triangle,
@@ -94,7 +96,8 @@ function onDelete() {
     cancel: true,
     persistent: false,
   }).onOk(() => {
-    //TODO: call delete function here
+    store.historyPush();
+    store.graph.deleteTriangle(triangle.value);
     userStore.editingObject = false;
   });
 }

@@ -3,6 +3,7 @@ import { rotate } from './helper';
 import Style from './Style';
 
 export default class Angle extends Shape {
+  //TODO: deal addAngleLines
   constructor(dot, line1, line2, key, style) {
     super(key, style);
     this._vertex = dot;
@@ -12,6 +13,16 @@ export default class Angle extends Shape {
       this.style.visible = false;
       this.style.size = 15;
     }
+
+    this._vertex.addRefCount();
+    this._sides1.forEach((line) => line.addRefCount());
+    this._sides2.forEach((line) => line.addRefCount());
+  }
+
+  delete() {
+    this._vertex.delRefCount();
+    this._sides1.forEach((line) => line.delRefCount());
+    this._sides2.forEach((line) => line.delRefCount());
   }
 
   get vertex() {
@@ -74,6 +85,7 @@ export default class Angle extends Shape {
     }
   }
 
+  //TODO: check toJSON, fromJSON
   addAngle(line1, line2) {
     if (
       line1.radian(this.vertex) == this.sides1[0].radian(this.vertex) &&
@@ -88,10 +100,8 @@ export default class Angle extends Shape {
       this._sides1.push(line2);
       this._sides2.push(line1);
     } else {
-      console.log(0);
       return false;
     }
-    console.log(1);
     return true;
   }
 

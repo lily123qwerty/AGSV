@@ -13,6 +13,8 @@ export default class Dot extends Shape {
     }
   }
 
+  delete() {}
+
   get x() {
     return this._x;
   }
