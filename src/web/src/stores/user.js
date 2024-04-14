@@ -62,6 +62,7 @@ export const useUserStore = defineStore('user', {
 
   getters: {
     isAdmin(state) {
+      //TODO: check admin user id
       return true;
     },
   },

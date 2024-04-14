@@ -1,5 +1,6 @@
 <template>
-  <path :d="path" stroke="black" fill="black" fill-opacity="0" />
+  <path v-if="color" :d="path" :fill="color" fill-opacity="0.7" />
+  <path v-else :d="path" stroke="black" fill-opacity="0" />
 </template>
 
 <script setup>
@@ -11,21 +12,32 @@ const props = defineProps({
   scale: Number,
 });
 
+const color = computed(() => {
+  if (
+    props.angle.style &&
+    props.angle.style.visible &&
+    props.angle.style.color != 'black' &&
+    props.angle.style.color != 'rgb(0,0,0)'
+  )
+    return props.angle.style.color;
+  else return false;
+});
+
 const path = computed(() => {
   const r1 = props.angle.sides1[0].radian(props.angle.vertex);
   const r2 = props.angle.sides2[0].radian(props.angle.vertex);
-  const x1 =
-    props.angle.style.size * Math.cos(r1) + props.angle.vertex.x * props.scale;
-  const y1 =
-    props.angle.style.size * Math.sin(r1) + props.angle.vertex.y * props.scale;
-  const x2 =
-    props.angle.style.size * Math.cos(r2) + props.angle.vertex.x * props.scale;
-  const y2 =
-    props.angle.style.size * Math.sin(r2) + props.angle.vertex.y * props.scale;
+  const centerX = props.angle.vertex.x * props.scale;
+  const centerY = props.angle.vertex.y * props.scale;
+  const x1 = props.angle.style.size * Math.cos(r1) + centerX;
+  const y1 = props.angle.style.size * Math.sin(r1) + centerY;
+  const x2 = props.angle.style.size * Math.cos(r2) + centerX;
+  const y2 = props.angle.style.size * Math.sin(r2) + centerY;
+
+  let p;
 
   if (Math.abs(r1 - r2) > Math.PI) {
     if (r1 > r2) {
-      return (
+      p =
         'M ' +
         x2 +
         ' ' +
@@ -37,10 +49,9 @@ const path = computed(() => {
         ' 0,0,0 ' +
         x1 +
         ' ' +
-        y1
-      );
+        y1;
     } else {
-      return (
+      p =
         'M ' +
         x1 +
         ' ' +
@@ -52,12 +63,11 @@ const path = computed(() => {
         ' 0,0,0 ' +
         x2 +
         ' ' +
-        y2
-      );
+        y2;
     }
   } else {
     if (r1 < r2) {
-      return (
+      p =
         'M ' +
         x2 +
         ' ' +
@@ -69,10 +79,9 @@ const path = computed(() => {
         ' 0,0,0 ' +
         x1 +
         ' ' +
-        y1
-      );
+        y1;
     } else {
-      return (
+      p =
         'M ' +
         x1 +
         ' ' +
@@ -84,10 +93,15 @@ const path = computed(() => {
         ' 0,0,0 ' +
         x2 +
         ' ' +
-        y2
-      );
+        y2;
     }
   }
+
+  if (color.value) {
+    p += ' L ' + centerX + ' ' + centerY;
+  }
+
+  return p;
 });
 
 onMounted(() => {});

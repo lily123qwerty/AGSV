@@ -40,13 +40,24 @@
     </q-item>
 
     <a-color-picker v-if="visible" v-model="color" />
+
+    <q-item class="q-mt-lg">
+      <q-item-section>
+        <q-btn outline color="warning" label="Delete" @click="onDelete" />
+      </q-item-section>
+    </q-item>
   </q-list>
 </template>
 
 <script setup>
 import Triangle from 'src/model/Triangle';
 import { ref, computed } from 'vue';
+import { useQuasar, Notify } from 'quasar';
 import AColorPicker from 'src/components/AColorPicker.vue';
+import { useUserStore } from '../stores/user';
+
+const $q = useQuasar();
+const userStore = useUserStore();
 
 const props = defineProps({
   triangle: Triangle,
@@ -72,4 +83,19 @@ const round = computed({
   get: () => triangle.value.style.round,
   set: (val) => (triangle.value.style.round = val),
 });
+
+function onDelete() {
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Are you sure to delete the triangle?',
+    ok: {
+      label: 'delete',
+    },
+    cancel: true,
+    persistent: false,
+  }).onOk(() => {
+    //TODO: call delete function here
+    userStore.editingObject = false;
+  });
+}
 </script>

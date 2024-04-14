@@ -120,7 +120,7 @@ async function _save() {
   try {
     isSaving.value = true;
     await userStore.save(store.graph);
-    store.history.reset();
+    store.historyReset();
     store.metaEdited = false;
     isSaving.value = false;
     // router.push('/home');

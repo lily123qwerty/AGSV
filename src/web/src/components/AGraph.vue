@@ -14,6 +14,13 @@
       :height="height"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <a-triangle-color
+        v-for="t in triangles"
+        :key="t.key"
+        :triangle="t"
+        :scale="scale"
+      ></a-triangle-color>
+
       <a-triangle
         v-for="t in triangles"
         :key="t.key"
@@ -42,6 +49,16 @@
         :scale="scale"
       ></a-angle>
 
+      <line
+        v-for="line in coloredLines"
+        :key="line.key"
+        :x1="line.ends[0].x * scale"
+        :y1="line.ends[0].y * scale"
+        :x2="line.ends[1].x * scale"
+        :y2="line.ends[1].y * scale"
+        :style="'stroke: ' + line.style.color + '; stroke-width: 2'"
+      />
+
       <a-text
         v-for="l in labels"
         :key="l.key"
@@ -59,6 +76,7 @@
 import { ref, computed, onMounted } from 'vue';
 import Graph from 'src/model/Graph';
 import ATriangle from './ATriangle.vue';
+import ATriangleColor from './ATriangleColor.vue';
 import ADot from './ADot.vue';
 import AText from './AText.vue';
 import AAngle from './AAngle.vue';
@@ -122,6 +140,18 @@ const angles = computed(() =>
   Object.entries(props.graph.angles)
     .map(([key, obj]) => obj)
     .filter((obj) => obj.style && obj.style.visible)
+);
+
+const coloredLines = computed(() =>
+  //line label
+  Object.entries(props.graph.lines)
+    .map(([key, obj]) => obj)
+    .filter(
+      (obj) =>
+        obj.style.visible &&
+        obj.style.color != 'black' &&
+        obj.style.color != 'rgb(0,0,0)'
+    )
 );
 
 const labels = computed(() => {

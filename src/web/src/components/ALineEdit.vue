@@ -37,8 +37,8 @@
 
     <q-item>
       <q-item-section>
-        <q-item-label>Draw Label</q-item-label>
-        <q-item-label caption>Show length of line</q-item-label>
+        <q-item-label>Draw Line</q-item-label>
+        <q-item-label caption>Show line with length</q-item-label>
       </q-item-section>
       <q-item-section avatar>
         <q-toggle v-model="visible" left-label color="primary" />
@@ -120,7 +120,10 @@ const visible = computed({
 
 const color = computed({
   get: () => line.value.style.color,
-  set: (val) => (line.value.style.color = val),
+  set: (val) => {
+    line.value.style.color = val;
+    console.log(val);
+  },
 });
 
 const round = computed({

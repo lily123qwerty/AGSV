@@ -1,11 +1,16 @@
 <template>
-  <polygon :points="points" fill-opacity="0" stroke="black" />
+  <polygon
+    v-if="color"
+    :points="points"
+    :fill="color"
+    fill-opacity="0.5"
+    stroke-opacity="0"
+  />
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Triangle from 'src/model/Triangle';
-import { store } from 'quasar/wrappers';
 
 const props = defineProps({
   triangle: Triangle,
@@ -17,6 +22,17 @@ const points = computed(() =>
     .map((dot) => '' + dot.x * props.scale + ',' + dot.y * props.scale)
     .join(' ')
 );
+
+const color = computed(() => {
+  if (
+    props.triangle.style &&
+    props.triangle.style.visible &&
+    props.triangle.style.color != 'black' &&
+    props.triangle.style.color != 'rgb(0,0,0)'
+  )
+    return props.triangle.style.color;
+  else return false;
+});
 
 onMounted(() => {});
 </script>

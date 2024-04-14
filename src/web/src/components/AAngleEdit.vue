@@ -27,7 +27,7 @@
         ><q-item-label>{{ degrees }}°</q-item-label>
         <q-item-label caption>degrees</q-item-label>
       </q-item-section> -->
-      <q-item-section avatar>
+      <q-item-section>
         <!-- <q-knob
           :min="0"
           :inner-min="1"
