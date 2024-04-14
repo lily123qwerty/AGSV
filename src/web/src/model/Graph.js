@@ -240,28 +240,28 @@ export default class Graph {
       if (obj.semiCircle) {
         const r = obj.diameter.radian(obj.diameter.ends[0]);
         if (r < Math.PI) {
-          left = Math.min(left, obj.center.x - obj.radius);
+          left = Math.min(left, obj.center.x - obj.radius.length);
           if (r < Math.PI / 2) {
-            top = Math.min(top, obj.center.y + obj.radius);
+            top = Math.min(top, obj.center.y + obj.radius.length);
           } else {
-            bottom = Math.max(bottom, obj.center.y - obj.radius);
+            bottom = Math.max(bottom, obj.center.y - obj.radius.length);
           }
         } else {
-          right = Math.max(right, obj.center.x + obj.radius);
+          right = Math.max(right, obj.center.x + obj.radius.length);
           if (r > (Math.PI / 2) * 3) {
-            top = Math.min(top, obj.center.y + obj.radius);
+            top = Math.min(top, obj.center.y + obj.radius.length);
           } else {
             bottom = Math.max(bottom, obj.center.y - obj.radius);
           }
         }
       } else {
-        top = Math.min(top, obj.center.y - obj.radius);
-        left = Math.min(left, obj.center.x - obj.radius);
-        bottom = Math.max(bottom, obj.center.y + obj.radius);
-        right = Math.max(right, obj.center.x + obj.radius);
+        top = Math.min(top, obj.center.y - obj.radius.length);
+        left = Math.min(left, obj.center.x - obj.radius.length);
+        bottom = Math.max(bottom, obj.center.y + obj.radius.length);
+        right = Math.max(right, obj.center.x + obj.radius.length);
       }
     });
-
+    console.log(top, left, bottom, right);
     return { top, left, bottom, right };
   }
 
@@ -328,6 +328,32 @@ export default class Graph {
     return angle2;
   }
 
+  deleteTriangle(t) {
+    let vertices = t.vertices;
+    let edges = t.edges;
+    let angles = t.angles;
+
+    this._triangles.delete(t.key);
+    this.vertices.forEach((obj) => {
+      for (let i = 0; i < vertices.length; i++) {
+        if (
+          obj.vertices[0] == vertices[i] ||
+          obj.vertices[1] == vertices[i] ||
+          obj.vertices[2] == vertices[i]
+        ) {
+          vertices[i] == null;
+        }
+      }
+    });
+    this.circles.forEach((obj) => {
+      for (let i = 0; i < vertices.length; i++) {
+        if (obj.radius == vertices[i] || obj.diameter == vertices[i]) {
+          vertices[i] == null;
+        }
+      }
+    });
+  }
+
   addTriangleBy3Dot(dot1, dot2, dot3, sa1, sa2, ss1, ss2, ss3) {
     //                dot3
     //               /     \
@@ -352,6 +378,14 @@ export default class Graph {
   }
 
   addTriangleBy2Angle1Side(angle1, angle2, side1, direction) {
+    if (typeof angle1 == 'object') {
+      if (typeof side1 == 'object') {
+        return false;
+      }
+    } else if (angle1 + angle2 >= 180) {
+      return false;
+    }
+
     direction = direction || 1;
     side1 = side1 || default_side;
     //                dot3
@@ -456,6 +490,9 @@ export default class Graph {
   }
 
   addTriangleByInnerAngle2Side(angle1, side1, side2, direction) {
+    if (typeof angle1 != 'object' && angle1 >= 180) {
+      return false;
+    }
     //                dot3
     //               /     \
     //            side2      side3
@@ -551,6 +588,28 @@ export default class Graph {
   }
 
   addTriangleByOuterAngle2Side(angle1, side1, side3, direction) {
+    if (typeof angle1 == 'object') {
+      if (angle1.radian >= Math.PI / 2) {
+        if (side1 > side3) {
+          return false;
+        }
+      } else if (Math.sin(angle1.radian) * side1 > side3) {
+        return false;
+      }
+    } else {
+      if (angle1 >= 180) {
+        return false;
+      }
+
+      if (angle1 >= 90) {
+        if (side1 > side3) {
+          return false;
+        }
+      } else if (Math.sin(degreesToRadians(angle1)) * side1 > side3) {
+        return false;
+      }
+    }
+
     //TODO: NOT RIGHT
     console.log('addTriangleByOuterAngle2Side', angle1, side1, side3);
     //                dot3
@@ -676,6 +735,18 @@ export default class Graph {
   }
 
   addTriangleBy3Side(side1, side2, side3, direction) {
+    let check = side1 + side2;
+    if (typeof side1 == 'object') {
+      check += side1.length;
+      if (Math.max(side1.length, side2, side3) * 2 > check) {
+        return false;
+      }
+    } else {
+      check += side1;
+      if (Math.max(side1, side2, side3) * 2 > check) {
+        return false;
+      }
+    }
     //TODO: NOT RIGHT
     console.log('addTriangleBy3Side', side1, side2, side3);
     direction = direction || 1;
@@ -743,51 +814,76 @@ export default class Graph {
     );
   }
 
-  // TODO: check
-  addCircle(c, radius, semiCircle, diameter) {
-    // create a circle
+  addCircle(c, r, d) {
+    // only allow radius or diameter, not both
+    if (r && d) {
+      return false;
+    }
 
-    // create a circle with shared diameter
+    // with radius, allow user to choose which end is the center
+    if (r instanceof Line) {
+      if (c != r.ends[0] && c != r.ends[1]) {
+        return false;
+      }
+    }
 
-    // create a circle with shared radius
-
-    // create a semi-circle
-
-    // create a semi-circle with shared diameter
-    // all center situation
+    // if d == obj, then c must be false (default)
+    if (d instanceof Line && c instanceof Dot) {
+      return false;
+    }
     if (!c) {
-      if (typeof radius == 'object') {
-        c = radius.ends[0];
-        radius = radius.length;
-      } else if (typeof diameter == 'object') {
+      if (r instanceof Line) {
+        sr = r;
+        c = r.ends[0];
+      } else if (d instanceof Line) {
         c = {
-          x: (diameter.ends[0].x + diameter.ends[1].x) / 2,
-          y: (diameter.ends[0].y + diameter.ends[1].y) / 2,
+          x: (d.ends[0].x + d.ends[1].x) / 2,
+          y: (d.ends[0].y + d.ends[1].y) / 2,
         };
       } else {
         c = { x: 50, y: 50 };
       }
     }
+
     if (!(c instanceof Dot)) {
       c = this.addDot(c.x, c.y);
     }
-    // create a semi-circle
-    if (semiCircle) {
-      if (!(typeof diameter == 'object')) {
+
+    if (r) {
+      if (typeof r != 'object') {
+        let c1 = this.addDot(c.x + r, c.y);
+        r = this.addLine(null, c, c1);
       }
-      diameter = this.addLine(diameter, c.x - radius, c.x + radius);
+      let d1 = c == r.ends[0] ? r.ends[1] : r.ends[0];
+      let d2 = this.addDot(
+        c.x - Math.cos(r.radian(d1) * r),
+        c.x - Math.sin(r.radian(d1) * r)
+      );
+      d = this.addLine(null, d1, d2);
+    }
+    if (d) {
+      if (typeof d != 'object') {
+        let d1 = this.addDot(c.x + d / 2, c.y);
+        let d2 = this.addDot(c.x - d / 2, c.y);
+        d = this.addLine(null, d1, d2);
+      }
+      r = this.addLine(null, c, d.ends[0]);
     }
 
-    let circle = new Circle(
-      c,
-      radius,
-      semiCircle,
-      diameter,
-      this._makeKey('c')
-    );
+    // // create a semi-circle
+    // if (semiCircle) {
+    //   if (!(typeof diameter == 'object')) {
+    //   }
+    //   diameter = this.addLine(diameter, c.x - radius, c.x + radius);
+    // }
+    console.log(c, r, d);
+
+    let circle = new Circle(c, r, false, d, this._makeKey('c'));
     this.circles[circle.key] = circle;
     return circle;
   }
+
+  addSemiCircle(r, d, side) {}
 
   addParallelogram(angle, side1, side2) {}
 

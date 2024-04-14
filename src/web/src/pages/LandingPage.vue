@@ -5,12 +5,11 @@
         <div class="intro-content">
           <h5>Welcome to Accurate Geometric Shape Visualizer!</h5>
           <p>
-            Struggling with complex geometric problems? Having issues with
-            drawing an accurate graph for geometric questions? AGSV is what you
-            are looking for! Wether you are a student, teacher, or just someone
-            who interested or struggling with geometry, we provide tools that
-            allows you to visualise geometry shapes exactly with accurate
-            details.
+            Are you struggling with complex geometric problems or having issues
+            with drawing an accurate graph? Look no further, AGSV is what you
+            are looking for! Whether you are a student, teacher, or just someone
+            who interested or struggling with geometry, our tools provide
+            precise visualizations of geometric shapes with accuraty and detail.
           </p>
           <q-btn
             color="primary"

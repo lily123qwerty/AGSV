@@ -35,10 +35,6 @@ export const useGraphStore = defineStore('graph', {
       this.history.moveForward(this.graph);
     },
 
-    historyReset() {
-      this.history.reset(this.graph);
-    },
-
     hasHistory() {
       return this.history && this.history.hasHistory;
     },

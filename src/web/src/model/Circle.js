@@ -7,6 +7,7 @@ export default class Circle extends Shape {
   constructor(center, radius, semiCircle, diameter, key, style) {
     super(key, style);
     this._center = center;
+    // r and d are lines
     this._radius = radius;
     // a line model for the diameter of semi-circle or for using the diameter to create other shape
     // semiCircle always draw from diameter.ends[0] to diameter.ends[1] clockwise

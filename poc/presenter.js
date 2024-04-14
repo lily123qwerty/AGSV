@@ -32,7 +32,6 @@ function drawGraph(graph) {
                 ' />';
 
             if (dot['style']['label']) {
-                //TODO: calculate label position
                 svg =
                     svg +
                     '<text x="' +

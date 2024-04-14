@@ -52,7 +52,6 @@ function addLine(dk1, dk2) {
 }
 
 function addAngle(dk, lk1, lk2) {
-    //TODO: check dk in lk1, lk2.
     var line1 = graph.line[lk1];
     var line2 = graph.line[lk2];
     if (
@@ -133,7 +132,6 @@ function rotate(x, y, beta, direction) {
             angle = -Math.PI / 2;
         }
     } else {
-        //TODO: may be wrong!!!
         angle = Math.atan(y / x);
     }
     angle *= direction;

@@ -23,12 +23,6 @@
                 (val, update) => filterFn(val, update, 'allDots', 'center')
               "
               @blur="() => blurFn('center')"
-              :disable="
-                vals.dot1 ||
-                vals.dot2 ||
-                vals.dot3 ||
-                (vals.angle3 && (vals.angle1 || vals.angle2))
-              "
             />
           </div>
           <div class="col q-ma-sm">
@@ -43,7 +37,6 @@
                 (val, update) => filterFn(val, update, 'allLines', 'radius')
               "
               @blur="() => blurFn('radius')"
-              :disable="vals.diameter"
             />
           </div>
           <div class="col q-ma-sm">
@@ -58,7 +51,6 @@
                 (val, update) => filterFn(val, update, 'allLines', 'diameter')
               "
               @blur="() => blurFn('diameter')"
-              :disable="vals.radius"
             />
           </div>
           <div class="col q-ma-sm">
@@ -161,227 +153,29 @@ function onOKClick() {
   let diameter = vals.value.diameter;
   let semiCircle = vals.value.semiCircle;
 
-  if (!center) {
-    center = { x: 50, y: 50 };
-  } else {
+  if (center) {
     center = store.graph.dots[center];
   }
-
-  // 3dots
-  if (dot1 && dot2 && dot3) {
-    store.addTriangleBy3Dot(
-      store.graph.dots[dot1],
-      store.graph.dots[dot2],
-      store.graph.dots[dot3]
-    );
-  }
-
-  // 3sides
-  if (side12 && side23 && side31) {
-    if (isNaN(side12)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side12],
-        parseFloat(side23),
-        parseFloat(side31)
-      );
-    } else if (isNaN(side23)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side23],
-        parseFloat(side31),
-        parseFloat(side12)
-      );
-    } else if (isNaN(side31)) {
-      store.addTriangleBy3Side(
-        store.graph.lines[side31],
-        parseFloat(side12),
-        parseFloat(side23)
-      );
+  if (radius) {
+    if (isNaN(radius)) {
+      radius = store.graph.lines[radius];
     } else {
-      store.addTriangleBy3Side(
-        parseFloat(side12),
-        parseFloat(side23),
-        parseFloat(side31)
-      );
+      radius = parseFloat(radius);
     }
   }
-
-  if (angle1) {
-    if (isNaN(angle1)) {
-      angle1 = store.graph.angles[angle1];
+  if (diameter) {
+    if (isNaN(diameter)) {
+      diameter = store.graph.lines[diameter];
     } else {
-      angle1 = parseFloat(angle1);
-    }
-
-    // 2angle 1 side
-    if (angle2 && side12) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      if (side12) {
-        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
-      }
-    }
-    if (angle3 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
-
-    // inner angle 2 side
-    if (side12 && side31) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-        store.addTriangleByInnerAngle2Side(angle1, side12, parseFloat(side31));
-      } else if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-        store.addTriangleByInnerAngle2Side(angle1, side23, parseFloat(side31));
-      } else {
-        side12 = parseFloat(side12);
-        side31 = parseFloat(side31);
-        store.addTriangleByInnerAngle2Side(angle1, side12, side31);
-      }
-    }
-
-    // outer angle 2 side
-    if (side12 && side23) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-      } else {
-        side23 = parseFloat(side23);
-      }
-      store.addTriangleByOuterAngle2Side(angle1, side12, side23);
+      diameter = parseFloat(diameter);
     }
   }
 
-  if (angle2) {
-    if (isNaN(angle2)) {
-      angle2 = store.graph.angles[angle2];
-    } else {
-      angle2 = parseFloat(angle2);
-    }
-    // 2angle 1 side
-    if (angle3 && side23) {
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-      } else {
-        side23 = parseFloat(side23);
-      }
-      if (side23) {
-        store.addTriangleBy2Angle1Side(angle2, angle3, side23);
-      }
-    }
-    if (angle1 && side12) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      if (side12) {
-        store.addTriangleBy2Angle1Side(angle1, angle2, side12);
-      }
-    }
-
-    // inner angle 2 side
-    if (side12 && side23) {
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-        store.addTriangleByInnerAngle2Side(angle2, side12, parseFloat(side23));
-      } else if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-        store.addTriangleByInnerAngle2Side(angle2, side23, parseFloat(side12));
-      } else {
-        side12 = parseFloat(side12);
-        side23 = parseFloat(side23);
-        store.addTriangleByInnerAngle2Side(angle2, side12, side23);
-      }
-    }
-
-    // outer angle 2 side
-    if (side23 && side31) {
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-      } else {
-        side23 = parseFloat(side23);
-      }
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      store.addTriangleByOuterAngle2Side(angle2, side23, side31);
-    }
+  if (semiCircle) {
+  } else {
+    store.addCircle(center, radius, diameter);
   }
 
-  if (angle3) {
-    if (isNaN(angle3)) {
-      angle3 = store.graph.angles[angle3];
-    } else {
-      angle3 = parseFloat(angle3);
-    }
-    // 2angle 1 side
-    if (angle1 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
-    if (angle2 && side31) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (side31) {
-        store.addTriangleBy2Angle1Side(angle3, angle1, side31);
-      }
-    }
-
-    // inner angle 2 side
-    if (side23 && side31) {
-      if (isNaN(side23)) {
-        side23 = store.graph.lines[side23];
-        store.addTriangleByInnerAngle2Side(angle3, side23, parseFloat(side31));
-      } else if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-        store.addTriangleByInnerAngle2Side(angle3, side31, parseFloat(side23));
-      } else {
-        side23 = parseFloat(side23);
-        side31 = parseFloat(side31);
-        store.addTriangleByInnerAngle2Side(angle3, side23, side31);
-      }
-    }
-
-    // outer angle 2 side
-    if (side31 && side12) {
-      if (isNaN(side31)) {
-        side31 = store.graph.lines[side31];
-      } else {
-        side31 = parseFloat(side31);
-      }
-      if (isNaN(side12)) {
-        side12 = store.graph.lines[side12];
-      } else {
-        side12 = parseFloat(side12);
-      }
-      store.addTriangleByOuterAngle2Side(angle3, side31, side12);
-    }
-  }
   store.historyPush();
 
   onDialogOK();

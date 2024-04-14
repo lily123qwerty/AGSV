@@ -35,10 +35,12 @@ const path = computed(() => {
     );
   } else {
     const x1 =
-      props.circle.center.x * props.scale + props.circle.radius * props.scale;
+      props.circle.center.x * props.scale +
+      props.circle.radius.length * props.scale;
     const y1 = props.circle.center.y * props.scale;
     const x2 =
-      props.circle.center.x * props.scale - props.circle.radius * props.scale;
+      props.circle.center.x * props.scale -
+      props.circle.radius.length * props.scale;
     const y2 = props.circle.center.y * props.scale;
     return (
       'M ' +
@@ -46,17 +48,17 @@ const path = computed(() => {
       ' ' +
       y1 +
       ' A ' +
-      props.circle.radius * props.scale +
+      props.circle.radius.length * props.scale +
       ',' +
-      props.circle.radius * props.scale +
+      props.circle.radius.length * props.scale +
       ' 0,0,0 ' +
       x2 +
       ' ' +
       y2 +
       ' A ' +
-      props.circle.radius * props.scale +
+      props.circle.radius.length * props.scale +
       ',' +
-      props.circle.radius * props.scale +
+      props.circle.radius.length * props.scale +
       ' 0,1,0 ' +
       x1 +
       ' ' +
