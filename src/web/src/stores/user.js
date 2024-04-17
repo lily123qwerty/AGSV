@@ -20,6 +20,7 @@ import {
   getFirestore,
   query,
   where,
+  orderBy,
   getDoc,
   getDocs,
   updateDoc,
@@ -63,7 +64,9 @@ export const useUserStore = defineStore('user', {
   getters: {
     isAdmin(state) {
       //TODO: check admin user id
-      return true;
+      if (state.user && state.user.uid == 'gpxFpKcDiuPlomj07BagzIlOTrI3')
+        return true;
+      return false;
     },
   },
 
@@ -279,9 +282,15 @@ export const useUserStore = defineStore('user', {
       return await notifyError(async () => {
         const db = getFirestore();
 
-        let q = query(collection(db, 'graphs'), where('category', '==', key));
-        //   where('published', '==', true)
-        // );
+        const w = [where('category', '==', key)];
+        if (!this.isAdmin) w.push(where('published', '==', true));
+
+        const q = query(
+          collection(db, 'graphs'),
+          ...w,
+          orderBy('lastEdited', 'desc')
+        );
+
         const qs = await getDocs(q);
         const graphs = [];
 
@@ -291,6 +300,29 @@ export const useUserStore = defineStore('user', {
           if (this.user && this.user.uid == graph.uid)
             this.updateMyGraphs(graph);
           console.log(graph.toJSON());
+        });
+
+        return graphs;
+      });
+    },
+
+    async getHighlightedGraphs() {
+      return await notifyError(async () => {
+        const db = getFirestore();
+
+        const q = query(
+          collection(db, 'graphs'),
+          where('highlighted', '==', true)
+        );
+
+        const qs = await getDocs(q);
+        const graphs = [];
+
+        qs.forEach((doc) => {
+          const graph = Graph.fromDoc(doc);
+          graphs.push(graph);
+          if (this.user && this.user.uid == graph.uid)
+            this.updateMyGraphs(graph);
         });
 
         return graphs;

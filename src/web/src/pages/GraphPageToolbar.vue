@@ -150,6 +150,8 @@ async function save() {
     }).onOk(() => {
       store.graph.id = null;
       store.graph.uid = null;
+      store.graph.highlighted = false;
+      store.graph.published = false;
       _save();
     });
   } else {

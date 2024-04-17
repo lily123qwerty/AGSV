@@ -61,8 +61,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import Graph from '../model/Graph';
-import { useGraphStore } from 'stores/graph';
 import { useUserStore } from '../stores/user';
 import AGraph from 'components/AGraph.vue';
 import { useRouter } from 'vue-router';
@@ -70,44 +68,40 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const userStore = useUserStore();
-const graphStore = useGraphStore();
 
 const graph = ref(null);
 const question = computed(() => graph.value.question.replace('\n', '<p>'));
 
-const graphsCache = {};
+// const graphsCache = {};
 
-async function getGraph(id) {
-  if (graphsCache[id]) {
-    graph.value = graphsCache[id];
-  } else {
-    try {
-      graph.value = await userStore.getGraphByID(id);
-      graphsCache[id] = graph.value;
-      // console.log(graph);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-}
+// async function getGraph(id) {
+//   if (graphsCache[id]) {
+//     graph.value = graphsCache[id];
+//   } else {
+//     try {
+//       graph.value = await userStore.getGraphByID(id);
+//       graphsCache[id] = graph.value;
+//       // console.log(graph);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+// }
 
 onMounted(async () => {
-  const graphIDs = [
-    '8HhEIAuSZXzyDWNcAS0b',
-    'PUW5rZhWOjeZ6PghUh2I',
-    'XCctBJbFJagzwVfSPSRt',
-    'XH5XpcdNLye72SL4Njq3',
-  ];
+  const graphs = await userStore.getHighlightedGraphs();
+  if (graphs.length > 0) {
+    let index = 0;
+    graph.value = graphs[index];
 
-  let index = 0;
-  getGraph(graphIDs[index]);
-
-  setInterval(() => {
-    index = ++index % graphIDs.length;
-    getGraph(graphIDs[index]);
-  }, 5000);
+    setInterval(() => {
+      index = ++index % graphs.length;
+      graph.value = graphs[index];
+    }, 5000);
+  }
 });
 </script>
+
 <style lang="scss" scoped>
 .top-part {
   position: absolute;
