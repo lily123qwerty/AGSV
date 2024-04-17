@@ -313,12 +313,14 @@ export default class Graph {
   addAngle(shareAngle, dot, line1, line2) {
     //TODO: check dk in lk1, lk2.
 
-    // if (
-    //     (line1.dk1 != dk && line1.dk2 != dk) ||
-    //     (line2.dk1 != dk && line2.dk2 != dk)
-    // ) {
-    //     return 'error';
-    // }
+    if (
+      line1.ends[0] != dot &&
+      line1.ends[1] != dot &&
+      line2.ends[0] != dot &&
+      line2.ends[1] != dot
+    ) {
+      return 'error';
+    }
     if (shareAngle && typeof shareAngle == 'object') {
       shareAngle.addAngle(line1, line2);
       return shareAngle;
@@ -839,6 +841,8 @@ export default class Graph {
     if (d instanceof Line && c instanceof Dot) {
       return false;
     }
+
+    // if c is default
     if (!c) {
       if (r instanceof Line) {
         sr = r;
@@ -849,12 +853,8 @@ export default class Graph {
           y: (d.ends[0].y + d.ends[1].y) / 2,
         };
       } else {
-        c = { x: 50, y: 50 };
+        c = this.addDot(50, 50);
       }
-    }
-
-    if (!(c instanceof Dot)) {
-      c = this.addDot(c.x, c.y);
     }
 
     if (r) {
@@ -863,13 +863,9 @@ export default class Graph {
         r = this.addLine(null, c, c1);
       }
       let d1 = c == r.ends[0] ? r.ends[1] : r.ends[0];
-      let d2 = this.addDot(
-        c.x - Math.cos(r.radian(d1) * r),
-        c.x - Math.sin(r.radian(d1) * r)
-      );
+      let d2 = this.addDot(c.x - (d1.x - c.x), c.y - (d1.y - c.y));
       d = this.addLine(null, d1, d2);
-    }
-    if (d) {
+    } else {
       if (typeof d != 'object') {
         let d1 = this.addDot(c.x + d / 2, c.y);
         let d2 = this.addDot(c.x - d / 2, c.y);

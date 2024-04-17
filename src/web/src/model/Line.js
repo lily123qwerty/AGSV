@@ -26,7 +26,7 @@ export default class Line extends Shape {
     );
   }
 
-  //TODO: set length?
+  //TODO: * set length?
 
   get label() {
     if (this.ends[0].label && this.ends[1].label) {

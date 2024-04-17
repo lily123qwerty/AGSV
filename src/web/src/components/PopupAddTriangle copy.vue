@@ -184,7 +184,7 @@ function onOKClick() {
   if (tab.value == '2Angle1Side') {
     let s1 = side1.value;
     let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
+
     if (isNaN(s1)) {
       s1 = store.graph.lines[s1];
     } else {
@@ -209,7 +209,7 @@ function onOKClick() {
     let s1 = side1.value;
     let s2 = side2.value;
     let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
+
     if (isNaN(s1)) {
       s1 = store.graph.lines[s1];
     } else {
@@ -234,7 +234,7 @@ function onOKClick() {
     let s1 = side1.value;
     let s2 = side2.value;
     let a1 = angle1.value;
-    //TODO: check a1, make sure only a1 can input key
+
     if (isNaN(s1)) {
       s1 = store.graph.lines[s1];
     } else {

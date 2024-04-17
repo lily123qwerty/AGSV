@@ -3,12 +3,21 @@ import { rotate } from './helper';
 import Style from './Style';
 
 export default class Angle extends Shape {
-  //TODO: deal addAngleLines
   constructor(dot, line1, line2, key, style) {
     super(key, style);
     this._vertex = dot;
-    this._sides1 = [line1];
-    this._sides2 = [line2];
+    if (Array.isArray(line1)) {
+      this._sides1 = line1;
+    } else {
+      this._sides1 = [line1];
+    }
+
+    if (Array.isArray(line2)) {
+      this._sides2 = line2;
+    } else {
+      this._sides2 = [line2];
+    }
+
     if (!style) {
       this.style.visible = false;
       this.style.size = 15;
@@ -52,7 +61,6 @@ export default class Angle extends Shape {
     return r;
   }
 
-  //TODO: change all line in this._sides
   set radian(val) {
     let r = val - this.radian;
     let r1 = this.sides1[0].radian(this.vertex);
@@ -85,32 +93,39 @@ export default class Angle extends Shape {
     }
   }
 
-  //TODO: check toJSON, fromJSON
   addAngle(line1, line2) {
     if (
-      line1.radian(this.vertex) == this.sides1[0].radian(this.vertex) &&
-      line2.radian(this.vertex) == this.sides2[0].radian(this.vertex)
+      Math.abs(line1.radian(this.vertex) - this.sides1[0].radian(this.vertex)) <
+        0.01 &&
+      Math.abs(line2.radian(this.vertex) - this.sides2[0].radian(this.vertex)) <
+        0.01
     ) {
       this._sides1.push(line1);
       this._sides2.push(line2);
+      line1.addRefCount();
+      line2.addRefCount();
     } else if (
-      line1.radian(this.vertex) == this.sides2[0].radian(this.vertex) &&
-      line2.radian(this.vertex) == this.sides1[0].radian(this.vertex)
+      Math.abs(line1.radian(this.vertex) - this.sides2[0].radian(this.vertex)) <
+        0.01 &&
+      Math.abs(
+        line2.radian(this.vertex) == this.sides1[0].radian(this.vertex)
+      ) < 0.01
     ) {
       this._sides1.push(line2);
       this._sides2.push(line1);
+      line1.addRefCount();
+      line2.addRefCount();
     } else {
       return false;
     }
     return true;
   }
 
-  //TODO: remember all key for line
   toJSON() {
     let json = super.toJSON();
     json.dk = this.vertex.key;
-    json.lk1 = this.sides1[0].key;
-    json.lk2 = this.sides2[0].key;
+    json.sides1 = this.sides1.map((obj) => obj.key);
+    json.sides2 = this.sides2.map((obj) => obj.key);
 
     return json;
   }
@@ -118,8 +133,8 @@ export default class Angle extends Shape {
   static fromJSON(json, dots, lines) {
     let obj = new Angle(
       dots[json.dk],
-      lines[json.lk1],
-      lines[json.lk2],
+      json.lk1 ? lines[json.lk1] : json.sides1.map((key) => lines[key]),
+      json.lk2 ? lines[json.lk2] : json.sides2.map((key) => lines[key]),
       json.key,
       Style.fromJSON(json.style)
     );

@@ -102,7 +102,7 @@ function makeHorizontal() {
 const length = computed({
   get: () => line.value.length,
   set: (val) => {
-    //TODO: change ends position
+    //TODO: * change ends position
   },
 });
 
