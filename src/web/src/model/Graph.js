@@ -241,14 +241,14 @@ export default class Graph {
         const r = obj.diameter.radian(obj.diameter.ends[0]);
         console.log(r);
         if (r < Math.PI) {
-          left = Math.min(left, obj.center.x - obj.radius.length);
+          right = Math.max(right, obj.center.x + obj.radius.length);
           if (r < Math.PI / 2) {
             top = Math.min(top, obj.center.y - obj.radius.length);
           } else {
             bottom = Math.max(bottom, obj.center.y + obj.radius.length);
           }
         } else {
-          right = Math.max(right, obj.center.x + obj.radius.length);
+          left = Math.min(left, obj.center.x - obj.radius.length);
           if (r > (Math.PI / 2) * 3) {
             top = Math.min(top, obj.center.y - obj.radius.length);
           } else {
