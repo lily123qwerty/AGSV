@@ -43,8 +43,8 @@ async function notifyError(asyncAction) {
   }
 }
 
-// const PUBLIC_DOMAIN = 'https://argv.fun';
-const PUBLIC_DOMAIN = 'http://localhost:9000'; //for Development
+const PUBLIC_DOMAIN = 'https://argv.fun';
+// const PUBLIC_DOMAIN = 'http://localhost:9000'; //for Development
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -63,7 +63,6 @@ export const useUserStore = defineStore('user', {
 
   getters: {
     isAdmin(state) {
-      //TODO: check admin user id
       if (
         state.user &&
         (state.user.uid == 'gpxFpKcDiuPlomj07BagzIlOTrI3' ||
@@ -258,6 +257,7 @@ export const useUserStore = defineStore('user', {
           collection(db, 'graphs'),
           where('uid', '==', this.user.uid)
         );
+        // orderBy('lastEdited', 'desc')
         const qs = await getDocs(q);
         this.graphs = [];
 
@@ -288,12 +288,9 @@ export const useUserStore = defineStore('user', {
 
         const w = [where('category', '==', key)];
         if (!this.isAdmin) w.push(where('published', '==', true));
+        // w.push(orderBy('lastEdited', 'desc'));
 
-        const q = query(
-          collection(db, 'graphs'),
-          ...w,
-          orderBy('lastEdited', 'desc')
-        );
+        const q = query(collection(db, 'graphs'), ...w);
 
         const qs = await getDocs(q);
         const graphs = [];
