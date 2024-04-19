@@ -14,6 +14,10 @@
       v-if="editingObject instanceof Triangle"
       :triangle="editingObject"
     />
+    <a-circle-edit
+      v-if="editingObject instanceof Circle"
+      :circle="editingObject"
+    />
     <a-graph-edit
       v-if="editingObject instanceof Graph"
       :graph="editingObject"
@@ -32,10 +36,12 @@ import Triangle from 'src/model/Triangle';
 import Dot from 'src/model/Dot';
 import Line from 'src/model/Line';
 import Angle from 'src/model/Angle';
+import Circle from 'src/model/Circle';
 import ADotEdit from 'src/components/ADotEdit.vue';
 import ALineEdit from 'src/components/ALineEdit.vue';
 import AAngleEdit from 'src/components/AAngleEdit.vue';
 import ATriangleEdit from 'src/components/ATriangleEdit.vue';
+import ACircleEdit from 'src/components/ACircleEdit.vue';
 import AGraphEdit from 'src/components/AGraphEdit.vue';
 import ProfileEdit from 'src/components/ProfileEdit.vue';
 import { useUserStore } from '../stores/user';

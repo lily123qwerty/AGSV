@@ -90,5 +90,8 @@ export const useGraphStore = defineStore('graph', {
     addCircle(center, radius, diameter) {
       return this.graph.addCircle(center, radius, diameter);
     },
+    addSemiCircle(radius, diameter, side) {
+      return this.graph.addSemiCircle(radius, diameter, side);
+    },
   },
 });

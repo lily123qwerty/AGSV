@@ -239,19 +239,20 @@ export default class Graph {
     Object.entries(this.circles).forEach(([key, obj]) => {
       if (obj.semiCircle) {
         const r = obj.diameter.radian(obj.diameter.ends[0]);
+        console.log(r);
         if (r < Math.PI) {
           left = Math.min(left, obj.center.x - obj.radius.length);
           if (r < Math.PI / 2) {
-            top = Math.min(top, obj.center.y + obj.radius.length);
+            top = Math.min(top, obj.center.y - obj.radius.length);
           } else {
-            bottom = Math.max(bottom, obj.center.y - obj.radius.length);
+            bottom = Math.max(bottom, obj.center.y + obj.radius.length);
           }
         } else {
           right = Math.max(right, obj.center.x + obj.radius.length);
           if (r > (Math.PI / 2) * 3) {
-            top = Math.min(top, obj.center.y + obj.radius.length);
+            top = Math.min(top, obj.center.y - obj.radius.length);
           } else {
-            bottom = Math.max(bottom, obj.center.y - obj.radius);
+            bottom = Math.max(bottom, obj.center.y + obj.radius.length);
           }
         }
       } else {
@@ -261,7 +262,6 @@ export default class Graph {
         right = Math.max(right, obj.center.x + obj.radius.length);
       }
     });
-    console.log(top, left, bottom, right);
     return { top, left, bottom, right };
   }
 
@@ -362,7 +362,11 @@ export default class Graph {
     this.purge();
   }
 
-  deleteCycle(c) {}
+  deleteCircle(c) {
+    c.delete();
+    delete this._circles[c.key];
+    this.purge();
+  }
 
   addTriangleBy3Dot(dot1, dot2, dot3, sa1, sa2, ss1, ss2, ss3) {
     //                dot3
@@ -831,7 +835,7 @@ export default class Graph {
     }
 
     // with radius, allow user to choose which end is the center
-    if (r instanceof Line) {
+    if (r instanceof Line && c instanceof Dot) {
       if (c != r.ends[0] && c != r.ends[1]) {
         return false;
       }
@@ -845,13 +849,12 @@ export default class Graph {
     // if c is default
     if (!c) {
       if (r instanceof Line) {
-        sr = r;
         c = r.ends[0];
       } else if (d instanceof Line) {
-        c = {
-          x: (d.ends[0].x + d.ends[1].x) / 2,
-          y: (d.ends[0].y + d.ends[1].y) / 2,
-        };
+        c = this.addDot(
+          (d.ends[0].x + d.ends[1].x) / 2,
+          (d.ends[0].y + d.ends[1].y) / 2
+        );
       } else {
         c = this.addDot(50, 50);
       }
@@ -880,14 +883,63 @@ export default class Graph {
     //   }
     //   diameter = this.addLine(diameter, c.x - radius, c.x + radius);
     // }
-    console.log(c, r, d);
 
     let circle = new Circle(c, r, false, d, this._makeKey('c'));
     this.circles[circle.key] = circle;
     return circle;
   }
 
-  addSemiCircle(r, d, side) {}
+  addSemiCircle(r, d, side) {
+    // semiCircle always draw from diameter.ends[0] to diameter.ends[1] clockwise
+    if (r && d) {
+      return false;
+    }
+
+    let c;
+
+    if (r) {
+      if (typeof r != 'object') {
+        c = this.addDot(50, 50);
+        let c1 = this.addDot(c.x + r, c.y);
+        r = this.addLine(null, c, c1);
+      } else {
+        c = r.ends[0];
+      }
+      let d1 = c == r.ends[0] ? r.ends[1] : r.ends[0];
+      let d2 = this.addDot(c.x - (d1.x - c.x), c.y - (d1.y - c.y));
+      if (side) {
+        d = this.addLine(null, d1, d2);
+      } else {
+        d = this.addLine(null, d2, d1);
+      }
+    } else {
+      if (typeof d != 'object') {
+        c = this.addDot(50, 50);
+        let d1 = this.addDot(c.x + d / 2, c.y);
+        let d2 = this.addDot(c.x - d / 2, c.y);
+        if (side) {
+          d = this.addLine(null, d1, d2);
+        } else {
+          d = this.addLine(null, d2, d1);
+        }
+      } else {
+        c = this.addDot(
+          (d.ends[0].x + d.ends[1].x) / 2,
+          (d.ends[0].y + d.ends[1].y) / 2
+        );
+        if (side) {
+          let temp = d.ends[0];
+          d.ends[0] = d.ends[1];
+          d.ends[1] = temp;
+        }
+      }
+      r = this.addLine(null, c, d.ends[0]);
+    }
+
+    let circle = new Circle(c, r, true, d, this._makeKey('c'));
+    this.circles[circle.key] = circle;
+    return circle;
+  }
 
   addParallelogram(angle, side1, side2) {}
 

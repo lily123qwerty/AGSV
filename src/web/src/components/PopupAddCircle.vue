@@ -41,7 +41,7 @@
           </div>
           <div class="col q-ma-sm">
             <q-select
-              v-model="vals['diamter']"
+              v-model="vals['diameter']"
               :options="options['diameter']"
               label="diameter"
               use-input
@@ -172,6 +172,7 @@ function onOKClick() {
   }
 
   if (semiCircle) {
+    store.addSemiCircle(radius, diameter, true);
   } else {
     store.addCircle(center, radius, diameter);
   }

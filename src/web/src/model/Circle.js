@@ -42,9 +42,9 @@ export default class Circle extends Shape {
 
   get area() {
     if (this.semiCircle) {
-      return (Math.PI * this.radius * this.radius) / 2;
+      return (Math.PI * this.radius.length * this.radius.length) / 2;
     } else {
-      return Math.PI * this.radius * this.radius;
+      return Math.PI * this.radius.length * this.radius.length;
     }
   }
 

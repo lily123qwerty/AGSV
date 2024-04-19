@@ -81,6 +81,7 @@ import ADot from './ADot.vue';
 import AText from './AText.vue';
 import AAngle from './AAngle.vue';
 import ACircle from './ACircle.vue';
+import ACircleColor from './ACircleColor.vue';
 import { radiansToDegrees } from 'src/model/helper';
 
 const props = defineProps({

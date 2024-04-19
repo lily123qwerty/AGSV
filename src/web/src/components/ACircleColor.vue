@@ -1,5 +1,5 @@
 <template>
-  <path :d="path" stroke="black" fill-opacity="0" />
+  <path :d="path" stroke="black" :fill="color" fill-opacity="0.5" />
 </template>
 
 <script setup>
@@ -69,6 +69,17 @@ const path = computed(() => {
       y1
     );
   }
+});
+
+const color = computed(() => {
+  if (
+    props.circle.style &&
+    props.circle.style.visible &&
+    props.circle.style.color != 'black' &&
+    props.circle.style.color != 'rgb(0,0,0)'
+  )
+    return props.circle.style.color;
+  else return false;
 });
 
 onMounted(() => {});

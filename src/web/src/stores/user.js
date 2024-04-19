@@ -64,7 +64,11 @@ export const useUserStore = defineStore('user', {
   getters: {
     isAdmin(state) {
       //TODO: check admin user id
-      if (state.user && state.user.uid == 'gpxFpKcDiuPlomj07BagzIlOTrI3')
+      if (
+        state.user &&
+        (state.user.uid == 'gpxFpKcDiuPlomj07BagzIlOTrI3' ||
+          state.user.uid == '3jiuZmUmQgOVCOd2fF2NAhpDS2V2')
+      )
         return true;
       return false;
     },

@@ -66,9 +66,40 @@ const allShape = computed(() => {
       })),
     ],
   }));
-  // let circleKey = Object.entries(store.graph.circles).map(([key, obj]) => ({
-  //     label: key,
-  // }));
+  let circles = Object.entries(store.graph.circles).map(([key, obj]) => ({
+    label: key + (obj.label ? ': ' + obj.label : ''),
+    icon: 'mdi-circle-outline',
+    key,
+    obj,
+    handler: (node) => (onSelectTree(node), onSelectShape(node)),
+    children: [
+      {
+        label:
+          obj.center.key + (obj.center.label ? ': ' + obj.center.label : ''),
+        key: 'center' + key + '_' + obj.center.key,
+        icon: 'mdi-circle-medium',
+        obj: obj.center,
+        handler: onSelectShape,
+      },
+      {
+        label:
+          obj.radius.key + (obj.radius.label ? ': ' + obj.radius.label : ''),
+        key: 'radius' + key + '_' + obj.radius.key,
+        icon: 'horizontal_rule',
+        obj: obj.radius,
+        handler: onSelectShape,
+      },
+      {
+        label:
+          obj.diameter.key +
+          (obj.diameter.label ? ': ' + obj.diameter.label : ''),
+        key: 'diameter' + key + '_' + obj.diameter.key,
+        icon: 'horizontal_rule',
+        obj: obj.diameter,
+        handler: onSelectShape,
+      },
+    ],
+  }));
   // let parallelogramKey = Object.entries(store.graph.parallelogram).map(
   //     ([key, obj]) => ({
   //         label: key,
@@ -83,6 +114,7 @@ const allShape = computed(() => {
   // let polygonKey = Object.entries(store.graph.polygon).map(([key, obj]) => ({
   //     label: key,
   // }));
+  let shape = triangles.concat(circles);
 
   return [
     {
@@ -91,14 +123,14 @@ const allShape = computed(() => {
       icon: 'mdi-shape-outline',
       obj: store.graph,
       handler: (node) => (onSelectTree(node), onSelectShape(node)),
-      children: [...triangles],
+      children: shape,
     },
     // {
     //   label: 'Circle',
     //   key: 'Circle',
     //   icon: 'mdi-circle-outline',
     //   //disabled: true,
-    //   children: [],
+    //   children: [...circles],
     // },
     // {
     //   label: 'parallelogram',
