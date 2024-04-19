@@ -21,6 +21,13 @@
         :scale="scale"
       ></a-triangle-color>
 
+      <a-circle-color
+        v-for="c in circles"
+        :key="c.key"
+        :circle="c"
+        :scale="scale"
+      ></a-circle-color>
+
       <a-triangle
         v-for="t in triangles"
         :key="t.key"

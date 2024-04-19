@@ -43,7 +43,7 @@ async function notifyError(asyncAction) {
   }
 }
 
-const PUBLIC_DOMAIN = 'https://argv.fun';
+const PUBLIC_DOMAIN = 'https://agsv.fun';
 // const PUBLIC_DOMAIN = 'http://localhost:9000'; //for Development
 
 export const useUserStore = defineStore('user', {

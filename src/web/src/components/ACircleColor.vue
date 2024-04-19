@@ -72,14 +72,9 @@ const path = computed(() => {
 });
 
 const color = computed(() => {
-  if (
-    props.circle.style &&
-    props.circle.style.visible &&
-    props.circle.style.color != 'black' &&
-    props.circle.style.color != 'rgb(0,0,0)'
-  )
+  if (props.circle.style && props.circle.style.visible)
     return props.circle.style.color;
-  else return false;
+  else return 'none';
 });
 
 onMounted(() => {});

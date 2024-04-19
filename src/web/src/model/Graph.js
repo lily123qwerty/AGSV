@@ -262,6 +262,7 @@ export default class Graph {
         right = Math.max(right, obj.center.x + obj.radius.length);
       }
     });
+    console.log(top, left, bottom, right);
     return { top, left, bottom, right };
   }
 

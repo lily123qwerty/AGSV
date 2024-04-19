@@ -52,6 +52,12 @@ export default class Circle extends Shape {
     return this.center.label;
   }
 
+  delete() {
+    this._center.delRefCount();
+    this._radius.delRefCount();
+    this._diameter.delRefCount();
+  }
+
   toJSON() {
     let json = super.toJSON();
     json.center = this.center.key;
