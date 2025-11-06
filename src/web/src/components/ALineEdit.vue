@@ -122,7 +122,6 @@ const color = computed({
   get: () => line.value.style.color,
   set: (val) => {
     line.value.style.color = val;
-    console.log(val);
   },
 });
 

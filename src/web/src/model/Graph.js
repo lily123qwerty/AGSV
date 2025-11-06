@@ -239,7 +239,7 @@ export default class Graph {
     Object.entries(this.circles).forEach(([key, obj]) => {
       if (obj.semiCircle) {
         const r = obj.diameter.radian(obj.diameter.ends[0]);
-        console.log(r);
+        // console.log(r);
         if (r < Math.PI) {
           right = Math.max(right, obj.center.x + obj.radius.length);
           if (r < Math.PI / 2) {
@@ -312,8 +312,6 @@ export default class Graph {
   }
 
   addAngle(shareAngle, dot, line1, line2) {
-    //TODO: check dk in lk1, lk2.
-
     if (
       line1.ends[0] != dot &&
       line1.ends[1] != dot &&
@@ -393,6 +391,7 @@ export default class Graph {
   }
 
   addTriangleBy2Angle1Side(angle1, angle2, side1, direction) {
+    // validation: only one shared component; is a triangle (angle1 + angle2 < 180);
     if (typeof angle1 == 'object') {
       if (typeof side1 == 'object') {
         return false;
@@ -475,11 +474,11 @@ export default class Graph {
     }
 
     // calculate dot3 - relative to dot1 and side1
+    //TODO: calculation wrong
     let angle3 = Math.PI - angle1 - angle2;
     let side2 = (side1 / Math.sin(angle3)) * Math.sin(angle2);
     x3 = side2 * Math.cos(angle1);
     y3 = side2 * Math.sin(angle1);
-
     // get final dot1
     let rotatedDot = rotate(x3, y3, r);
     x3 = rotatedDot.x + x1;

@@ -26,7 +26,7 @@ function onSelectTree(node) {
 }
 
 function onSelectShape(node) {
-  console.log(node);
+  // console.log(node);
   selected.value = node.key;
   emit('selectShape', node.obj);
 }

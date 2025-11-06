@@ -54,6 +54,7 @@ export default class Angle extends Shape {
     let r = Math.abs(
       this._sides1[0].radian(this.vertex) - this._sides2[0].radian(this.vertex)
     );
+    console.log(this.key, r);
     if (r > Math.PI) {
       r = 2 * Math.PI - r;
     }
@@ -62,6 +63,7 @@ export default class Angle extends Shape {
   }
 
   set radian(val) {
+    // TODO: need check
     let r = val - this.radian;
     let r1 = this.sides1[0].radian(this.vertex);
     let r2 = this.sides2[0].radian(this.vertex);
@@ -96,9 +98,9 @@ export default class Angle extends Shape {
   addAngle(line1, line2) {
     if (
       Math.abs(line1.radian(this.vertex) - this.sides1[0].radian(this.vertex)) <
-        0.01 &&
+        0.001 &&
       Math.abs(line2.radian(this.vertex) - this.sides2[0].radian(this.vertex)) <
-        0.01
+        0.001
     ) {
       this._sides1.push(line1);
       this._sides2.push(line2);
@@ -106,10 +108,10 @@ export default class Angle extends Shape {
       line2.addRefCount();
     } else if (
       Math.abs(line1.radian(this.vertex) - this.sides2[0].radian(this.vertex)) <
-        0.01 &&
+        0.001 &&
       Math.abs(
         line2.radian(this.vertex) == this.sides1[0].radian(this.vertex)
-      ) < 0.01
+      ) < 0.001
     ) {
       this._sides1.push(line2);
       this._sides2.push(line1);

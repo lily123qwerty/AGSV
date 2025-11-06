@@ -169,7 +169,6 @@ function popupAddTriangle() {
   }).onOk(() => {});
 }
 
-// TODO: test circle
 function popupAddCircle() {
   $q.dialog({
     component: PopupAddCircle,

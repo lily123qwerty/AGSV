@@ -47,8 +47,8 @@ export default class Line extends Shape {
       return;
     }
 
-    let x = Math.round(end.x - dot.x);
-    let y = Math.round(end.y - dot.y);
+    let x = end.x - dot.x;
+    let y = end.y - dot.y;
     let r;
     if (x == 0) {
       if (y > 0) {

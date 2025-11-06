@@ -62,7 +62,7 @@
       <q-toolbar>
         <q-toolbar-title class="row justify-center footer-text">
           Created by Lily Qi with passion for math, please &nbsp;<a
-            href="mailto:lily.luna.qi@icloud.com"
+            href="mailto:lily@standrews-gv.com"
             >CONTACT ME</a
           >&nbsp; if you meet any problem.
         </q-toolbar-title>

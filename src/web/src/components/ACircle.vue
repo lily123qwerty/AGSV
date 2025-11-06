@@ -13,7 +13,6 @@ const props = defineProps({
 });
 
 const path = computed(() => {
-  console.log(props);
   if (props.circle.semiCircle == true) {
     const x1 = props.circle.diameter.ends[0].x * props.scale;
     const y1 = props.circle.diameter.ends[0].y * props.scale;
